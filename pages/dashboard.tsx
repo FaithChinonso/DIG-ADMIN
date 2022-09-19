@@ -72,7 +72,7 @@ const Dashboard: NextPage = () => {
       </div>
       {/* <div className="flex gap-5 flex-col lg:flex-row "> */}
       <div className="w-fulll flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-[67%] overflow-x-auto bg-white p-4 md:p-8 rounded-sm shadow-2xl">
+        <div className="w-full md:w-[65%] overflow-x-auto bg-white p-4 md:p-8 rounded-sm shadow-2xl">
           {" "}
           <div className="flex gap-4 md:gap-0 flex-col justify-between items-start md:items-center md:p-5 w-full md:flex-row ">
             <h3 className="text-gray-800 text-3xl">Revenue</h3>
@@ -131,7 +131,7 @@ const Dashboard: NextPage = () => {
             <DashboardChart transaction={transactions} month={month} />
           </div>
         </div>
-        <div className="bg-white w-full md:w-[33%] h-[auto] z-4 shadow-3xl rounded-md p-7">
+        <div className="bg-white w-full md:w-[35%] h-[auto] z-4 shadow-3xl rounded-md p-7">
           <div className=" flex justify-between items-center mb-5 p-5">
             <h3 className="text-gray-800 text-3xl">Status</h3>
             <div>
@@ -181,14 +181,14 @@ const Dashboard: NextPage = () => {
         </div>
       </div>
       <div className="w-full flex flex-col md:flex-row gap-5 items-center mt-8">
-        <div className=" overflow-x-auto bg-white p-8 rounded-sm shadow-2xl w-full md:w-[67%] ">
+        <div className=" overflow-x-auto bg-white p-8 rounded-sm shadow-2xl w-full md:w-[65%] ">
           <FilterTable
             title="Revenue"
             column={dashboardColumn}
             data={tableData}
           />
         </div>
-        <div className="w-full md:w-[33%] h-[300px] bg-white rounded-md shadow-md p-8 ">
+        <div className="w-full md:w-[35%] h-[300px] bg-white rounded-md shadow-md p-8 ">
           <div className="flex flex-row justify-between w-full bg-white">
             <h3 className="text-gray-800 text-3xl">Tracking</h3>
             <div>

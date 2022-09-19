@@ -15,12 +15,14 @@ const Home: NextPage = () => {
         <meta name="admin Dashboard" content="Admin dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ParentContainer>
-        <div className="flex flex-row w-full max-h-screen overflow-y-auto max-w-screen">
-          <SideNav />
-          <Dashboard />
-        </div>
-      </ParentContainer>
+      <body>
+        <ParentContainer>
+          <div className="flex flex-row w-full max-h-screen overflow-y-auto max-w-screen">
+            <SideNav />
+            <Dashboard />
+          </div>
+        </ParentContainer>
+      </body>
     </div>
   );
 };

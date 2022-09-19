@@ -114,6 +114,7 @@ export const tableData = [
     lga: "L.G.A",
     action: "Action",
   },
+  
 ];
 export const statusData = [
   {
@@ -157,31 +158,37 @@ export const outerNav = [
     id: 1,
     name: "DASHBOARD",
     key: "first",
+    value: "first",
   },
   {
     id: 2,
     name: "SHIPMENT",
     key: "second",
+    value: "first",
   },
   {
     id: 3,
     name: "TRACKING",
     key: "third",
+    value: "first",
   },
   {
     id: 4,
     name: "MESSAGES",
     key: "fourth",
+    value: "second",
   },
   {
     id: 5,
     name: "REVENUE",
     key: "fifth",
+    value: "second",
   },
   {
     id: 6,
     name: "MAPS",
     key: "sixth",
+    value: "second",
   },
 ];
 
