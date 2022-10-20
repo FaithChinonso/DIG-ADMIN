@@ -1,29 +1,93 @@
 import type { NextPage } from "next";
+import "regenerator-runtime/runtime";
 import Head from "next/head";
 import Image from "next/image";
 import InnerNav from "../src/components/InnerNav";
 import SideNav from "../src/components/SideNav";
 import ParentContainer from "../src/components/ParentContainer";
 import styles from "../styles/Home.module.css";
-import Dashboard from "./dashboard";
+import Dashboard from "./general";
+import SignUp from "./signupPage";
+import { Provider } from "react-redux";
+import store from "../src/redux/store/index";
+
+import SignInForm from "../src/components/SignInForm";
+import SignUpForm from "../src/components/SignUpForm";
+import AuthSide from "../src/assets/image/auth-side (1).png";
+import Rocket from "../src/assets/image/rocket.png";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Modal from "../src/components/Modal";
 
 const Home: NextPage = () => {
+  const [signUp, setSignUp] = useState(false);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Admin Dashboard</title>
-        <meta name="admin Dashboard" content="Admin dashboard" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <body>
-        <ParentContainer>
-          <div className="flex flex-row w-full max-h-screen overflow-y-auto max-w-screen">
-            <SideNav />
-            <Dashboard />
+    <Provider store={store}>
+      <div className={styles.container}>
+        <Head>
+          <title>Admin Dashboard</title>
+          <meta name="Admin" content="Admin" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <body>
+          <div className="flex w-screen flex-col md:flex-row max-w-screen overflow-hidden">
+            <div className=" md:w-[600px] h-screen flex flex-col md:flex-row items-center justify-center relative">
+              <div className="w-full hidden md:block">
+                <Image src={AuthSide} className="w-full object-cover left-0" />
+              </div>
+
+              <div className="w-[400px] h-[350px] bg-lightDark py-[113px] px-[57px] rounded-[20px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <h2 className="text-[32px] leading-10 text-white font-semibold text-center">
+                  Great Deals, Unbeatable Value
+                </h2>
+                <p className="text-sm text-white text-center">
+                  Buy and sell platform for all
+                </p>
+              </div>
+            </div>
+            <div className=" px-[200px] py-[120px] w-[calc(100vw-600px)]">
+              <div className="">
+                <h1 className="text-primary text-[32px] leading-10">
+                  {signUp ? "Create An Account" : "Welcome Page"}
+                  <span className="w-[30px]">
+                    <Image src={Rocket} />
+                  </span>
+                </h1>
+                <p className="text-[14px] text-[#101828]">
+                  {signUp
+                    ? "Sign up to continue"
+                    : " Login to manage your collections"}
+                </p>
+              </div>
+              {signUp ? <SignUpForm setSignUp={setSignUp} /> : <SignInForm />}
+
+              {signUp ? (
+                <div className="text-[#101828] text-xs text-center mt-[70px]">
+                  Already have an account?{" "}
+                  <span
+                    className="mx-1 text-primary text-xs"
+                    onClick={() => {}}
+                  >
+                    Sign In
+                  </span>
+                </div>
+              ) : (
+                <div className="text-[#101828] text-xs text-center mt-[100px]">
+                  Not Registered yet?{" "}
+                  <span
+                    className="mx-1 text-primary text-xs"
+                    onClick={() => setSignUp(true)}
+                  >
+                    Create an Account
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-        </ParentContainer>
-      </body>
-    </div>
+        </body>
+      </div>
+    </Provider>
   );
 };
 
