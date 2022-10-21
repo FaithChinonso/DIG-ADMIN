@@ -84,8 +84,6 @@ const Approval = () => {
           columns={columnDasboard}
           data={tableData}
           emptyPlaceHolder="No approval yet!"
-          extraButton={{ text: "Add Approval" }}
-          onClickFunction={toggleDrawer}
         />
       </div>
     </>

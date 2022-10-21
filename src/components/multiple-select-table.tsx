@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ActionMenuBase from "./ActionMenu/ActionMenuBase";
 import ActionMenuItems from "./ActionMenu/ActionMenuItems";
 import ActionMenuItem from "./ActionMenu/ActionMenuItem";
+import { useRouter } from "next/router";
 
 type DataColumn = {
   data: any;
@@ -39,7 +40,9 @@ const MultipleSelectTable = ({
   extraButton,
   list,
   onClickFunction,
+  rowClickable,
 }: Partial<any>) => {
+  const router = useRouter();
   const [showList, setShowList] = useState(false);
   const IndeterminateCheckbox = React.forwardRef(
     ({ indeterminate, ...rest }: any, ref: any) => {
@@ -108,7 +111,7 @@ const MultipleSelectTable = ({
     <>
       {loader ? null : (
         <div className="h-full">
-          {data.length === 0 ? null : (
+          {data?.length === 0 ? null : (
             <div className="w-full flex justify-between">
               <div className="flex gap-2 mb-6 items-center">
                 <select
@@ -203,14 +206,21 @@ const MultipleSelectTable = ({
                 ))}
               </thead>
               <tbody {...getTableBodyProps()} style={{ width: "100%" }}>
-                {page?.map(row => {
+                {page?.map((row: any) => {
                   prepareRow(row);
                   return (
                     <tr
                       {...row.getRowProps()}
+                      onClick={() => {
+                        if (rowClickable === true) {
+                          router.push(
+                            `${location.pathname}/${row?.original.id}`
+                          );
+                        }
+                      }}
                       className="px-[30px] py-[20px] border-b border-[#e5e5e5] h-[82px]  children-even:bg-[#cb91df]"
                     >
-                      {row.cells.map(cell => {
+                      {row?.cells.map((cell: any) => {
                         return (
                           <td
                             {...cell.getCellProps()}
@@ -225,7 +235,7 @@ const MultipleSelectTable = ({
                             }}
                             className=""
                           >
-                            {cell.render("Cell")}
+                            {cell?.render("Cell")}
                           </td>
                         );
                       })}
@@ -235,7 +245,7 @@ const MultipleSelectTable = ({
               </tbody>
             </table>
 
-            {data.length === 0 && (
+            {data?.length === 0 && (
               <div className="flex items-center justify-around flex-col h-[250px] bg-[#f8f8f8]">
                 <Image src={EmptyTable} />
                 <div className="text-sm text-[#adafb0] mb-5">
@@ -257,7 +267,7 @@ const MultipleSelectTable = ({
               <>
                 {" "}
                 {/* Pagination */}
-                {data.length === 0 ? null : (
+                {data?.length === 0 ? null : (
                   <div className="flex items-center justify-center gap-2 w-full mt-2">
                     <div
                       onClick={() => previousPage()}

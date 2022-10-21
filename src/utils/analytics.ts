@@ -1,4 +1,5 @@
 import cardImage from "../assets/image/cardImage.jpg";
+import riderPic from "../assets/image/riderPic.svg";
 import documentOne from "../assets/image/documentOne.svg";
 import documentTwo from "../assets/image/documentTwo.svg";
 import WidgetsIcon from "@mui/icons-material/Widgets";
@@ -351,7 +352,7 @@ export const innerNav = [
         id: 4,
         name: "Payments - Withdrawal",
         value: "third",
-        route: "/cue/payments",
+        route: "/cue/payment",
       },
       {
         id: 4,
@@ -476,7 +477,7 @@ export const outerNav = [
     id: 19,
     name: "Payments - Withdrawal",
     value: "third",
-    route: "/cue/payments",
+    route: "/cue/payment",
   },
   {
     id: 20,
@@ -504,6 +505,35 @@ export const tableLoad = [
   { region: "Megha", amount: 19 },
   { region: "Subham", amount: 25 },
 ];
+export const driver = [
+  {
+    id: "1873663",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+  {
+    id: "187363",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+  {
+    id: "187366",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+];
 
 export const supportingDocument = [
   {
@@ -517,5 +547,72 @@ export const supportingDocument = [
     img: documentTwo,
     name: "Premise License",
     uploaded: "Uploaded April 17, 2022",
+  },
+];
+export const ridersFeedback = [
+  {
+    id: "1",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Justo lobortis cras nulla.dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet ",
+    name: "Sanusi Danladi",
+    email: "Sansus@gmail.com",
+  },
+  {
+    id: "2",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Justo lobortis cras nulla.dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet ",
+    name: "Sanusi Danladi",
+    email: "Sansus@gmail.com",
+  },
+];
+export const tripHistory = [
+  {
+    id: "1",
+    distance: "80 km",
+    pickupLocation: "22 Akintaye Avenue Lekki",
+    dropLocation: "48 Shoguyi Crescent, Victoria Island",
+    rider: {
+      name: "Ogbonje Marcus",
+      email: "ogbonjemarc@gmail.com",
+      status: "In transit",
+      profile: riderPic,
+    },
+  },
+  {
+    id: "2",
+    distance: "80 km",
+    pickupLocation: "22 Akintaye Avenue Lekki",
+    dropLocation: "48 Shoguyi Crescent, Victoria Island",
+    rider: {
+      name: "Ogbonje Marcus",
+      email: "ogbonjemarc@gmail.com",
+      status: "Completed",
+      profile: riderPic,
+    },
+  },
+];
+export const trackRide = [
+  {
+    name: "Booking Confirmed",
+    address: "25B Jakande Street, Ojota, Lagos",
+    duration: "25min",
+    distance: "10km",
+    time: "03:10pm",
+  },
+  {
+    name: "Trip Started",
+    address: "25B Jakande Street, Ojota, Lagos",
+
+    time: "03:14pm",
+  },
+  {
+    name: "Trip Cancelled",
+    address: "25B Jakande Street, Ojota, Lagos",
+
+    time: "03:15pm",
+  },
+  {
+    name: "Trip Completed",
+    address: "25B Jakande Street, Ojota, Lagos",
+
+    time: "03:55pm",
   },
 ];

@@ -4,11 +4,13 @@ module.exports = {
     "./pages/general/*.{html,js,jsx,tsx}",
     "./pages/general/users/*.{html,js,jsx,tsx}",
     "./pages/flip/orders/*.{html,js,jsx,tsx}",
+    "./pages/cue/drivers/*.{html,js,jsx,tsx}",
     "./pages/*.{html,js,jsx,tsx}",
     "./src/components/*.{html,js,jsx,tsx}",
     "./src/components/ActionMenu/*.{html,js,jsx,tsx}",
     "./src/components/Forms/*.{html,js,jsx,tsx}",
     "./src/components/ModalContent/*.{html,js,jsx,tsx}",
+    "./src/components/BoxComponents/*.{html,js,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -29,6 +31,7 @@ module.exports = {
         grey: "#101828",
         faintWhite: "rgba(255, 255, 255, .2)",
         offWhite: "rgba(239, 237, 255, .6)",
+        text: "#8487A3",
       },
       backgroundImage: "linear-gradient(90deg, #122644 0%, #015FFF 100%)",
     },

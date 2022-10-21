@@ -3,6 +3,7 @@ import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../src/components/Drawer";
 import FilterTable from "../../src/components/filter-table";
+import AddFleet from "../../src/components/Forms/AddFleet";
 import MultipleSelectTable from "../../src/components/multiple-select-table";
 import StatusCell from "../../src/components/StatusCell";
 import {
@@ -73,7 +74,7 @@ const Fleets = () => {
   return (
     <>
       <DrawerCard title="Add Fleets" open={isOpen} toggleDrawer={toggleDrawer}>
-        <div>red</div>
+        <AddFleet />
       </DrawerCard>
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable

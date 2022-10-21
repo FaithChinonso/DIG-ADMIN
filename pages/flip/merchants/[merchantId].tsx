@@ -16,10 +16,10 @@ import { useState } from "react";
 
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import Image from "next/image";
-import SupportingDocuments from "../../../src/components/SupportingDocuments";
-import BankDetails from "../../../src/components/BankDetails";
-import OrderHistory from "../../../src/components/OrderHistory";
-import TransactionHistory from "../../../src/components/TransactionHistory";
+import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
+import BankDetails from "../../../src/components/BoxComponents/BankDetails";
+import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
+import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
 import Profile from "../../../src/components/Profile";
 import ModalAction from "../../../src/components/ModalContent/ModalAction";
 import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 const OneMerchant = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const id = router.query.usersId;
 
   interface TabPanelProps {
@@ -167,7 +168,10 @@ const OneMerchant = () => {
             &#8964;
           </span>
         </button>
-        <button className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center">
+        <button
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+          onClick={() => router.back()}
+        >
           <span style={{ marginRight: "5px", fontSize: "20px" }}>&lt;</span>
           Back to List
         </button>

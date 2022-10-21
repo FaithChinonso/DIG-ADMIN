@@ -10,3 +10,8 @@ export const MySettingsValue = [
   { id: 2, label: "Account Details" },
   { id: 3, label: "Verification" },
 ];
+export const MyDriversValue = [
+  { id: 1, label: "General Info" },
+  { id: 2, label: "Trips" },
+  { id: 3, label: "Tracking" },
+];

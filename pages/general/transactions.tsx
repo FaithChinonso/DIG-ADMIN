@@ -84,8 +84,6 @@ const Transaction = () => {
           columns={columnDasboard}
           data={tableData}
           emptyPlaceHolder="No Transactions yet!"
-          extraButton={{ text: "Add Transaction" }}
-          onClickFunction={toggleDrawer}
         />
       </div>
     </>

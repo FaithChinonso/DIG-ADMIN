@@ -65,4 +65,10 @@ const SignUp = (props: any) => {
     </div>
   );
 };
+SignUp.getInitialProps = async (ctx: any) => {
+  // const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  // const json = await res.json()
+  // return { stars: json.stargazers_count }
+  console.log(ctx);
+};
 export default SignUp;

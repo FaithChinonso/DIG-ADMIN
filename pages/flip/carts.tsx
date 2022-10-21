@@ -80,7 +80,6 @@ const Carts = () => {
           columns={columnDasboard}
           data={tableData}
           emptyPlaceHolder="No carts yet!"
-          onClickFunction={toggleDrawer}
         />
       </div>
     </>
