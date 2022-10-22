@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
 import Trip from "../../../src/components/BoxComponents/Trip";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
+import ActionList from "../../../src/components/ActionList";
 
 const OneDriver = () => {
   const router = useRouter();
@@ -79,14 +80,7 @@ const OneDriver = () => {
   return (
     <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
       <div>
-        <button
-          className="bg-white rounded-2xl text-text text-base py-[18px] px-[21px] my-[20px]"
-          onClick={() => router.back()}
-        >
-          {" "}
-          <span style={{ marginRight: "5px", fontSize: "20px" }}>&lt;</span> All
-          Drivers
-        </button>
+        <ActionList />
         <div className="rounded-[20px] bg-darkPurple w-[435px] p-5">
           <div className="flex justify-between">
             <div className="flex gap-[17px]">

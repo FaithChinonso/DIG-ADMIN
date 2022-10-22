@@ -51,24 +51,6 @@ const Carts = () => {
         <StatusCell status={prop?.value} type="businessService" />
       ),
     },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem name="View Details" />
-
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
-    },
   ];
   return (
     <>

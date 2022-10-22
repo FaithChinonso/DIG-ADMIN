@@ -17,6 +17,10 @@ const AddUser = ({ toggleDrawer }: any) => {
     { id: 1, name: "Female" },
     { id: 2, name: "Male" },
   ];
+  const permission = [
+    { id: 1, name: "Female" },
+    { id: 2, name: "Male" },
+  ];
   const {
     enteredInput: enteredfirstName,
     hasError: firstNameHasError,
@@ -62,6 +66,15 @@ const AddUser = ({ toggleDrawer }: any) => {
     inputIsValid: phoneNumberIsValid,
     updateInputHandler: phoneNumberInputHandler,
     inputBlurHandler: phoneNumberBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
+    enteredInput: enteredPermission,
+    hasError: permissionHasError,
+    reset: permissionReset,
+    errorMessage: permissionError,
+    inputIsValid: permissionIsValid,
+    updateInputHandler: permissionInputHandler,
+    inputBlurHandler: permissionBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   return (
     <form className="w-full h-full flex flex-col">
@@ -164,7 +177,7 @@ const AddUser = ({ toggleDrawer }: any) => {
         />
       </div>
       <div className=" mt-[30px]">
-        <label htmlFor="email" className=" text-[10px] text-[#1D2939] bg-white">
+        <label htmlFor="phone" className=" text-[10px] text-[#1D2939] bg-white">
           Phone Number
         </label>
         <MuiPhoneNumber
@@ -181,6 +194,34 @@ const AddUser = ({ toggleDrawer }: any) => {
           required
         />
       </div>
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="permission"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Phone Number
+        </label>
+
+        <select
+          name="permission"
+          value={enteredPermission}
+          id="permission"
+          onChange={permissionInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder="permission"
+        >
+          {permission?.map((priceType: any) => (
+            <option
+              value={priceType.name}
+              key={priceType.id}
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              {priceType.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <button
         className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
         onClick={(e: any) => {

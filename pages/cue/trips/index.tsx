@@ -1,18 +1,20 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
-import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../src/components/Drawer";
-import FilterTable from "../../src/components/filter-table";
-import MultipleSelectTable from "../../src/components/multiple-select-table";
-import StatusCell from "../../src/components/StatusCell";
+import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
+import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
+import DrawerCard from "../../../src/components/Drawer";
+import FilterTable from "../../../src/components/filter-table";
+import MultipleSelectTable from "../../../src/components/multiple-select-table";
+import StatusCell from "../../../src/components/StatusCell";
 import {
   analytics,
   statusData,
   tableData,
   tableLoad,
-} from "../../src/utils/analytics";
+} from "../../../src/utils/analytics";
 
 const Trips = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -60,7 +62,14 @@ const Trips = () => {
           <ActionMenuBase
             items={
               <>
-                <ActionMenuItem name="View Details" />
+                <ActionMenuItem
+                  name="View More"
+                  onClickFunction={() => {
+                    router.push(
+                      `${location.pathname}/${prop?.row.original?.id}`
+                    );
+                  }}
+                />
 
                 <ActionMenuItem name="Edit Details" />
               </>
@@ -72,16 +81,11 @@ const Trips = () => {
   ];
   return (
     <>
-      <DrawerCard title="Add Trips" open={isOpen} toggleDrawer={toggleDrawer}>
-        <div>red</div>
-      </DrawerCard>
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable
           columns={columnDasboard}
           data={tableData}
           emptyPlaceHolder="No Trips yet!"
-          extraButton={{ text: "Add Trips" }}
-          onClickFunction={toggleDrawer}
         />
       </div>
     </>
