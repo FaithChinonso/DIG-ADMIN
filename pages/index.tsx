@@ -163,23 +163,28 @@ const Home: NextPage = () => {
             <div className="p-[10px] md:p-[30px]  justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 items-center  py-6">
               {analytics.map(item => (
                 <div
-                  className="w-[140px] h-[100px] md:w-[240px] shadow-2xl, rounded-md p-8 text-white flex flex-col justify-around items-center"
+                  className="w-[140px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
                   key={item.id}
                   style={{
-                    backgroundColor: item.color,
-                    background: `linear-gradient(to right, ${item.colorLight}50%, ${item.color})`,
-                    boxShadow: `5px 10px 15px ${item.colorLight}`,
+                    boxShadow: "0px 1px 2px 1px #d7d7d7",
                   }}
                 >
-                  <h3 className="text-base">{item.name}</h3>
+                  <div className="flex flex-col h-full">
+                    <h3 className="text-sm">{item.name}</h3>
 
-                  <div className="text-3xl">
-                    <CountUp
-                      start={0}
-                      end={item.figure}
-                      duration={5}
-                      enableScrollSpy
-                    />
+                    <div className="text-2xl font-extrabold">
+                      ₦
+                      <CountUp
+                        start={0}
+                        end={item.figure}
+                        duration={5}
+                        enableScrollSpy
+                      />
+                    </div>
+                    <h3 className="text-xs">{item.description}</h3>
+                  </div>
+                  <div>
+                    <Image src={item.img} />{" "}
                   </div>
                 </div>
               ))}

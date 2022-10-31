@@ -1,45 +1,48 @@
 import cardImage from "../assets/image/cardImage.jpg";
 import riderPic from "../assets/image/riderPic.svg";
 import documentOne from "../assets/image/documentOne.svg";
+import green from "../assets/image/green.jpeg";
+import orange from "../assets/image/orange.jpeg";
+import blue from "../assets/image/blue.jpeg";
 import documentTwo from "../assets/image/documentTwo.svg";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 
 export const analytics = [
   {
     id: 1,
-    name: "Total Transactions",
+    name: "Total Sales",
     figure: 14233,
-    description: "description",
+    description: "We have sold 14233 items",
     color: "rgba(180, 96, 133, .8)",
     colorLight: "rgba(180, 96, 133, 0.5)",
-    img: cardImage,
+    img: orange,
   },
   {
     id: 2,
-    name: "Total Users",
+    name: "Total Reveue",
     figure: 233,
-    description: "description",
+    description: "Total Revenue is 233",
     color: "rgba(82, 68, 192, 1) ",
     colorLight: "rgba(107, 93, 211, .6)",
-    img: cardImage,
+    img: green,
   },
   {
     id: 3,
-    name: "Total Orders",
+    name: "In Escrow",
     figure: 7899223,
-    description: "description",
+    description: "Available to payout",
     color: "rgba(37, 82, 59, .8)",
     colorLight: "rgba(37, 82, 59, .5)",
-    img: cardImage,
+    img: blue,
   },
   {
     id: 4,
-    name: "Total Trips",
-    figure: 456,
-    description: "description",
+    name: "Total Orders",
+    figure: 1300,
+    description: "Total orders is 1300",
     color: "rgba(225, 220, 88, 1)",
     colorLight: "rgba(225, 220, 88, .7)",
-    img: cardImage,
+    img: green,
   },
 ];
 export const bank = [
