@@ -9,7 +9,7 @@ const ActionList = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   return (
-    <div className="w-full flex items-center justify-end py-5 gap-3">
+    <div className="w-full flex items-center justify-end py-5 gap-3 z-30 relative">
       {" "}
       <button className="text-sm text-lightPurple border-2 border-lightPurple py-3 px-4 rounded-md flex items-center justify-center">
         <ActionMenuBase
@@ -87,4 +87,4 @@ const ActionList = () => {
     </div>
   );
 };
-export default ActionList
+export default ActionList;

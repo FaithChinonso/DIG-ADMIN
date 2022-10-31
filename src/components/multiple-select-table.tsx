@@ -232,6 +232,7 @@ const MultipleSelectTable = ({
                               fontSize: "12px",
                               lineHeight: "18px",
                               color: "#4C4E52",
+                              textAlign: "center",
                             }}
                             className=""
                           >

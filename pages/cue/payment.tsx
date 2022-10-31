@@ -13,6 +13,7 @@ import {
   statusData,
   tableData,
   tableLoad,
+  request,
 } from "../../src/utils/analytics";
 
 const Payments = () => {
@@ -23,38 +24,22 @@ const Payments = () => {
   };
   const columnDasboard = [
     {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
+      Header: "Withdrawal ID",
+      accessor: "withdrawalId",
     },
     {
-      Header: "Business Name",
-      accessor: "businessName",
+      Header: "Merchant",
+      accessor: "merchant",
     },
     {
-      Header: "Contact Person",
-      accessor: "contactPerson",
+      Header: "Amount Requested",
+      accessor: "amountRequested",
     },
     {
-      Header: "Email",
-      accessor: "email",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "number",
+      Header: "Purpose",
+      accessor: "purpose",
     },
 
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
-    },
     {
       Header: "Action",
       accessor: "action",
@@ -119,7 +104,7 @@ const Payments = () => {
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable
           columns={columnDasboard}
-          data={tableData}
+          data={request}
           emptyPlaceHolder="No paymentss yet!"
           extraButton={{ text: "Add Payments" }}
           onClickFunction={toggleDrawer}

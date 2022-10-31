@@ -82,15 +82,17 @@ const Setting = () => {
                 style={{
                   backgroundColor:
                     selected === value.id
-                      ? "rgba(75,0,129, .2)"
+                      ? "rgba(107, 93, 211, 1)"
                       : "transparent",
+
                   fontFamily: "Steradian",
                   fontStyle: "normal",
                   fontWeight: "normal",
                   fontSize: "14px",
                   lineHeight: "136.52%",
+                  outline: "none",
                   textAlign: "center",
-                  color: "#979797",
+                  color: selected === value.id ? "white" : "#979797",
                   textTransform: "capitalize",
                 }}
                 onClick={() => {

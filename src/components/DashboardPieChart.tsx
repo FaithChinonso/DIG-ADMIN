@@ -101,7 +101,7 @@ const DashboardPieChart = () => {
           cy="50%"
           innerRadius={60}
           outerRadius={80}
-          fill="rgba(54,1,63, .4)"
+          fill="rgba(107, 93, 211, 0.4)"
           dataKey="value"
           onMouseEnter={onPieEnter}
         />

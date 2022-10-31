@@ -19,8 +19,8 @@ export const analytics = [
     name: "Total Users",
     figure: 233,
     description: "description",
-    color: "rgba(54,1,63, .8)",
-    colorLight: "rgba(54,1,63, .5)",
+    color: "rgba(82, 68, 192, 1) ",
+    colorLight: "rgba(107, 93, 211, .6)",
     img: cardImage,
   },
   {
@@ -505,36 +505,6 @@ export const tableLoad = [
   { region: "Megha", amount: 19 },
   { region: "Subham", amount: 25 },
 ];
-export const driver = [
-  {
-    id: "1873663",
-    dateJoined: "2022-09-012T13:53:50.494Z",
-    driverName: "Thomas Eze",
-    emailAddress: "thomas@gmail.com",
-    accountStatus: "Unverified",
-    tripStatus: "Inactive",
-    gender: "Male",
-  },
-  {
-    id: "187363",
-    dateJoined: "2022-09-012T13:53:50.494Z",
-    driverName: "Thomas Eze",
-    emailAddress: "thomas@gmail.com",
-    accountStatus: "Unverified",
-    tripStatus: "Inactive",
-    gender: "Male",
-  },
-  {
-    id: "187366",
-    dateJoined: "2022-09-012T13:53:50.494Z",
-    driverName: "Thomas Eze",
-    emailAddress: "thomas@gmail.com",
-    accountStatus: "Unverified",
-    tripStatus: "Inactive",
-    gender: "Male",
-  },
-];
-
 export const supportingDocument = [
   {
     id: "1",
@@ -614,5 +584,54 @@ export const trackRide = [
     address: "25B Jakande Street, Ojota, Lagos",
 
     time: "03:55pm",
+  },
+];
+export const driver = [
+  {
+    id: "1873663",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+  {
+    id: "187363",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+  {
+    id: "187366",
+    dateJoined: "2022-09-012T13:53:50.494Z",
+    driverName: "Thomas Eze",
+    emailAddress: "thomas@gmail.com",
+    accountStatus: "Unverified",
+    tripStatus: "Inactive",
+    gender: "Male",
+  },
+];
+export const request = [
+  {
+    withdrawalId: "1873663",
+    merchant: "Thomas Eze",
+    purpose: "Unverified",
+    amountRequested: "30000",
+  },
+  {
+    withdrawalId: "1366377",
+    merchant: "Bimbo Ade",
+    purpose: "Unverified",
+    amountRequested: "26000",
+  },
+  {
+    withdrawalId: "7893663",
+    merchant: "Hassan Abdullahi",
+    purpose: "Unverified",
+    amountRequested: "4000",
   },
 ];

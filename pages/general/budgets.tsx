@@ -64,7 +64,7 @@ const Budgets = () => {
     },
   ];
   return (
-    <div w-full>
+    <div className=" p-[10px] md:p-[30px]">
       {" "}
       <FilterTable columns={columnDasboard} data={tableData} />
     </div>

@@ -17,8 +17,8 @@ const SideNav = () => {
   const [selected, setSelected] = useState("");
   const [showNav, setShowNav] = useState("");
   return (
-    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-lightPurple z-30">
-      <div className="bg-darkPurple w-[70px] rounded-r-3xl py-10 flex flex-col items-center">
+    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-darkPurple z-30">
+      <div className="bg-lightPurple w-[70px] rounded-r-3xl py-10 flex flex-col items-center">
         <div>LOGO</div>
         <ul className="mt-[70px] flex flex-col gap-5">
           {innerNav.map((item: any) => (
