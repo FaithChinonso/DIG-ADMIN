@@ -59,8 +59,8 @@ const DashboardChart = ({ month, transaction }: ChartType) => {
           type="monotone"
           dataKey="outflow"
           stackId="1"
-          stroke="#36013F"
-          fill="#9873AC"
+          stroke="rgba(107, 93, 211, 0.4)"
+          fill="rgba(107, 93, 211, 0.4)"
           activeDot={{ r: 8 }}
           strokeWidth={1.5}
           dot={false}
@@ -69,8 +69,8 @@ const DashboardChart = ({ month, transaction }: ChartType) => {
           type="monotone"
           dataKey="inflow"
           stackId="1"
-          stroke="rgba(37, 82, 59, .9)"
-          fill="rgba(37, 82, 59, .4)"
+          stroke="rgba(107, 93, 211, 1)"
+          fill="rgba(107, 93, 211, 0.4))"
           activeDot={{ r: 8 }}
           strokeWidth={1.5}
           style={{ fontFamily: "Steradian !important" }}
