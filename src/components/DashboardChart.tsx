@@ -45,6 +45,7 @@ const DashboardChart = ({ month, transaction }: ChartType) => {
         <CartesianGrid strokeDasharray="0 100" />
         <XAxis
           dataKey="date"
+          type="number"
           padding={{ left: 40, right: 30 }}
           tick={false}
           label={{ value: month.toUpperCase() }}
@@ -52,7 +53,7 @@ const DashboardChart = ({ month, transaction }: ChartType) => {
         {filterTransactions?.length > 1 ? (
           <YAxis domain={[0, mode]} />
         ) : (
-          <YAxis domain={[0, 2000]} />
+          <YAxis />
         )}
         <Legend />
         <Area

@@ -1,22 +1,36 @@
 import useInput from "../../Hooks/use-input";
-import MuiPhoneNumber from "material-ui-phone-number";
-import { OutlinedInput } from "@material-ui/core";
-import UploadInputButtons from "../UploadInputButtons";
+
 import userPic from "../../assets/image/userPic.svg";
 import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
-import { useDispatch } from "react-redux";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
-import { NumericFormat } from "react-number-format";
+import { useDispatch, useSelector } from "react-redux";
 
-const CreateProduct = ({ toggleDrawer }: any) => {
+import { NumericFormat } from "react-number-format";
+import { useEffect, useState } from "react";
+import useHTTPPost from "src/Hooks/use-httppost";
+
+const CreateProduct = ({ merchantId }: any) => {
+  const request = useHTTPPost();
+  const { productCategory } = useSelector((state: any) => state.data);
+
   const dispatch = useDispatch();
+  const [formisValid, setFormIsValid] = useState(false);
+  const [formisTouched, setFormIsTouched] = useState(false);
   const isNotEmpty = (value: string) => value.trim() !== "";
   const isEmail = (value: any) =>
     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
   const productQuantity = [
     { id: 1, name: "Female" },
     { id: 2, name: "Male" },
+  ];
+
+  const delivery = [
+    { id: 1, name: "Yes" },
+    { id: 2, name: "No" },
+  ];
+  const role = [
+    { id: 1, name: "consumer" },
+    { id: 2, name: "merchant" },
   ];
   const {
     enteredInput: enteredProductName,
@@ -28,13 +42,13 @@ const CreateProduct = ({ toggleDrawer }: any) => {
     inputBlurHandler: productNameBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
-    enteredInput: enteredProductId,
-    hasError: productIdHasError,
-    reset: productIdReset,
-    errorMessage: productIdError,
-    inputIsValid: productIdIsValid,
-    updateInputHandler: productIdInputHandler,
-    inputBlurHandler: productIdBlurHandler,
+    enteredInput: enteredbrand,
+    hasError: brandHasError,
+    reset: brandReset,
+    errorMessage: brandError,
+    inputIsValid: brandIsValid,
+    updateInputHandler: brandInputHandler,
+    inputBlurHandler: brandBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
     enteredInput: enteredProductQuantity,
@@ -44,6 +58,24 @@ const CreateProduct = ({ toggleDrawer }: any) => {
     inputIsValid: productQuantityIsValid,
     updateInputHandler: productQuantityInputHandler,
     inputBlurHandler: productQuantityBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
+    enteredInput: enteredCategory,
+    hasError: categoryHasError,
+    reset: categoryReset,
+    errorMessage: categoryError,
+    inputIsValid: categoryIsValid,
+    updateInputHandler: categoryInputHandler,
+    inputBlurHandler: categoryBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
+    enteredInput: enteredProductWarranty,
+    hasError: productWarrantyHasError,
+    reset: productWarrantyReset,
+    errorMessage: productWarrantyError,
+    inputIsValid: productWarrantyIsValid,
+    updateInputHandler: productWarrantyInputHandler,
+    inputBlurHandler: productWarrantyBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
     enteredInput: enteredProductWeight,
@@ -64,6 +96,24 @@ const CreateProduct = ({ toggleDrawer }: any) => {
     inputBlurHandler: deliveryTagBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
+    enteredInput: enteredDiscountPercentage,
+    hasError: discountPercentageHasError,
+    reset: discountPercentageReset,
+    errorMessage: discountPercentageError,
+    inputIsValid: discountPercentageIsValid,
+    updateInputHandler: discountPercentageInputHandler,
+    inputBlurHandler: discountPercentageBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
+    enteredInput: enteredDiscount,
+    hasError: discountHasError,
+    reset: discountReset,
+    errorMessage: discountError,
+    inputIsValid: discountIsValid,
+    updateInputHandler: discountInputHandler,
+    inputBlurHandler: discountBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
     enteredInput: enteredPrice,
     hasError: priceHasError,
     reset: priceReset,
@@ -73,19 +123,78 @@ const CreateProduct = ({ toggleDrawer }: any) => {
     inputBlurHandler: priceBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
-    enteredInput: enteredStatus,
-    hasError: statusHasError,
-    reset: statusReset,
-    errorMessage: statusError,
-    inputIsValid: statusIsValid,
-    updateInputHandler: statusInputHandler,
-    inputBlurHandler: statusBlurHandler,
+    enteredInput: enteredDeliveryFee,
+    hasError: deliveryFeeHasError,
+    reset: deliveryFeeReset,
+    errorMessage: deliveryFeeError,
+    inputIsValid: deliveryFeeIsValid,
+    updateInputHandler: deliveryFeeInputHandler,
+    inputBlurHandler: deliveryFeeBlurHandler,
+  } = useInput(isNotEmpty, "This field cannot be empty");
+  const {
+    enteredInput: enteredDescription,
+    hasError: descriptionHasError,
+    reset: descriptionReset,
+    errorMessage: descriptionError,
+    inputIsValid: descriptionIsValid,
+    updateInputHandler: descriptionInputHandler,
+    inputBlurHandler: descriptionBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
 
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+    setFormIsTouched(true);
+
+    const payload = {
+      name: enteredProductName,
+      brand: enteredbrand,
+      price: enteredPrice,
+      description: enteredDescription,
+      quantity: enteredProductQuantity,
+      free_delivery: enteredDeliveryTag,
+      shiping_fee: enteredDeliveryFee,
+      category_id: "",
+      product_waranty: enteredProductWarranty,
+      discount_available: enteredDiscount,
+      discount_percentage: enteredDiscountPercentage,
+      weight: enteredProductWeight,
+    };
+    console.log(payload);
+
+    if (
+      productNameIsValid &&
+      brandIsValid &&
+      priceIsValid &&
+      deliveryFeeIsValid &&
+      deliveryTagIsValid &&
+      descriptionIsValid &&
+      productQuantityIsValid &&
+      productWarrantyIsValid &&
+      discountIsValid &&
+      discountPercentageIsValid &&
+      productWeightIsValid
+    ) {
+      setFormIsValid(true);
+
+      dispatch(uiActions.openLoader(true));
+      const dataFunction = (res: any) => {
+        console.log(res);
+      };
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      const url = `https://backendapi.flip.onl/api/admin/product/create-product/${merchantId}`;
+      request({ url, values: payload, accessToken }, dataFunction);
+    } else {
+      setFormIsValid(false);
+      return;
+    }
+  };
+
+  useEffect(() => {}, []);
   return (
     <form className="w-full h-full flex flex-col">
       <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-        <Image src={userPic} />
+        <Image src={userPic} alt={""} />
         <input
           type="file"
           name="resume"
@@ -113,24 +222,23 @@ const CreateProduct = ({ toggleDrawer }: any) => {
           placeholder="Product Name "
         />
       </div>
+      <div className="text-red-400 text-[10px]">{productNameError}</div>
       <div className="mt-[10px]">
-        <label
-          htmlFor="lastName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product ID
+        <label htmlFor="brand" className=" text-[10px] text-[#1D2939] bg-white">
+          Brand
         </label>
         <input
           type="text"
-          name="lastName"
-          value={enteredProductId}
-          id="productId"
-          onBlur={productIdBlurHandler}
-          onChange={productIdInputHandler}
+          name="brand"
+          value={enteredbrand}
+          id="brand"
+          onBlur={brandBlurHandler}
+          onChange={brandInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product ID"
+          placeholder="Brand"
         />
       </div>
+      <div className="text-red-400 text-[10px]">{brandError}</div>
       <div className=" mt-[10px]">
         <label
           htmlFor="productQuantity"
@@ -141,7 +249,7 @@ const CreateProduct = ({ toggleDrawer }: any) => {
 
         <input
           type="text"
-          name="lastName"
+          name="quantity"
           value={enteredProductQuantity}
           id="productQuantity"
           onBlur={productQuantityBlurHandler}
@@ -150,6 +258,26 @@ const CreateProduct = ({ toggleDrawer }: any) => {
           placeholder="Product Quatity"
         />
       </div>
+      <div className="text-red-400 text-[10px]">{productQuantityError}</div>
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="productWarranty"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Product Warranty
+        </label>
+        <input
+          type="text"
+          name="productWarranty"
+          value={enteredProductWarranty}
+          id="productWarranty"
+          onBlur={productWarrantyBlurHandler}
+          onChange={productWarrantyInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder="Product Warranty"
+        />
+      </div>
+      <div className="text-red-400 text-[10px] ">{productWarrantyError}</div>
       <div className=" mt-[30px]">
         <label
           htmlFor="productWeight"
@@ -159,39 +287,97 @@ const CreateProduct = ({ toggleDrawer }: any) => {
         </label>
         <input
           type="text"
-          name="productWeight"
+          name="productweight"
           value={enteredProductWeight}
-          id="productWeight"
+          id="productweight"
           onBlur={productWeightBlurHandler}
           onChange={productWeightInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Weight"
+          placeholder="Product weight"
         />
       </div>
+      <div className="text-red-400 text-[10px] ">{productWeightError}</div>
       <div className=" mt-[30px]">
         <label
-          htmlFor="deliveryTag"
+          htmlFor="category"
           className=" text-[10px] text-[#1D2939] bg-white"
         >
-          Delivery Tag
+          Category
+        </label>
+
+        <select
+          name="category"
+          value={enteredCategory}
+          id="category"
+          onChange={categoryInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder="Category"
+        >
+          {productCategory?.map((item: any) => (
+            <option
+              value={item.id}
+              key={item.id}
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="text-red-400 text-[10px] ">{categoryError}</div>
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="discount"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Discount Available
+        </label>
+
+        <select
+          name="discount"
+          value={enteredDiscount}
+          id="discount"
+          onChange={discountInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder="discount"
+        >
+          {delivery?.map((item: any) => (
+            <option
+              value={item.id}
+              key={item.id}
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="text-red-400 text-[10px] ">{discountError}</div>
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="discountPercentage"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Discount Percentege
         </label>
         <input
-          type="text"
+          type="number"
           name="deliveryTag"
-          value={enteredDeliveryTag}
-          id="deliveryTag"
-          onBlur={deliveryTagBlurHandler}
-          onChange={deliveryTagInputHandler}
+          value={enteredDiscountPercentage}
+          id="discountPercentage"
+          onBlur={discountPercentageBlurHandler}
+          onChange={discountPercentageInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Delivery Tag"
+          placeholder="Discount Percentege"
         />
       </div>
+      <div className="text-red-400 text-[10px] ">{discountPercentageError}</div>
+
       <div className=" mt-[30px]">
-        <label
-          htmlFor="deliveryTag"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Delivery Tag
+        <label htmlFor="price" className=" text-[10px] text-[#1D2939] bg-white">
+          Price
         </label>
         <NumericFormat
           name="enteredPrice"
@@ -200,6 +386,7 @@ const CreateProduct = ({ toggleDrawer }: any) => {
           thousandSeparator={true}
           required
           prefix={"₦"}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
           onValueChange={(values: any, sourceInfo: any) => {
             const { formattedValue, value } = values;
             const { event, source } = sourceInfo;
@@ -207,45 +394,79 @@ const CreateProduct = ({ toggleDrawer }: any) => {
           }}
         />
       </div>
+      <div className="text-red-400 text-[10px] ">{priceError}</div>
+
+      <div className=" mt-[30px]">
+        <label htmlFor="role" className=" text-[10px] text-[#1D2939] bg-white">
+          Delivery Tag
+        </label>
+
+        <select
+          name="delivery"
+          value={enteredDeliveryTag}
+          id="delivery"
+          onChange={deliveryTagInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder="Delivery Tag"
+        >
+          {delivery?.map((item: any) => (
+            <option
+              value={item.name}
+              key={item.id}
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="text-red-400 text-[10px]">{deliveryTagError}</div>
+
       <div className=" mt-[30px]">
         <label
-          htmlFor="listingStatus"
+          htmlFor="deliveryFee"
           className=" text-[10px] text-[#1D2939] bg-white"
         >
-          Status
+          Delivery Fee
+        </label>
+        <NumericFormat
+          name="enteredDeliveryFee"
+          value={enteredDeliveryFee || ""}
+          allowNegative={false}
+          thousandSeparator={true}
+          required
+          prefix={"₦"}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          onValueChange={(values: any, sourceInfo: any) => {
+            const { formattedValue, value } = values;
+            const { event, source } = sourceInfo;
+            deliveryFeeInputHandler(value);
+          }}
+        />
+      </div>
+      <div className="text-red-400 text-[10px]">{deliveryFeeError}</div>
+
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="description"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Description
         </label>
         <input
           type="text"
           name="status"
-          value={enteredStatus}
+          value={enteredDescription}
           id="status"
-          onBlur={statusBlurHandler}
-          onChange={statusInputHandler}
+          onBlur={descriptionBlurHandler}
+          onChange={descriptionInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Listing Status"
+          placeholder="Description"
         />
       </div>
-      <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
-        onClick={(e: any) => {
-          e.preventDefault();
-          toggleDrawer();
-          dispatch(
-            uiActions.openModalAndSetContent({
-              modalStyles: {
-                padding: 0,
-              },
-              modalContent: (
-                <SuccessfulModal
-                  title="User Added Sucessfully"
-                  message="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris commodo orci nisi pulvinar eu massa proin sed. "
-                />
-                // <div>i am here now </div>
-              ),
-            })
-          );
-        }}
-      >
+      <div className="text-red-400 text-[10px]">{descriptionError}</div>
+
+      <button className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4">
         Create Product
       </button>
     </form>

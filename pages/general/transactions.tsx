@@ -1,10 +1,11 @@
 import { useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../src/components/Drawer";
 import FilterTable from "../../src/components/filter-table";
 import MultipleSelectTable from "../../src/components/multiple-select-table";
-import StatusCell from "../../src/components/StatusCell";
+
 import {
   analytics,
   statusData,
@@ -47,9 +48,6 @@ const Transaction = () => {
     {
       Header: "Status",
       accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
     },
     {
       Header: "Action",
@@ -71,7 +69,7 @@ const Transaction = () => {
     },
   ];
   return (
-    <>
+    <ParentContainer>
       <DrawerCard
         title="Add Transaction"
         open={isOpen}
@@ -86,7 +84,7 @@ const Transaction = () => {
           emptyPlaceHolder="No Transactions yet!"
         />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Transaction;

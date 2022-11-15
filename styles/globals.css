@@ -7,6 +7,11 @@
   font-family: ClashDisplayBold;
   src: url("../src/assets/fonts/ClashDisplay/ClashDisplay-Bold.otf");
 }
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
 html,
 body {
   padding: 0;
@@ -24,8 +29,3 @@ a {
   box-sizing: border-box;
   font-family: ClashDisplay;
 }
-@import "tailwindcss/base";
-
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";

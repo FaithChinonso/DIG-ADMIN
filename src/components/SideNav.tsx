@@ -1,21 +1,27 @@
-import InnerNav from "./InnerNav";
-import OuterNav from "./OuterNav";
 import { innerNav, outerNav, bottomNav } from "../utils/analytics";
-import { useState } from "react";
-import WidgetsIcon from "@mui/icons-material/Widgets";
+import { useEffect, useState } from "react";
+
 import { useDispatch } from "react-redux";
-import { dataActions } from "../redux/store/data-slice";
+
 import Image from "next/image";
 import profile from "../assets/image/profile.svg";
 import Link from "next/link";
-import Dashboard from "../../pages/general";
+
+import { addPage, addSection } from "src/redux/store/data-slice";
 
 const SideNav = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState("first");
-  const [selectedValue, setSelectedValue] = useState("DASHBOARD");
   const [selected, setSelected] = useState("");
-  const [showNav, setShowNav] = useState("");
+  const setPage = (value: any, name: any) => {
+    () => {
+      setValue(value);
+      dispatch(addPage(name));
+      dispatch(addSection(""));
+    };
+  };
+
+  useEffect(() => {}, [value]);
   return (
     <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-darkPurple z-30">
       <div className="bg-lightPurple w-[70px] rounded-r-3xl py-10 flex flex-col items-center">
@@ -28,11 +34,7 @@ const SideNav = () => {
             >
               <div
                 className="px-4"
-                onClick={() => {
-                  setValue(item.value);
-                  dispatch(dataActions.addPage(item.name));
-                  dispatch(dataActions.addSection("Dashboard"));
-                }}
+                onClick={() => setPage(item.value, item.name)}
                 style={{
                   borderLeft: value === item.value ? "3px solid white" : "none",
                 }}
@@ -47,7 +49,7 @@ const SideNav = () => {
                     backgroundColor: item.color,
                   }}
                 >
-                  <Link href={item.route}>
+                  <Link href={item.route} legacyBehavior>
                     <a> {item.initials}</a>
                   </Link>
                 </li>
@@ -68,10 +70,10 @@ const SideNav = () => {
                       key={nav.id}
                       onClick={() => {
                         setSelected(nav.name);
-                        dispatch(dataActions.addSection(nav.name));
+                        dispatch(addSection(nav.name));
                       }}
                     >
-                      <Link href={nav.route}>
+                      <Link href={nav.route} legacyBehavior>
                         <a> {nav.name}</a>
                       </Link>
                     </li>
@@ -85,7 +87,7 @@ const SideNav = () => {
       <div className="hidden md:block relative w-full px-6 mt-8">
         <div className="bg-faintWhite flex items-center gap-3 rounded p-3">
           <div className="w-8 h-8 rounded-[50%]">
-            <Image src={profile} />
+            <Image src={profile} alt={""} />
           </div>
 
           <div>
@@ -111,10 +113,10 @@ const SideNav = () => {
                 key={item.id}
                 onClick={() => {
                   setSelected(item.name);
-                  dispatch(dataActions.addSection(item.name));
+                  dispatch(addSection(item.name));
                 }}
               >
-                <Link href={item.route}>
+                <Link href={item.route} legacyBehavior>
                   <a> {item.name}</a>
                 </Link>
               </li>

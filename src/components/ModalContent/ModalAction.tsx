@@ -4,11 +4,11 @@ import sucessPic from "../../assets/image/sucessPic.svg";
 import Image from "next/image";
 import SuccessfulModal from "./SuccessfulModal";
 
-const ModalAction = ({ action, item }: any) => {
+const ModalAction = ({ action, item, actionFunction }: any) => {
   const dispatch = useDispatch();
   return (
     <div className="py-6 rounded-3xl shadow-tableShadow">
-      <Image src={sucessPic} />
+      <Image src={sucessPic} alt={""} />
       <div className="text-lightDark  text-lg">Confirmation</div>
       <div className="text-lg text-lightDark p-8">
         Are you sure you want to
@@ -18,28 +18,14 @@ const ModalAction = ({ action, item }: any) => {
       <div className="flex items-center gap-5 p-8">
         <div
           className="text-sm text-darkPurple border border-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto cursor-pointer"
-          onClick={() => dispatch(uiActions.closeModal())}
+          onClick={() => dispatch(uiActions.closeModal(false))}
         >
           Cancel
         </div>
         <div
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto cursor-pointer"
           onClick={() => {
-            dispatch(
-              uiActions.openModalAndSetContent({
-                modalStyles: {
-                  padding: 0,
-                },
-                modalContent: (
-                  <>
-                    <SuccessfulModal
-                      title="Successfull"
-                      actionMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris commodo orci nisi pulvinar eu massa proin sed. "
-                    />
-                  </>
-                ),
-              })
-            );
+            actionFunction();
           }}
         >
           Confirm

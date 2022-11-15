@@ -15,32 +15,33 @@ const Trip = () => {
         <div className="shadow-tableShadow w-full p-[20px]">
           <div className="flex justify-between items-start mb-5">
             <div>
-              <h1 className="text-text text-[10px] mt-[10px]">Distance</h1>
-              <h5 className="text-grey text-[20px]">{item.distance}</h5>
+              <div className="text-text text-[10px] mt-[10px]">Distance</div>
+              <div className="text-grey text-[20px]">{item.distance}</div>
             </div>
             <div className="flex flex-col gap-1">
-              <Image src={point} />
-              <Image src={line} />
+              <Image src={point} alt={""} />
+              <Image src={line} alt={""} />
               <Image
                 src={item.rider.status === "In transit" ? progress : finish}
+                alt={""}
               />
             </div>
             <div>
               <div>
-                <h1 className="text-text text-[10px] mt-[10px]">
+                <div className="text-text text-[10px] mt-[10px]">
                   Pickup Location
-                </h1>
+                </div>
                 <div className="text-grey text-xs">{item.pickupLocation} </div>
               </div>
               <div>
-                <h1 className="text-text text-[10px] mt-[10px]">Drop-Off</h1>
+                <div className="text-text text-[10px] mt-[10px]">Drop-Off</div>
                 <div className="text-grey text-xs">{item.dropLocation} </div>
               </div>
             </div>
           </div>
           <div className="flex justify-between">
             <div className="flex gap-2">
-              <Image src={item.rider.profile} />
+              <Image src={item.rider.profile} alt={""} />
               <div className="flex flex-col gap-2">
                 <div className="text-grey text-xs">{item.rider.name} </div>
                 <div className="text-text text-[10px] ">
@@ -61,6 +62,7 @@ const Trip = () => {
             <div>
               <Image
                 src={item.rider.status === "In transit" ? transit : complete}
+                alt={""}
               />
             </div>
           </div>

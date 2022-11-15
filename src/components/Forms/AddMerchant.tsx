@@ -1,7 +1,6 @@
 import useInput from "../../Hooks/use-input";
 import MuiPhoneNumber from "material-ui-phone-number";
-import { OutlinedInput } from "@material-ui/core";
-import UploadInputButtons from "../UploadInputButtons";
+
 import userPic from "../../assets/image/userPic.svg";
 import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";

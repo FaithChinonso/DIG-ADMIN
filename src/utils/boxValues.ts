@@ -15,3 +15,7 @@ export const MyDriversValue = [
   { id: 2, label: "Trips" },
   { id: 3, label: "Tracking" },
 ];
+export const MyProductValue = [
+  { id: 1, label: "ProductCategory" },
+  { id: 2, label: "Product" },
+];

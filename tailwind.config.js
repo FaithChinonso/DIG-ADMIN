@@ -14,6 +14,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      zIndex: {
+        100: "1000s0",
+      },
       boxShadow: {
         "2xl": "3px 5px 15px rgba(0, 0, 0, 0.12)",
         "3xl": "3px 15px 15px rgba(0, 0, 0, 0.12)",

@@ -16,7 +16,8 @@ import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
 import Trip from "../../../src/components/BoxComponents/Trip";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
 import ActionList from "../../../src/components/ActionList";
-import maps from "../../../src/assets/image/maps.png";
+import maps from "src/assets/image/maps.png";
+import ParentContainer from "src/components/ParentContainer";
 
 const OneDriver = () => {
   const router = useRouter();
@@ -79,116 +80,120 @@ const OneDriver = () => {
   };
 
   return (
-    <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
-      <div className="absolute top-0 left-0 w-full h-full -z-10">
-        <Image src={maps} className="object-cover w-full h-full" />
-      </div>
-      <div>
-        <button
-          className="text-base text-text bg-white mb-4 py-[18px] px-[21px] rounded-2xl flex items-center justify-center "
-          onClick={() => router.back()}
-        >
-          <span style={{ marginRight: "5px", fontSize: "20px" }}>&lt;</span>
-          All Drivers
-        </button>
-        <div className="rounded-[20px] bg-darkPurple w-[435px] p-5">
-          <div className="flex justify-between">
-            <div className="flex gap-[17px]">
-              <div>
-                <Image src={driverPic} />
+    <ParentContainer>
+      <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
+        <div className="absolute top-0 left-0 w-full h-full -z-10">
+          <Image src={maps} className="object-cover w-full h-full" alt={""} />
+        </div>
+        <div>
+          <button
+            className="text-base text-text bg-white mb-4 py-[18px] px-[21px] rounded-2xl flex items-center justify-center "
+            onClick={() => router.back()}
+          >
+            <span style={{ marginRight: "5px", fontSize: "20px" }}>&lt;</span>
+            All Drivers
+          </button>
+          <div className="rounded-[20px] bg-darkPurple w-[435px] p-5">
+            <div className="flex justify-between">
+              <div className="flex gap-[17px]">
+                <div>
+                  <Image src={driverPic} alt={""} />
+                </div>
+                <div className="flex flex-col">
+                  <div className="text-lg text-white">Joseph Ike</div>
+                  <div className="text-textD text-xs">
+                    <span className="w-1 h-1 rounded-[50%] bg-white mr-1"></span>
+                    Inactive
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <h3 className="text-lg text-white">Joseph Ike</h3>
-                <div className="text-textD text-xs">
-                  <span className="w-1 h-1 rounded-[50%] bg-white mr-1"></span>
-                  Inactive
+              <div className="flex gap-[17px]">
+                <div>
+                  <Image src={message} alt={""} />
+                </div>
+                <div>
+                  <Image src={call} alt={""} />
                 </div>
               </div>
             </div>
-            <div className="flex gap-[17px]">
-              <div>
-                <Image src={message} />
+            <div className="flex justify-between mt-[37px]">
+              <div className="flex flex-col gap-3">
+                <div className="text-textD text-[10px]">Vehicle Type</div>
+                <div className="text-white text-xs">HatchBack</div>
               </div>
-              <div>
-                <Image src={call} />
+              <div className="flex flex-col gap-3">
+                <div className="text-textD text-[10px]">Vehicle (Model)</div>
+                <div className="text-white text-xs">Honda (Accord)</div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="text-textD text-[10px]">Vehicle Color</div>
+                <div className="text-white text-xs">Red</div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="text-textD text-[10px]">
+                  Vehicle Plate Number
+                </div>
+                <div className="text-white text-xs">FKJ-254XA</div>
               </div>
             </div>
           </div>
-          <div className="flex justify-between mt-[37px]">
-            <div className="flex flex-col gap-3">
-              <h5 className="text-textD text-[10px]">Vehicle Type</h5>
-              <p className="text-white text-xs">HatchBack</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <h5 className="text-textD text-[10px]">Vehicle (Model)</h5>
-              <p className="text-white text-xs">Honda (Accord)</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <h5 className="text-textD text-[10px]">Vehicle Color</h5>
-              <p className="text-white text-xs">Red</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <h5 className="text-textD text-[10px]">Vehicle Plate Number</h5>
-              <p className="text-white text-xs">FKJ-254XA</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-[20px] bg-white w-[435px] p-5 mt-[23px]">
-          <Box
-            sx={{ width: "100%" }}
-            style={{
-              background: "white",
-              height: "100vh",
-              maxWidth: "100vw",
-              overflow: "auto",
-            }}
-          >
-            <Box sx={{ borderBottom: 1, borderColor: "rgba(75,0,129, .2)" }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-                style={{ background: "white" }}
-                // classes={{ flexContainer: classes.flexContainer }}
-              >
-                {MyDriversValue.map(value => (
-                  <Tab
-                    label={value.label}
-                    {...a11yProps(value.id)}
-                    style={{
-                      backgroundColor:
-                        selected === value.id
-                          ? "rgba(107, 93, 211, 1)"
-                          : "transparent",
-                      fontFamily: "Steradian",
-                      fontStyle: "normal",
-                      fontWeight: "normal",
-                      fontSize: "14px",
-                      lineHeight: "136.52%",
-                      textAlign: "center",
-                      color: selected === value.id ? "white" : "#979797",
-                      textTransform: "capitalize",
-                    }}
-                    onClick={() => {
-                      setSelected(value.id);
-                    }}
-                  />
-                ))}
-              </Tabs>
+          <div className="rounded-[20px] bg-white w-[435px] p-5 mt-[23px]">
+            <Box
+              sx={{ width: "100%" }}
+              style={{
+                background: "white",
+                height: "100vh",
+                maxWidth: "100vw",
+                overflow: "auto",
+              }}
+            >
+              <Box sx={{ borderBottom: 1, borderColor: "rgba(75,0,129, .2)" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                  style={{ background: "white" }}
+                  // classes={{ flexContainer: classes.flexContainer }}
+                >
+                  {MyDriversValue.map(value => (
+                    <Tab
+                      label={value.label}
+                      {...a11yProps(value.id)}
+                      style={{
+                        backgroundColor:
+                          selected === value.id
+                            ? "rgba(107, 93, 211, 1)"
+                            : "transparent",
+                        fontFamily: "Steradian",
+                        fontStyle: "normal",
+                        fontWeight: "normal",
+                        fontSize: "14px",
+                        lineHeight: "136.52%",
+                        textAlign: "center",
+                        color: selected === value.id ? "white" : "#979797",
+                        textTransform: "capitalize",
+                      }}
+                      onClick={() => {
+                        setSelected(value.id);
+                      }}
+                    />
+                  ))}
+                </Tabs>
+              </Box>
+              <TabPanel value={value} index={0}>
+                <GeneralInfo />
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                <Trip />
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                <TrackRide />
+              </TabPanel>
             </Box>
-            <TabPanel value={value} index={0}>
-              <GeneralInfo />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <Trip />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <TrackRide />
-            </TabPanel>
-          </Box>
+          </div>
         </div>
       </div>
-    </div>
+    </ParentContainer>
   );
 };
 export default OneDriver;

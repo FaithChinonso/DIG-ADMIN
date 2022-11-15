@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../src/components/Drawer";
 import FilterTable from "../../src/components/filter-table";
 import ModalAction from "../../src/components/ModalContent/ModalAction";
 import MultipleSelectTable from "../../src/components/multiple-select-table";
-import StatusCell from "../../src/components/StatusCell";
 import { uiActions } from "../../src/redux/store/ui-slice";
 import {
   analytics,
@@ -93,7 +93,7 @@ const Payments = () => {
     },
   ];
   return (
-    <>
+    <ParentContainer>
       <DrawerCard
         title="Add Payments"
         open={isOpen}
@@ -110,7 +110,7 @@ const Payments = () => {
           onClickFunction={toggleDrawer}
         />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Payments;

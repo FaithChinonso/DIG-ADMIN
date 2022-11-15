@@ -1,12 +1,13 @@
 import { Router, useRouter } from "next/router";
 import { useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/FilterTable";
+
 import AddDriver from "../../../src/components/Forms/AddDriver";
 import MultipleSelectTable from "../../../src/components/multiple-select-table";
-import StatusCell from "../../../src/components/StatusCell";
+
 import {
   analytics,
   statusData,
@@ -81,7 +82,7 @@ const Drivers = () => {
     },
   ];
   return (
-    <>
+    <ParentContainer>
       <DrawerCard title="Add Drivers" open={isOpen} toggleDrawer={toggleDrawer}>
         <AddDriver />
       </DrawerCard>
@@ -96,7 +97,7 @@ const Drivers = () => {
           onClickFunction={toggleDrawer}
         />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Drivers;

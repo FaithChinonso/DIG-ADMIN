@@ -1,10 +1,10 @@
 import { useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../src/components/Drawer";
 import FilterTable from "../../src/components/filter-table";
 import MultipleSelectTable from "../../src/components/multiple-select-table";
-import StatusCell from "../../src/components/StatusCell";
 import {
   analytics,
   statusData,
@@ -47,9 +47,6 @@ const Approval = () => {
     {
       Header: "Status",
       accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
     },
     {
       Header: "Action",
@@ -71,7 +68,7 @@ const Approval = () => {
     },
   ];
   return (
-    <>
+    <ParentContainer>
       <DrawerCard
         title="Add Approval"
         open={isOpen}
@@ -86,7 +83,7 @@ const Approval = () => {
           emptyPlaceHolder="No approval yet!"
         />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Approval;

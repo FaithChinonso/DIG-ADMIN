@@ -26,16 +26,16 @@ const TrackRide = () => {
     <div>
       <div className="flex justify-between gap-2">
         <div className="bg-[#090F47] rounded-md py-1  px-[14px] text-white w-[132px] h-[87px]">
-          <h2 className="text-[10px] mb-3">Distance Covered</h2>
-          <h4 className="text-lg">2,900 km</h4>
+          <div className="text-[10px] mb-3">Distance Covered</div>
+          <div className="text-lg">2,900 km</div>
         </div>
         <div className="bg-[#C9C2FF] rounded-md py-1  px-[14px] text-[#090F47]  w-[147px] h-[87px] ">
-          <h2 className="text-[10px] mb-3">Time</h2>
-          <h4 className="text-sm">42 Hrs, 10 mins</h4>
+          <div className="text-[10px] mb-3">Time</div>
+          <div className="text-sm">42 Hrs, 10 mins</div>
         </div>
         <div className="bg-darkPurple text-white text-[8px]  w-[78px] h-[28px] flex items-center justify-center rounded-md">
           <span className="mr-1">
-            <Image src={map} />
+            <Image src={map} alt={""} />
           </span>
           View Route
         </div>
@@ -47,7 +47,7 @@ const TrackRide = () => {
         </div>
         <div className="text-darkPurple text-[10px]">
           <span style={{ translate: "0 5px" }}>
-            <Image src={refresh} />
+            <Image src={refresh} alt={""} />
           </span>
           Refresh
         </div>
@@ -57,7 +57,7 @@ const TrackRide = () => {
           <div className="flex justify-start">
             <div className="flex flex-col mr-1">
               <div className="flex w-[150px] ">
-                <Image src={imageSort(item.name)} />
+                <Image src={imageSort(item.name)} alt={""} />
                 <div className="text-grey text-[10px] ">
                   {item.name === "Booking Confirmed" && "Now"}
                   <span className="text-text ml-2">{item.time}</span>

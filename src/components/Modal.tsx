@@ -46,7 +46,7 @@ export default function Modal() {
 
   const Close = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    dispatch(uiActions.closeModal());
+    dispatch(uiActions.closeModal(false));
   };
   return (
     <>

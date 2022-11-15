@@ -141,7 +141,7 @@ const MultipleSelectTable = ({
               <div className="flex items-center mb-6 gap-3 relative">
                 <button className="text-sm text-lightPurple border border-lightPurple py-3 px-4 rounded-md flex items-center justify-center">
                   <span style={{ marginRight: "3px", translate: "0 3px" }}>
-                    <Image src={Export} />
+                    <Image src={Export} alt={""} />
                   </span>
                   {list ? (
                     <ActionMenuBase
@@ -168,7 +168,10 @@ const MultipleSelectTable = ({
                     className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
                   >
                     <span style={{ marginRight: "3px", translate: "0 3px" }}>
-                      <Image src={extraButton.img ? extraButton.img : Add} />
+                      <Image
+                        src={extraButton.img ? extraButton.img : Add}
+                        alt=""
+                      />
                     </span>
                     {extraButton.text}
                   </button>
@@ -247,8 +250,8 @@ const MultipleSelectTable = ({
             </table>
 
             {data?.length === 0 && (
-              <div className="flex items-center justify-around flex-col h-[250px] bg-[#f8f8f8]">
-                <Image src={EmptyTable} />
+              <div className="flex items-center justify-around flex-col h-full bg-[#f8f8f8] mt-8">
+                <Image src={EmptyTable} alt="" />
                 <div className="text-sm text-[#adafb0] mb-5">
                   {emptyPlaceHolder}
                 </div>
@@ -257,7 +260,7 @@ const MultipleSelectTable = ({
                   className="text-sm text-white bg-lightPurple py-3 px-9 rounded-md flex items-center justify-center"
                 >
                   {" "}
-                  {extraButton.text}
+                  {extraButton?.text}
                 </button>
               </div>
             )}

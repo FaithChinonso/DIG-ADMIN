@@ -435,6 +435,12 @@ export const outerNav = [
     route: "/flip/products",
   },
   {
+    id: 11,
+    name: "Services",
+    value: "second",
+    route: "/flip/services",
+  },
+  {
     id: 12,
     name: "Carts",
     value: "second",

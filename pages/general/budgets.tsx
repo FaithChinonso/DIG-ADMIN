@@ -1,7 +1,8 @@
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import FilterTable from "../../src/components/filter-table";
-import StatusCell from "../../src/components/StatusCell";
+
 import {
   analytics,
   statusData,
@@ -40,9 +41,6 @@ const Budgets = () => {
     {
       Header: "Status",
       accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
     },
     {
       Header: "Action",
@@ -64,10 +62,12 @@ const Budgets = () => {
     },
   ];
   return (
-    <div className=" p-[10px] md:p-[30px]">
-      {" "}
-      <FilterTable columns={columnDasboard} data={tableData} />
-    </div>
+    <ParentContainer>
+      <div className=" p-[10px] md:p-[30px]">
+        {" "}
+        <FilterTable columns={columnDasboard} data={tableData} />
+      </div>
+    </ParentContainer>
   );
 };
 export default Budgets;

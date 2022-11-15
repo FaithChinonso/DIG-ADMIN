@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../../src/components/Drawer";
@@ -80,7 +81,7 @@ const Trips = () => {
     },
   ];
   return (
-    <>
+    <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable
           columns={columnDasboard}
@@ -88,7 +89,7 @@ const Trips = () => {
           emptyPlaceHolder="No Trips yet!"
         />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Trips;
