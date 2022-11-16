@@ -10,14 +10,12 @@ import axios from "axios";
 import useHTTPPost from "src/Hooks/use-httppost";
 
 const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
-
   const dispatch = useDispatch();
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(0);
 
   const send = useHTTPPost();
-  
 
   const isNotEmpty = (value: string) => value?.trim() !== "";
   const is8Chars = (value: string) => value?.trim().length > 7;

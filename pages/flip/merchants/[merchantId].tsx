@@ -109,9 +109,7 @@ const OneMerchant = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    fetchAUser();
-  }, []);
+
   return (
     <ParentContainer>
       <DrawerCard title="Add Product" open={isOpen} toggleDrawer={toggleDrawer}>

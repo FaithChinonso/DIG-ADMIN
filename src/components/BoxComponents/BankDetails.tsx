@@ -11,11 +11,23 @@ import {
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 
-const BankDetails = () => {
+const BankDetails = ({ data: [] }: any) => {
+  const formatData = data
+    ?.slice(0)
+    .reverse()
+    .map((client: any) => {
+      return {
+        abbreviation: client.abbreviation,
+        accountNumber: client.accountNumber,
+        accoutName: client.accoutName,
+        bankName: client.bankName,
+        bankCode: client.bankCode,
+      };
+    });
   const columnBank = [
     {
       Header: "S/N",
-      accessor: "id",
+      accessor: "abbreviation",
       Filter: false,
     },
 
@@ -28,12 +40,12 @@ const BankDetails = () => {
       accessor: "accoutName",
     },
     {
-      Header: "Destination Bank",
-      accessor: "destinationBank",
+      Header: "Bank Name",
+      accessor: "bankName",
     },
     {
-      Header: "Account Type",
-      accessor: "accountType",
+      Header: "Bank Code",
+      accessor: "bankCode",
     },
 
     {
@@ -60,7 +72,7 @@ const BankDetails = () => {
       {" "}
       <MultipleSelectTable
         columns={columnBank}
-        data={bank}
+        data={formatData || []}
         emptyPlaceHolder="No Bank Details yet!"
         list
       />

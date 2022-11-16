@@ -11,8 +11,9 @@ import { useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppSelector } from "src/Hooks/use-redux";
+import { delivery, productLevel } from "../../utils/analytics";
 
-const AddService = ({ merchantId, fetchAllMerchants }: any) => {
+const AddJob = ({ userId }: any) => {
   const dispatch = useDispatch();
   const { productCategory } = useAppSelector((state: any) => state.data);
   const [phoneNumber, setPhoneNumber] = useState(0);
@@ -44,45 +45,48 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
   };
 
   const {
-    enteredInput: enteredserviceName,
-    updateInputHandler: serviceNameInputHandler,
-    inputBlurHandler: serviceNameBlurHandler,
+    enteredInput: enteredheadline,
+    updateInputHandler: headlineInputHandler,
+    inputBlurHandler: headlineBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
-    enteredInput: enteredlocationd,
-    updateInputHandler: locationdInputHandler,
-    inputBlurHandler: locationdBlurHandler,
+    enteredInput: entereddurationd,
+    updateInputHandler: durationdInputHandler,
+    inputBlurHandler: durationdBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
-    enteredInput: enteredexperience,
-    updateInputHandler: experienceInputHandler,
-    inputBlurHandler: experienceBlurHandler,
+    enteredInput: enteredscope,
+    updateInputHandler: scopeInputHandler,
+    inputBlurHandler: scopeBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
   const {
     enteredInput: entereddescription,
     updateInputHandler: descriptionInputHandler,
     inputBlurHandler: descriptionBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
+  const { enteredInput: enteredlevel, updateInputHandler: levelInputHandler } =
+    useInput(isNotEmpty, "This field cannot be empty");
   const {
-    enteredInput: enteredCategory,
-    updateInputHandler: categoryInputHandler,
+    enteredInput: enterednegotiate,
+    updateInputHandler: negotiateInputHandler,
+    inputBlurHandler: negotiateBlurHandler,
   } = useInput(isNotEmpty, "This field cannot be empty");
 
   const payload = {
-    service_name: enteredserviceName,
-    category_id: enteredCategory,
-    years_of_exp: enteredexperience,
-    amount,
-    location: enteredlocationd,
-    phone_number: phoneNumber,
-    other_details: JSON.stringify(items),
+    headline: enteredheadline,
+    experience_level: enteredlevel,
+    job_scope: enteredscope,
+    budget: amount,
+    job_duration: entereddurationd,
+    is_budget_negotiable: enterednegotiate,
+    skills_needed: JSON.stringify(items),
     description: entereddescription,
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
     console.log(payload);
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/service/create-service/${merchantId}`;
+    const url = `https://backendapi.flip.onl/api/admin/job/create-job/${userId}`;
     const dataFunction = (res: any) => {};
     send({ url, values: payload, accessToken }, dataFunction);
   };
@@ -102,42 +106,39 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
 
       <div className="mt-[10px]">
         <label
-          htmlFor="serviceName"
+          htmlFor="headline"
           className=" text-[10px] text-[#1D2939] bg-white"
         >
-          service Name
+          Headline
         </label>
         <input
           type="text"
-          name="serviceName"
-          value={enteredserviceName}
-          id="serviceName"
-          onBlur={serviceNameBlurHandler}
-          onChange={serviceNameInputHandler}
+          name="headline"
+          value={enteredheadline}
+          id="headline"
+          onBlur={headlineBlurHandler}
+          onChange={headlineInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="service Name "
+          placeholder="Headline "
         />
       </div>
       <div className=" mt-[30px]">
-        <label
-          htmlFor="category"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Category
+        <label htmlFor="level" className=" text-[10px] text-[#1D2939] bg-white">
+          Experience Level
         </label>
 
         <select
-          name="category"
-          value={enteredCategory}
-          id="category"
-          onChange={categoryInputHandler}
+          name="level"
+          value={enteredlevel}
+          id="level"
+          onChange={levelInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Category"
+          placeholder=" Experience Level"
         >
-          {productCategory?.map((item: any) => (
+          {productLevel?.map((item: any) => (
             <option
-              value={item.categoryID}
-              key={item.categoryID}
+              value={item.name}
+              key={item.id}
               className=" text-[10px] text-[#1D2939] bg-white"
             >
               {item.name}
@@ -147,58 +148,37 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
       </div>
       <div className="mt-[10px]">
         <label
-          htmlFor="loaction"
+          htmlFor="duration"
           className=" text-[10px] text-[#1D2939] bg-white"
         >
-          Location
+          Duration
         </label>
         <input
           type="text"
-          name="loaction"
-          value={enteredlocationd}
-          id="locationd"
-          onBlur={locationdBlurHandler}
-          onChange={locationdInputHandler}
+          name="duration"
+          value={entereddurationd}
+          id="durationd"
+          onBlur={durationdBlurHandler}
+          onChange={durationdInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Location"
+          placeholder="duration"
         />
       </div>
-      <div className=" mt-[30px]">
-        <label htmlFor="phone" className=" text-[10px] text-[#1D2939] bg-white">
-          Phone Number
-        </label>
-        <MuiPhoneNumber
-          defaultCountry={"ng"}
-          name="businessPhoneNumber"
-          sx={{
-            svg: {
-              height: "20px",
-            },
-          }}
-          value={phoneNumber}
-          onChange={onChangeNumber}
-          autoComplete="off"
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
-          required
-        />
-      </div>
+
       <div className=" mt-[10px]">
-        <label
-          htmlFor="experience"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Years Of Experience
+        <label htmlFor="scope" className=" text-[10px] text-[#1D2939] bg-white">
+          Job Scope
         </label>
 
         <input
-          type="number"
-          name="lastName"
-          value={enteredexperience}
-          id="experience"
-          onBlur={experienceBlurHandler}
-          onChange={experienceInputHandler}
+          type="text"
+          name="scope"
+          value={enteredscope}
+          id="scope"
+          onBlur={scopeBlurHandler}
+          onChange={scopeInputHandler}
           className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Years Of Experience"
+          placeholder="Job Scope"
         />
       </div>
       <div className=" mt-[30px]">
@@ -240,6 +220,34 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
           }}
         />
       </div>
+
+      <div className=" mt-[30px]">
+        <label
+          htmlFor="negotiate"
+          className=" text-[10px] text-[#1D2939] bg-white"
+        >
+          Negotiable
+        </label>
+
+        <select
+          name="negotiate"
+          value={enterednegotiate}
+          id="negotiate"
+          onChange={negotiateInputHandler}
+          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+          placeholder=" Negotiatiable"
+        >
+          {delivery?.map((item: any) => (
+            <option
+              value={item.id}
+              key={item.id}
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className=" text-base text-[#1D2939] bg-white">Other Details</div>
 
       {items?.map((element, index) => (
@@ -260,9 +268,9 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
         className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
         type="submit"
       >
-        Create Service
+        Create Job Posting
       </button>
     </form>
   );
 };
-export default AddService;
+export default AddJob;

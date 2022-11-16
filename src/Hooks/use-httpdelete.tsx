@@ -33,9 +33,7 @@ const useHTTPDelete = () => {
           })
         );
       })
-      .catch((error: any) => {
-        alert(error);
-      });
+      .catch((error: any) => {});
   };
 
   return remove;

@@ -29,6 +29,7 @@ import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
+import JobsDisplay from "src/components/jobsDisplay";
 
 const OneUser = () => {
   const router = useRouter();
@@ -36,7 +37,11 @@ const OneUser = () => {
   const dispatch = useDispatch();
 
   const [user, setUser] = useState<any>();
+  const [job, setJob] = useState<any>();
+
+  const id = router.query.usersId;
   console.log(router.query.usersId);
+
   const fetchAUser = async (id: any) => {
     const dataFunction = (res: any) => {
       setUser(res?.data.data);
@@ -44,21 +49,15 @@ const OneUser = () => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/user/single-user/${id}`;
     request({ url, accessToken }, dataFunction);
-    // try {
-    //   const res: any = await axios.get(
-    //     `https://backendapi.flip.onl/api/admin/user/single-user/${id}`,
-    //     {
-    //       headers: {
-    //         authorization: `Bearer ${accessToken}`,
-    //         authsource: "user",
-    //       },
-    //     }
-    //   );
-    //   console.log(res?.data.data);
-    //   setUser(res?.data.data);
-    // } catch (error: any) {}
   };
-
+  const fetchAllJobs = (id: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+    const dataFunction = (res: any) => {
+      dispatch(setJob(res.data.data));
+    };
+    request({ url, accessToken }, dataFunction);
+  };
   interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -110,6 +109,7 @@ const OneUser = () => {
   useEffect(() => {
     const id = router.query.usersId;
     fetchAUser(id);
+    fetchAllJobs(id);
   }, [router]);
   return (
     <ParentContainer>
@@ -229,16 +229,25 @@ const OneUser = () => {
               <SupportingDocuments />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <BankDetails />
+              <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
               <OrderHistory />
             </TabPanel>
+
             <TabPanel value={value} index={3}>
               <TransactionHistory />
             </TabPanel>
             <TabPanel value={value} index={4}>
               <OrderHistory />
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+              <JobsDisplay
+                jobs={job}
+                fetchAll={fetchAllJobs}
+                type="user"
+                userId={id}
+              />
             </TabPanel>
           </Box>
         </div>

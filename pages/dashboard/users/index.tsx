@@ -24,17 +24,28 @@ import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { addUsers } from "src/redux/store/data-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import AddJob from "src/components/Forms/AddJob";
 
 const Users = () => {
   const dispatch = useAppDispatch();
-  const token = useAppSelector((state: any) => state.data.token);
-  console.log(token);
-
+  const [isOpenServ, setIsOpenServ] = useState(false);
   const request = useHTTPGet();
+
+  const [userId, setUserId] = useState<any>("");
 
   const [allUsers, setAllUsers] = useState<any>();
 
   const { users } = useSelector((state: any) => state.data);
+
+  const fetchAllUsers = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/user/all-users`;
+    const dataFunction = (res: any) => {
+      console.log(res);
+      dispatch(addUsers(res?.data.data));
+    };
+    request({ url, accessToken }, dataFunction);
+  };
 
   const deleteUser = async (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -94,6 +105,9 @@ const Users = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+  };
+  const toggleDrawerServ = () => {
+    setIsOpenServ(!isOpenServ);
   };
 
   type Data = {
@@ -241,6 +255,13 @@ const Users = () => {
                     }
                   />
                 )}
+                <ActionMenuItem
+                  name="Create Job posting"
+                  onClickFunction={() => {
+                    toggleDrawerServ();
+                    setUserId(prop?.row.original?.id);
+                  }}
+                />
 
                 <ActionMenuItem
                   name="Delete"
@@ -272,9 +293,19 @@ const Users = () => {
       },
     },
   ];
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
   return (
     <ParentContainer>
+      <DrawerCard
+        title="Add Service"
+        open={isOpenServ}
+        toggleDrawer={toggleDrawerServ}
+      >
+        <AddJob userId={userId} />
+      </DrawerCard>
       <DrawerCard title="Add User" open={isOpen} toggleDrawer={toggleDrawer}>
         <AddUser toggleDrawer={toggleDrawer} applicationName="flip" />
       </DrawerCard>

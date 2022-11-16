@@ -4,6 +4,7 @@ export const MyUserValue = [
   { id: 3, label: "Order History" },
   { id: 4, label: "Transaction History" },
   { id: 5, label: "Tracking" },
+  { id: 6, label: "Job Posting" },
 ];
 export const MySettingsValue = [
   { id: 1, label: "Personal Details" },

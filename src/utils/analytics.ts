@@ -298,6 +298,18 @@ export const innerNav = [
         route: "/flip/products",
       },
       {
+        id: 29,
+        name: "Services",
+        value: "flip",
+        route: "/flip/services",
+      },
+      {
+        id: 24,
+        name: "Job Posting",
+        value: "flip",
+        route: "/flip/jobs",
+      },
+      {
         id: 3,
         name: "Carts",
         value: "flip",
@@ -439,6 +451,12 @@ export const outerNav = [
     name: "Services",
     value: "flip",
     route: "/flip/services",
+  },
+  {
+    id: 24,
+    name: "Job Posting",
+    value: "flip",
+    route: "/flip/jobs",
   },
   {
     id: 13,
@@ -652,4 +670,13 @@ export const delivery = [
 export const role = [
   { id: 1, name: "consumer" },
   { id: 2, name: "merchant" },
+];
+export const productLevel = [
+  { id: 1, name: "Beginner" },
+  { id: 2, name: "Intermediate" },
+  { id: 3, name: "expert" },
+];
+export const bool = [
+  { id: 0, name: "Yes" },
+  { id: 1, name: "No" },
 ];

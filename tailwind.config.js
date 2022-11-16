@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./pages/general/*.{html,js,jsx,tsx}",
-    "./pages/general/users/*.{html,js,jsx,tsx}",
+    "./pages/dashboard/*.{html,js,jsx,tsx}",
+    "./pages/cue/*.{html,js,jsx,tsx}",
+    "./pages/flip/*.{html,js,jsx,tsx}",
+    "./pages/dashboard/users/*.{html,js,jsx,tsx}",
     "./pages/flip/orders/*.{html,js,jsx,tsx}",
+    "./pages/flip/service/*.{html,js,jsx,tsx}",
+    "./pages/flip/merchants/*.{html,js,jsx,tsx}",
     "./pages/cue/drivers/*.{html,js,jsx,tsx}",
     "./pages/*.{html,js,jsx,tsx}",
     "./src/components/*.{html,js,jsx,tsx}",

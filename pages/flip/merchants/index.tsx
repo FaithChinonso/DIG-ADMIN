@@ -25,11 +25,15 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import { addMerchants, addUsers } from "src/redux/store/data-slice";
 import CreateProduct from "src/components/Forms/CreateProduct";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
+import AddService from "src/components/Forms/AddService";
 
 const Merchants = () => {
   const dispatch = useDispatch();
   const request = useHTTPGet();
   const remove = useHTTPDelete();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenServ, setIsOpenServ] = useState(false);
 
   const [merchantId, setMerchantId] = useState<any>("");
 
@@ -61,10 +65,12 @@ const Merchants = () => {
     const url = `https://backendapi.flip.onl/api/admin/user/${endpoint}/${id}`;
     request({ url, accessToken }, dataFunction);
   };
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+  };
+  const toggleDrawerServ = () => {
+    setIsOpenServ(!isOpenServ);
   };
 
   type Data = {
@@ -240,6 +246,14 @@ const Merchants = () => {
                     setMerchantId(prop?.row.original?.id);
                   }}
                 />
+
+                <ActionMenuItem
+                  name="Add Service"
+                  onClickFunction={() => {
+                    toggleDrawerServ();
+                    setMerchantId(prop?.row.original?.id);
+                  }}
+                />
               </>
             }
           />
@@ -248,21 +262,22 @@ const Merchants = () => {
     },
   ];
   useEffect(() => {
-    const fetchAllMerchants = async () => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/user/all-users?role=merchant`;
-      const dataFunction = (res: any) => {
-        console.log(res);
-        dispatch(addMerchants(res?.data.data));
-      };
-      request({ url, accessToken }, dataFunction);
-    };
     fetchAllMerchants();
   }, []);
   return (
     <ParentContainer>
       <DrawerCard title="Add Product" open={isOpen} toggleDrawer={toggleDrawer}>
         <CreateProduct
+          merchantId={merchantId}
+          fetchAllMerchants={fetchAllMerchants}
+        />
+      </DrawerCard>
+      <DrawerCard
+        title="Add Service"
+        open={isOpenServ}
+        toggleDrawer={toggleDrawerServ}
+      >
+        <AddService
           merchantId={merchantId}
           fetchAllMerchants={fetchAllMerchants}
         />

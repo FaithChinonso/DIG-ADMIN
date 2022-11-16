@@ -8,12 +8,12 @@ interface uiState {
   modalContent: string | Element | JSX.Element | FunctionComponent;
   modalStyles: {};
   modalOpened: boolean;
-  toastContent: string;
-  toastStyles: {
+  drawerContent: string;
+  drawerStyles: {
     fontWeight: number;
     color: string;
   };
-  toastOpened: boolean;
+  drawerOpened: boolean;
   loaderOpened: boolean;
 }
 // Define the initial state using that type
@@ -21,12 +21,12 @@ const initialState: uiState = {
   modalContent: "",
   modalStyles: {},
   modalOpened: false,
-  toastContent: "",
-  toastStyles: {
+  drawerContent: "",
+  drawerStyles: {
     fontWeight: 800,
     color: "white",
   },
-  toastOpened: false,
+  drawerOpened: false,
   loaderOpened: false,
 };
 
@@ -44,6 +44,16 @@ const uiSlice = createSlice({
     },
     closeModal(state) {
       return { ...state, modalOpened: false };
+    },
+    openDrawerAndSetContent(state, action: PayloadAction<any>) {
+      return {
+        ...state,
+        drawerOpened: true,
+        drawerContent: action.payload.drawerContent,
+      };
+    },
+    closedrawer(state) {
+      return { ...state, drawerOpened: false };
     },
     openLoader(state, action) {
       state.loaderOpened = action.payload;

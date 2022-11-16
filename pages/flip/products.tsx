@@ -26,15 +26,18 @@ import { MyProductValue } from "../../src/utils/boxValues";
 import AddProductCategory from "src/components/Forms/AddProductCategory";
 import ProductCategory from "src/components/ProductCategory";
 import useHTTPGet from "src/Hooks/use-httpget";
-import { addProducts } from "src/redux/store/data-slice";
+import { addProductCategory, addProducts } from "src/redux/store/data-slice";
 import { useAppSelector } from "src/Hooks/use-redux";
 import moment from "moment";
 import { numberWithCommas } from "src/utils/formatNumber";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
+import AddProductSpec from "src/components/Forms/AddProductSpec";
 
 const Products = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSpec, setIsSpec] = useState(false);
+  const [productId, setproductId] = useState();
   const [drawerDetails, setDraweDetails] = useState({
     title: "",
     isAdd: false,
@@ -69,6 +72,9 @@ const Products = () => {
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+  };
+  const toggleDrawerSpec = () => {
+    setIsSpec(!isSpec);
   };
   interface TabPanelProps {
     children?: React.ReactNode;
@@ -229,24 +235,14 @@ const Products = () => {
                     });
                   }}
                 />
-
                 <ActionMenuItem
-                  name="Add New Product feature"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Suspend" item="product" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
+                  name="Add Product Feature"
+                  onClickFunction={() => {
+                    toggleDrawerSpec();
+                    setproductId(prop?.row.original?.id);
+                  }}
                 />
+
                 {prop?.row.original?.isActive === true ? (
                   <ActionMenuItem
                     name="Deactivate"
@@ -351,7 +347,17 @@ const Products = () => {
       };
       request({ url, accessToken }, dataFunction);
     };
+    const fetchAllCategory = () => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url =
+        "https://backendapi.flip.onl/api/admin/productcategory/all-product-categories";
+      const dataFunction = (res: any) => {
+        dispatch(addProductCategory(res.data.data));
+      };
+      request({ url, accessToken }, dataFunction);
+    };
     fetchAllProducts();
+    fetchAllCategory();
   }, []);
   return (
     <ParentContainer>
@@ -404,6 +410,13 @@ const Products = () => {
               ) : (
                 <ProductDetails data={drawerDetails.data} />
               )}
+            </DrawerCard>
+            <DrawerCard
+              title="Add Product Specification"
+              open={isSpec}
+              toggleDrawer={toggleDrawerSpec}
+            >
+              <AddProductSpec id={productId} />
             </DrawerCard>
             <MultipleSelectTable
               columns={columnProduct}
