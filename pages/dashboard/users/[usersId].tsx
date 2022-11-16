@@ -28,28 +28,35 @@ import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
+import useHTTPGet from "src/Hooks/use-httpget";
 
 const OneUser = () => {
   const router = useRouter();
+  const request = useHTTPGet();
   const dispatch = useDispatch();
 
   const [user, setUser] = useState<any>();
   console.log(router.query.usersId);
   const fetchAUser = async (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    try {
-      const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/user/single-user/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
-      console.log(res?.data.data);
+    const dataFunction = (res: any) => {
       setUser(res?.data.data);
-    } catch (error: any) {}
+    };
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/user/single-user/${id}`;
+    request({ url, accessToken }, dataFunction);
+    // try {
+    //   const res: any = await axios.get(
+    //     `https://backendapi.flip.onl/api/admin/user/single-user/${id}`,
+    //     {
+    //       headers: {
+    //         authorization: `Bearer ${accessToken}`,
+    //         authsource: "user",
+    //       },
+    //     }
+    //   );
+    //   console.log(res?.data.data);
+    //   setUser(res?.data.data);
+    // } catch (error: any) {}
   };
 
   interface TabPanelProps {
@@ -103,7 +110,7 @@ const OneUser = () => {
   useEffect(() => {
     const id = router.query.usersId;
     fetchAUser(id);
-  }, []);
+  }, [router]);
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">
@@ -197,6 +204,7 @@ const OneUser = () => {
                   <Tab
                     label={value.label}
                     {...a11yProps(value.id)}
+                    key={value.id}
                     style={{
                       backgroundColor:
                         selected === value.id ? "white" : "transparent",

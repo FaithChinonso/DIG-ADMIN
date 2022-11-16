@@ -16,14 +16,12 @@ import {
   Column,
 } from "react-table";
 
-
 import * as RiIcons from "react-icons/ri";
 import Image from "next/image";
 import RightArrow from "../assets/image/right-direction.svg";
 import LeftArrowFaded from "../assets/image/left-direction-faded.svg";
 import EmptyTable from "../assets/image/empty-table.svg";
 import { matchSorter } from "match-sorter";
-import Skeleton from "react-loading-skeleton";
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -315,12 +313,16 @@ const FilterTable = ({
             >
               <thead>
                 {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
+                  <tr
+                    {...headerGroup.getHeaderGroupProps()}
+                    key={headerGroup.id}
+                  >
                     {headerGroup.headers.map(column => (
                       <th
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
                         )}
+                        key={column.id}
                         className="bg-white py-[13px] px-[20px] shadow-tableShadow text-sm text-darkPurple"
                       >
                         {column.render("Header")}
@@ -349,6 +351,7 @@ const FilterTable = ({
                   return (
                     <tr
                       {...row.getRowProps()}
+                      key={row.id}
                       className="px-[30px] py-[20px] border-b border-[#e5e5e5] h-[82px]"
                       onClick={() => {
                         clickAction && onClick(row.original);
@@ -359,6 +362,7 @@ const FilterTable = ({
                         return (
                           <td
                             {...cell.getCellProps()}
+                            key={cell.value}
                             style={{
                               padding: "20px",
                               fontFamily: "Steradian",
@@ -384,7 +388,7 @@ const FilterTable = ({
               <div className="text-sm text-[#adafb0] mb-5">
                 {emptyPlaceHolder}
               </div>
-              <Image src={EmptyTable} />
+              <Image src={EmptyTable} alt={""} />
             </div>
           )}
 
@@ -403,12 +407,13 @@ const FilterTable = ({
                         onClick={() => previousPage()}
                         style={{ paddingRight: "10px" }}
                       >
-                        <p>
+                        <div>
                           {pageIndex + 1 === 1 ? (
                             <div>
                               <Image
                                 src={LeftArrowFaded}
                                 style={{ cursor: "pointer" }}
+                                alt={""}
                               />
                             </div>
                           ) : (
@@ -419,20 +424,22 @@ const FilterTable = ({
                                   transform: "rotate(180deg)",
                                   cursor: "pointer",
                                 }}
+                                alt={""}
                               />
                             </div>
                           )}
-                        </p>
+                        </div>
                       </div>
                       <div onClick={() => nextPage()}>
-                        <p>
+                        <div>
                           <Image
                             src={RightArrow}
                             style={{
                               cursor: "pointer",
                             }}
+                            alt={""}
                           />
-                        </p>
+                        </div>
                       </div>
                     </div>
                   </div>

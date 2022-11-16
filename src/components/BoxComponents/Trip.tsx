@@ -12,7 +12,7 @@ const Trip = () => {
   return (
     <div className="flex flex-col gap-4">
       {tripHistory.map((item: any) => (
-        <div className="shadow-tableShadow w-full p-[20px]">
+        <div className="shadow-tableShadow w-full p-[20px]" key={item.id}>
           <div className="flex justify-between items-start mb-5">
             <div>
               <div className="text-text text-[10px] mt-[10px]">Distance</div>

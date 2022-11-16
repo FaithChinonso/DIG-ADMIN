@@ -18,13 +18,37 @@ import {
   tableLoad,
   order,
 } from "../../../src/utils/analytics";
+import axios from "axios";
 
 const Orders = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [image, setImage] = useState(false);
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+  };
+  const uploadHandler = (e: any) => {
+    const file = e.target.files[0];
+    setImage(file);
+  };
+  const createCategory = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    console.log(image);
+    const res = axios.post(
+      "https://backendapi.flip.onl/api/admin/productcategory/create-product-category",
+      {
+        name: "name",
+        image: image,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(image);
   };
   const columnOrders = [
     {
@@ -106,6 +130,17 @@ const Orders = () => {
   ];
   return (
     <ParentContainer>
+      <div>
+        {" "}
+        <input
+          type="file"
+          accept="image/png, image/jpg, image/gif, image/jpeg"
+          onChange={uploadHandler}
+          id="image"
+          name="image"
+        />
+        <button onClick={() => createCategory()}>send</button>
+      </div>
       <DrawerCard title="Add Orders" open={isOpen} toggleDrawer={toggleDrawer}>
         <div>red</div>
       </DrawerCard>

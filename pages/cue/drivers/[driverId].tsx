@@ -157,6 +157,7 @@ const OneDriver = () => {
                 >
                   {MyDriversValue.map(value => (
                     <Tab
+                      key={value.id}
                       label={value.label}
                       {...a11yProps(value.id)}
                       style={{
@@ -196,4 +197,5 @@ const OneDriver = () => {
     </ParentContainer>
   );
 };
+
 export default OneDriver;

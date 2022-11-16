@@ -22,88 +22,44 @@ import axios from "axios";
 import moment from "moment";
 import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import useHTTPGet from "src/Hooks/use-httpget";
-import { addUsers } from "src/redux/store/data-slice";
+import { addMerchants, addUsers } from "src/redux/store/data-slice";
 import CreateProduct from "src/components/Forms/CreateProduct";
+import useHTTPDelete from "src/Hooks/use-httpdelete";
 
 const Merchants = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state: any) => state.data.token);
-  console.log(token);
-
   const request = useHTTPGet();
+  const remove = useHTTPDelete();
 
-  const [allMerchants, setAllMerchants] = useState<any>();
   const [merchantId, setMerchantId] = useState<any>("");
 
-  const { users } = useSelector((state: any) => state.data);
+  const { merchants } = useSelector((state: any) => state.data);
+
   const fetchAllMerchants = async () => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/user/all-users?role=merchant`;
     const dataFunction = (res: any) => {
       console.log(res);
-      dispatch(addUsers(res?.data.data));
+      dispatch(addMerchants(res?.data.data));
     };
     request({ url, accessToken }, dataFunction);
   };
   const deleteUser = async (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    dispatch(uiActions.closeModal(true));
-    try {
-      const res: any = await axios.delete(
-        `https://backendapi.flip.onl/api/admin/user/delete-user/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
-      console.log(res.data.message);
-
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={res.data.message} />
-            </>
-          ),
-        })
-      );
-
-      fetchAllMerchants();
-    } catch (error: any) {}
+    const dataFunction = (res: any) => {
+      console.log(res);
+    };
+    const url = `https://backendapi.flip.onl/api/admin/user/delete-user/${id}`;
+    remove({ url, accessToken }, dataFunction);
   };
   const editUser = async (id: any, endpoint: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-
-    try {
-      const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/user/${endpoint}/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={res.data.message} />
-            </>
-          ),
-        })
-      );
-
-      fetchAllMerchants();
-    } catch (error: any) {}
+    const dataFunction = (res: any) => {
+      console.log(res);
+      dispatch(addMerchants(res?.data.data));
+    };
+    const url = `https://backendapi.flip.onl/api/admin/user/${endpoint}/${id}`;
+    request({ url, accessToken }, dataFunction);
   };
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -132,7 +88,7 @@ const Merchants = () => {
     };
     isActive: boolean;
   };
-  const formatData = users
+  const formatData = merchants
     ?.slice(0)
     .reverse()
     .map((client: Data, index: number) => {
@@ -292,12 +248,24 @@ const Merchants = () => {
     },
   ];
   useEffect(() => {
+    const fetchAllMerchants = async () => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `https://backendapi.flip.onl/api/admin/user/all-users?role=merchant`;
+      const dataFunction = (res: any) => {
+        console.log(res);
+        dispatch(addMerchants(res?.data.data));
+      };
+      request({ url, accessToken }, dataFunction);
+    };
     fetchAllMerchants();
   }, []);
   return (
     <ParentContainer>
-      <DrawerCard title="Add User" open={isOpen} toggleDrawer={toggleDrawer}>
-        <CreateProduct merchantId={merchantId} />
+      <DrawerCard title="Add Product" open={isOpen} toggleDrawer={toggleDrawer}>
+        <CreateProduct
+          merchantId={merchantId}
+          fetchAllMerchants={fetchAllMerchants}
+        />
       </DrawerCard>
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable

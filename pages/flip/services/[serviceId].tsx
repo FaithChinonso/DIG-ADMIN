@@ -180,6 +180,7 @@ const OneMerchant = () => {
                   <Tab
                     label={value.label}
                     {...a11yProps(value.id)}
+                    key={value.id}
                     style={{
                       backgroundColor:
                         selected === value.id ? "white" : "transparent",

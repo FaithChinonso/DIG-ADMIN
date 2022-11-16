@@ -1,13 +1,21 @@
-import type { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import Image from "next/image";
 import SignInForm from "../src/components/SignInForm";
-import SignUpForm from "../src/components/SignUpForm";
 import AuthSide from "../src/assets/image/auth-side (1).png";
 import Rocket from "../src/assets/image/rocket.png";
 import { ReactNode, useState } from "react";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
+import { authActions } from "src/redux/store/auth-slice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { success, loading } = useSelector((state: any) => state.auth);
+  const handleSignin = (data: any) => {
+    dispatch(authActions.loginHandler(data));
+  };
+
   return (
     <div className="flex w-screen items-center justify-center md:items-start md:justify-start flex-col md:flex-row max-w-screen overflow-hidden">
       <div className="hidden md:w-[600px] h-screen md:flex flex-col md:flex-row items-center justify-center relative">
@@ -28,7 +36,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <div className="w-full px-[120px] py-[30px] md:px-[200px] md:py-[120px] md:w-[calc(100vw-600px)]">
+      <div className="w-full px-[60px] py-[30px] md:px-[200px] md:py-[120px] md:w-[calc(100vw-600px)]">
         <div className="">
           <div className="text-primary text-[32px] leading-10">
             Welcome Page
@@ -40,7 +48,7 @@ const SignUp = () => {
             Login to manage your collections
           </div>
         </div>
-        <SignInForm />
+        <SignInForm login={handleSignin} />
       </div>
     </div>
   );

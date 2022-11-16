@@ -1,7 +1,5 @@
 import useInput from "../../Hooks/use-input";
 import MuiPhoneNumber from "material-ui-phone-number";
-import { OutlinedInput } from "@material-ui/core";
-import UploadInputButtons from "../UploadInputButtons";
 import userPic from "../../assets/image/userPic.svg";
 import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
@@ -11,6 +9,7 @@ import { NumericFormat } from "react-number-format";
 
 const AddService = ({ toggleDrawer }: any) => {
   const dispatch = useDispatch();
+
   const isNotEmpty = (value: string) => value.trim() !== "";
   const isEmail = (value: any) =>
     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
@@ -85,7 +84,7 @@ const AddService = ({ toggleDrawer }: any) => {
   return (
     <form className="w-full h-full flex flex-col">
       <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-        <Image src={userPic} />
+        <Image src={userPic} alt={""} />
         <input
           type="file"
           name="resume"

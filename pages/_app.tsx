@@ -10,12 +10,12 @@ import Head from "next/head";
 import type { ReactElement } from "react";
 import Loader from "src/components/Loader";
 import { useRouter } from "next/router";
+import ErrorBoundary from "src/components/ErrorBoundary";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     const securePage = async () => {
       const accessToken = sessionStorage.getItem("accessToken");
       if (!accessToken) {
@@ -24,25 +24,19 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
     securePage();
   }, []);
-  return (
-    <div>
+  if (typeof window === "undefined") {
+    return <></>;
+  } else {
+    return (
       <Provider store={store}>
-        <Head>
-          {" "}
-          <title>Admin Dashboard</title>
-          <meta
-            name="viewport"
-            content="initial-scale=1.0, width=device-width"
-          />
-        </Head>
+        <div>
+          <Modal />
 
-        <Modal />
-        <Loader />
-
-        <Component {...pageProps} />
+          <Component {...pageProps} />
+        </div>
       </Provider>
-    </div>
-  );
+    );
+  }
 }
 
 export default MyApp;

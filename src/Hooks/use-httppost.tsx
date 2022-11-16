@@ -7,10 +7,7 @@ import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 const useHTTPPost = () => {
   const dispatch = useDispatch();
 
-  const request = async (
-    { url, values, accessToken }: any,
-    dataFunction: any
-  ) => {
+  const send = async ({ url, values, accessToken }: any, dataFunction: any) => {
     await axios
       .post(url, values, {
         headers: {
@@ -20,6 +17,7 @@ const useHTTPPost = () => {
       })
       .then(res => {
         dataFunction(res);
+        console.log("here");
         dispatch(
           uiActions.openModalAndSetContent({
             modalStyles: {
@@ -47,7 +45,7 @@ const useHTTPPost = () => {
       });
   };
 
-  return request;
+  return send;
 };
 
 export default useHTTPPost;

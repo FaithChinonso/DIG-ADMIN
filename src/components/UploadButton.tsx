@@ -1,5 +1,5 @@
 import React from "react";
-import { CloudUpload, FilePng } from "../../assets";
+import userPic from "../assets/image/userPic.svg";
 import { FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 
@@ -19,14 +19,13 @@ const Upload = (props: any) => {
     // if (newFile) {
     //   const updatedList = [...fileList, newFile];
     //   setFileList(updatedList as any);
-      props.onFileChange(newFile);
-    }
+    props.onHandleChange(newFile);
   };
 
-//   const fileRemove = (file: any) => {
-  
-//     props.onFileChange(undefined);
-//   };
+  //   const fileRemove = (file: any) => {
+
+  //     props.onFileChange(undefined);
+  //   };
 
   return (
     <>
@@ -37,20 +36,20 @@ const Upload = (props: any) => {
         }}
       >
         <div
-          className={UploadCss.upload_input}
-          ref={wrapperRef}
-          onDragEnter={onDragEnter}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
+          className=""
+          //   ref={wrapperRef}
+          //   onDragEnter={onDragEnter}
+          //   onDragLeave={onDragLeave}
+          //   onDrop={onDrop}
         >
-          <div className={UploadCss.label}>
-            <Image src={CloudUpload} alt="" width={100} height={100} />
+          <div className="w-full">
+            <Image src={userPic} alt="" width={100} height={100} />
             <p>Drag & Drop your files here</p>
           </div>
           <input type="file" value="" onChange={onFileDrop} />
         </div>
 
-        {fileList.length > 0 ? (
+        {/* {fileList.length > 0 ? (
           <div className={UploadCss.file_preview}>
             <p className={UploadCss.preview_title}>Ready to upload</p>
             {fileList.map((item: any, index) => (
@@ -82,7 +81,7 @@ const Upload = (props: any) => {
               </div>
             ))}
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     </>
   );

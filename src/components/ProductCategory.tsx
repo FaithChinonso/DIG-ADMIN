@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { addProductCategory } from "src/redux/store/data-slice";
@@ -11,38 +12,56 @@ import AddProductCategory from "./Forms/AddProductCategory";
 import ModalAction from "./ModalContent/ModalAction";
 import MultipleSelectTable from "./multiple-select-table";
 
-const ProductCategory = ({ accessToken }: any) => {
+const ProductCategory = () => {
   const dispatch = useDispatch();
+  const remove = useHTTPDelete();
+  const accessToken = sessionStorage.getItem("accessToken");
   const [isOpen, setIsOpen] = useState(false);
+  const [type, setType] = useState("edit");
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
   };
   const { productCategory } = useSelector((state: any) => state.data);
 
   const request = useHTTPGet();
+  const send = useHTTPPost();
 
-  const fetchCategory = () => {
-    const url = "api/admin/productcategory/all-product-categories";
+  const fetchAllCategory = () => {
+    const url =
+      "https://backendapi.flip.onl/api/admin/productcategory/all-product-categories";
     const dataFunction = (res: any) => {
       dispatch(addProductCategory(res.data.data));
     };
     request({ url, accessToken }, dataFunction);
   };
+  const deleteCategory = async (id: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/productcategory/delete-category/${id}`;
+    const dataFunction = (res: any) => {};
+    remove({ url, accessToken }, dataFunction);
+  };
+  const editCategory = async (id: any, endpoint: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/productcategory/${endpoint}/${id}`;
+    const dataFunction = (res: any) => {};
+    send({ url, accessToken }, dataFunction);
+  };
 
   type Data = {
-    userID: number;
+    categoryID: number;
     serial: number;
     name: string;
+    isActive: boolean;
   };
   const formatData = productCategory
     ?.slice(0)
     .reverse()
     .map((client: Data, index: number) => {
       return {
-        id: client.userID,
+        id: client?.categoryID,
         serial: index + 1,
-
-        name: client.name,
+        isActive: client?.isActive,
+        name: client?.name,
       };
     });
   const columnProductCategory = [
@@ -56,8 +75,11 @@ const ProductCategory = ({ accessToken }: any) => {
       accessor: "name",
     },
     {
-      Header: "Category ID",
-      accessor: "id",
+      Header: "Status",
+      accessor: "isActive",
+      Cell: (prop: any) => {
+        <div> {prop.value ? "Active" : "Inactive"}</div>;
+      },
     },
 
     {
@@ -70,47 +92,68 @@ const ProductCategory = ({ accessToken }: any) => {
             items={
               <>
                 <ActionMenuItem
-                  name="View More"
+                  name="Update Category"
                   onClickFunction={() => {
-                    setIsOpen(!isOpen);
+                    toggleDrawer();
+                    setType("edit");
                   }}
                 />
 
-                <ActionMenuItem
-                  name="Update Category"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Update" item="category" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-
-                <ActionMenuItem
-                  name="Deactivate"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Deactivate" item="product" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
+                {prop?.row.original?.isActive === true ? (
+                  <ActionMenuItem
+                    name="Deactivate"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="deactivate"
+                                item="category"
+                                actionFunction={() =>
+                                  editCategory(
+                                    prop?.row.original?.id,
+                                    "deactivate-category"
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Activate"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="activate"
+                                item="product"
+                                actionFunction={() =>
+                                  editCategory(
+                                    prop?.row.original?.id,
+                                    "activate-category"
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                )}
 
                 <ActionMenuItem
                   name="Delete Category"
@@ -122,7 +165,13 @@ const ProductCategory = ({ accessToken }: any) => {
                         },
                         modalContent: (
                           <>
-                            <ModalAction action="delete" item="product" />
+                            <ModalAction
+                              action="delete"
+                              item="category"
+                              actionFunction={() =>
+                                deleteCategory(prop?.row.original?.id)
+                              }
+                            />
                           </>
                         ),
                       })
@@ -136,21 +185,22 @@ const ProductCategory = ({ accessToken }: any) => {
       },
     },
   ];
-
+  // useEffect(() => {
+  //   fetchAllCategory();
+  // }, [fetchAllCategory]);
   return (
     <div>
-      {" "}
       <DrawerCard
-        title="Add Category"
+        title={type === "edit" ? "Update Category" : "Create Category"}
         open={isOpen}
         toggleDrawer={toggleDrawer}
       >
-        <AddProductCategory />
+        <AddProductCategory type="edit" />
       </DrawerCard>
       <MultipleSelectTable
         columns={columnProductCategory}
-        data={[]}
-        emptyPlaceHolder="No products yet!"
+        data={formatData}
+        emptyPlaceHolder="No category yet!"
         extraButton={{ text: "Create Product category" }}
         onClickFunction={toggleDrawer}
       />

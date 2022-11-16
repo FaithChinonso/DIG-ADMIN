@@ -10,19 +10,22 @@ import axios from "axios";
 import useHTTPPost from "src/Hooks/use-httppost";
 
 const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
-  const request = useHTTPPost();
 
+  const dispatch = useDispatch();
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(0);
-  const dispatch = useDispatch();
-  const isNotEmpty = (value: string) => value.trim() !== "";
-  const is8Chars = (value: string) => value.trim().length > 7;
+
+  const send = useHTTPPost();
+  
+
+  const isNotEmpty = (value: string) => value?.trim() !== "";
+  const is8Chars = (value: string) => value?.trim().length > 7;
   const isNotEmptyMerchant = (value: string) => {
     if (enteredRole === "Merchant") {
-      value.trim() !== "";
+      value?.trim() !== "";
     } else {
-      value.trim() === "";
+      value?.trim() === "";
     }
   };
   const isEmail = (value: any) =>
@@ -170,7 +173,7 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
 
       const url = "https://backendapi.flip.onl/api/admin/user/create-user";
-      request({ url, values: payload, accessToken }, dataFunction);
+      send({ url, values: payload, accessToken }, dataFunction);
 
       emailReset();
 

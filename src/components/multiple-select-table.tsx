@@ -43,7 +43,7 @@ const MultipleSelectTable = ({
   rowClickable,
 }: Partial<any>) => {
   const router = useRouter();
-  const [showList, setShowList] = useState(false);
+
   const IndeterminateCheckbox = React.forwardRef(
     ({ indeterminate, ...rest }: any, ref: any) => {
       const defaultRef = React.useRef();
@@ -160,7 +160,7 @@ const MultipleSelectTable = ({
                   )}
                 </button>
                 {/* {showList && (
-                    
+
                    )} */}
                 {extraButton?.text && (
                   <button
@@ -187,12 +187,16 @@ const MultipleSelectTable = ({
             >
               <thead>
                 {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
+                  <tr
+                    {...headerGroup.getHeaderGroupProps()}
+                    key={headerGroup.id}
+                  >
                     {headerGroup.headers.map(column => (
                       <th
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
                         )}
+                        key={column.id}
                         className="bg-white py-[13px] px-[20px] shadow-tableShadow text-sm text-darkPurple w-[300px]"
                       >
                         {column.render("Header")}
@@ -213,6 +217,7 @@ const MultipleSelectTable = ({
                   prepareRow(row);
                   return (
                     <tr
+                      key={row.id}
                       {...row.getRowProps()}
                       onClick={() => {
                         if (rowClickable === true) {
@@ -226,6 +231,7 @@ const MultipleSelectTable = ({
                       {row?.cells.map((cell: any) => {
                         return (
                           <td
+                            key={cell.id}
                             {...cell.getCellProps()}
                             style={{
                               padding: "20px",
@@ -277,13 +283,13 @@ const MultipleSelectTable = ({
                       onClick={() => previousPage()}
                       style={{ paddingRight: "10px" }}
                     >
-                      <p>
+                      <div>
                         {pageIndex + 1 === 1 && (
                           <div className="text-xs text-softGray cursor-pointer">
                             Previous
                           </div>
                         )}
-                      </p>
+                      </div>
                     </div>
                     <div className="text-base flex items-center text-[#37474f] border border-softGray px-2 py-1">
                       {pageIndex + 1}

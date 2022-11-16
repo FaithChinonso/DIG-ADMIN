@@ -17,6 +17,7 @@ const ContactContainer = ({ contacts, setDetails }: any) => {
             contactName={item.contactName}
             activeStatus={item.activeStatus}
             onClickFunction={() => setDetails(item)}
+            key={item.id}
           />
         ))}
       </div>

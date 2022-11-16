@@ -34,13 +34,7 @@ const useHTTPDelete = () => {
         );
       })
       .catch((error: any) => {
-        if (error.response) {
-          Notify({ message: "" });
-        } else if (error.request) {
-          Notify({ message: "A Error occured on our end" });
-        } else {
-          Notify({ message: "A Error occured" });
-        }
+        alert(error);
       });
   };
 

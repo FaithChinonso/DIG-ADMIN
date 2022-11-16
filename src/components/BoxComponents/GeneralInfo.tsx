@@ -39,15 +39,15 @@ const GeneralInfo = () => {
           <div className="text-grey text-xs">Sinzu Movers</div>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="text-text text-[10px]">Driver's License</div>
+          <div className="text-text text-[10px]">Drivers License</div>
           <div className="text-grey text-xs">50006333</div>
         </div>
       </div>
       <div>
-        <div className="text-text text-xs my-4">Rider's Feedback</div>
+        <div className="text-text text-xs my-4">Riders Feedback</div>
         <div className="flex w-full gap-3">
           {ridersFeedback?.map((item: any) => (
-            <div className="shadow-tableShadow w-[173px] p-2 ">
+            <div className="shadow-tableShadow w-[173px] p-2 " key={item.id}>
               <div className="text-grey text-[8px]">{item.text}</div>
               <div className="flex  items-center justify-center gap-3">
                 <div>

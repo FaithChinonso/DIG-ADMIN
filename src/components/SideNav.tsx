@@ -7,19 +7,24 @@ import Image from "next/image";
 import profile from "../assets/image/profile.svg";
 import Link from "next/link";
 
-import { addPage, addSection } from "src/redux/store/data-slice";
+import { useRouter } from "next/router";
+import { authActions } from "src/redux/store/auth-slice";
 
 const SideNav = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
-  const [value, setValue] = useState("first");
+  const [array, setArray] = useState<string[]>([]);
+  const [path, setPath] = useState<string>("");
+  const [value, setValue] = useState(path);
   const [selected, setSelected] = useState("");
-  const setPage = (value: any, name: any) => {
-    () => {
-      setValue(value);
-      dispatch(addPage(name));
-      dispatch(addSection(""));
-    };
-  };
+
+  useEffect(() => {
+    setArray(router.pathname.split("/"));
+    setPath(router.pathname.slice(1));
+    setValue(path);
+  }, [path, router.pathname]);
+
+  console.log(router.pathname.split("/"));
 
   useEffect(() => {}, [value]);
   return (
@@ -34,7 +39,9 @@ const SideNav = () => {
             >
               <div
                 className="px-4"
-                onClick={() => setPage(item.value, item.name)}
+                onClick={() => {
+                  setValue(item.value);
+                }}
                 style={{
                   borderLeft: value === item.value ? "3px solid white" : "none",
                 }}
@@ -49,9 +56,7 @@ const SideNav = () => {
                     backgroundColor: item.color,
                   }}
                 >
-                  <Link href={item.route} legacyBehavior>
-                    <a> {item.initials}</a>
-                  </Link>
+                  {item.initials}
                 </li>
               </div>
               {value === item.value && (
@@ -70,7 +75,6 @@ const SideNav = () => {
                       key={nav.id}
                       onClick={() => {
                         setSelected(nav.name);
-                        dispatch(addSection(nav.name));
                       }}
                     >
                       <Link href={nav.route} legacyBehavior>
@@ -113,7 +117,6 @@ const SideNav = () => {
                 key={item.id}
                 onClick={() => {
                   setSelected(item.name);
-                  dispatch(addSection(item.name));
                 }}
               >
                 <Link href={item.route} legacyBehavior>
@@ -139,6 +142,12 @@ const SideNav = () => {
             </li>
           ))}
         </ul> */}
+        <button
+          className="text-xs w-full text-center p-2 rounded-l-full rounded-[-12px] absolute bottom-6 text-white border border-faintWhite"
+          onClick={() => dispatch(authActions.logoutHandler())}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../redux/store/ui-slice";
 import Cancel from "../assets/cancel.png";
 import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
+import { useAppDispatch } from "src/Hooks/use-redux";
 
 const styles = {
   main: {
@@ -39,14 +40,14 @@ const styles = {
 };
 
 export default function Modal() {
-  const { modalOpened, modalContent, modalStyles } = useSelector(
-    (state: any) => state.ui
-  );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const modalOpened = useSelector((state: any) => state.ui.modalOpened);
+  const modalContent = useSelector((state: any) => state.ui.modalContent);
+  const modalStyles = useSelector((state: any) => state.ui.modalStyles);
 
   const Close = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    dispatch(uiActions.closeModal(false));
+    dispatch(uiActions.closeModal());
   };
   return (
     <>
@@ -55,24 +56,11 @@ export default function Modal() {
           style={{
             ...styles.main,
             left: 0,
-            zIndex: 16000,
+            zIndex: 1600000,
           }}
           onClick={e => Close(e)}
         >
           <div style={{ ...styles.messageBox, ...modalStyles }}>
-            {/* <img
-              onClick={(e) => Cl ose(e)}
-              src={CloseIcon}
-              width="25px"
-              height="25px"
-              style={{
-                zIndex: 20,
-                cursor: "pointer",
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-              }}
-            /> */}
             <div
               onClick={e => {
                 e.stopPropagation();
@@ -83,7 +71,9 @@ export default function Modal() {
             </div>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <></>
+      )}
     </>
   );
 }

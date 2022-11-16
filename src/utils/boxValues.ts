@@ -16,6 +16,6 @@ export const MyDriversValue = [
   { id: 3, label: "Tracking" },
 ];
 export const MyProductValue = [
-  { id: 1, label: "ProductCategory" },
-  { id: 2, label: "Product" },
+  { id: 1, label: "Producty" },
+  { id: 2, label: "ProductCategory" },
 ];

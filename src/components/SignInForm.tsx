@@ -11,23 +11,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Provider, useDispatch } from "react-redux";
 import { uiActions } from "src/redux/store/ui-slice";
-import {
-  addPage,
-  addToken,
-  saveDetails,
-  saveSignin,
-} from "src/redux/store/data-slice";
 import axios from "axios";
 import store from "src/redux/store";
 import { authActions } from "src/redux/store/auth-slice";
 
-const SignInForm = () => {
+const SignInForm = ({ login }: any) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const is8Chars = (value: string) => value.trim().length > 7;
+  const is8Chars = (value: string) => value?.trim().length > 7;
   const isEmail = (value: any) =>
     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-  const isNotEmpty = (value: string) => value.trim() !== "";
+  const isNotEmpty = (value: string) => value?.trim() !== "";
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
@@ -67,47 +61,26 @@ const SignInForm = () => {
 
     if (emailIsValid && passwordIsValid) {
       setFormIsValid(true);
-      fetch("https://backendapi.flip.onl/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return res.json().then(data => {
-              if (data) {
-              }
-            });
-          }
-        })
-        .then(data => {
-          console.log(data);
-          dispatch(authActions.loginHandler(data));
-          router.push("/general/");
-          console.log("pushed");
-        })
-        .catch(err => {
-          alert("Authetication Failed");
-        });
+      const loginHandler = async () => {
+        try {
+          const res = await axios.post(
+            "https://backendapi.flip.onl/api/auth/login",
+            payload,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          console.log(res.data, "inside siginpageres");
+          dispatch(authActions.loginHandler(res.data));
+        } catch (err: any) {
+          console.log(err, "inside siginpageerr");
+        }
+      };
+      loginHandler();
 
-      // axios
-      //   .post("https://backendapi.flip.onl/api/auth/login", payload)
-      //   .then((res: any) => {
-      //     console.log(res?.data);
-      //     dispatch(dataActions.saveSignin(res?.data));
-      //     console.log(res?.data);
-      //     const accessToken = res.data.token;
-      //     sessionStorage.setItem("accessToken", accessToken);
-      //   })
-      //   .then(() => {
-      //     router.push("/general/");
-      //     console.log("pushed");
-      //   })
-      //   .catch(err => {});
+      // login(payload);
     }
   };
   useEffect(() => {}, []);

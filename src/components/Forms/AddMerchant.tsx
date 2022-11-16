@@ -65,7 +65,7 @@ const AddMerchant = ({ toggleDrawer }: any) => {
   return (
     <form className="w-full h-full flex flex-col">
       <label htmlFor="resume" className="secondary text-sm font-medium mx-auto">
-        <Image src={userPic} />
+        <Image src={userPic} alt={""} />
         <input
           type="file"
           name="resume"

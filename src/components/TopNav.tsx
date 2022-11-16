@@ -4,16 +4,26 @@ import setting from "../../src/assets/image/setting-3.svg";
 import bell from "../../src/assets/image/bell.svg";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const TopNav = () => {
-  const { page, section } = useSelector((state: any) => state.data);
+  const router = useRouter();
+  const [array, setArray] = useState<string[]>([]);
+  const [path, setPath] = useState<string>("");
+
+  useEffect(() => {
+    setArray(router.pathname.split("/"));
+    setPath(router.pathname.slice(1));
+  }, [router.pathname]);
+
   return (
     <div className="fixed top-0 left-[60px] md:left-[265px] w-[calc(100vw-60px)] md:w-[calc(100%-265px)] p-[10px] md:p-[30px] flex flex-col-reverse gap-2 justify-center items-center md:flex-row md:justify-between mb-8 bg-white z-20">
-      <div className="flex flex-col md:w-[350px] w-full  items-center justify-around">
-        {/* <div className="text-sm text-grey">
-          {page}/ <span className="text-softGray">{section}</span>
+      <div className="flex flex-col md:w-auto w-full  items-center justify-around">
+        <div className="text-sm text-grey">
+          {array[1]}/ <span className="text-softGray">{array[2]}</span>
         </div>
-        <div className="text-lg text-grey">{section}</div> */}
+        <div className="text-lg text-grey">{array[2]}</div>
       </div>
 
       <div className="rounded gap-2 flex items-center w-max  h-[40px] bg-lightGray px-4">

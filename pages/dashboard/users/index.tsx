@@ -23,10 +23,11 @@ import moment from "moment";
 import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { addUsers } from "src/redux/store/data-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 
 const Users = () => {
-  const dispatch = useDispatch();
-  const token = useSelector((state: any) => state.data.token);
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state: any) => state.data.token);
   console.log(token);
 
   const request = useHTTPGet();
@@ -34,17 +35,10 @@ const Users = () => {
   const [allUsers, setAllUsers] = useState<any>();
 
   const { users } = useSelector((state: any) => state.data);
-  const fetchAllUsers = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = "https://backendapi.flip.onl/api/admin/user/all-users";
-    const dataFunction = (res: any) => {
-      dispatch(addUsers(res?.data.data));
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+
   const deleteUser = async (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    dispatch(uiActions.closeModal(true));
+    dispatch(uiActions.closeModal());
     try {
       const res: any = await axios.delete(
         `https://backendapi.flip.onl/api/admin/user/delete-user/${id}`,
@@ -63,14 +57,10 @@ const Users = () => {
             padding: 0,
           },
           modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={res.data.message} />
-            </>
+            <SuccessfulModal title="Successfull" message={res.data.message} />
           ),
         })
       );
-
-      fetchAllUsers();
     } catch (error: any) {}
   };
   const editUser = async (id: any, endpoint: any) => {
@@ -98,8 +88,6 @@ const Users = () => {
           ),
         })
       );
-
-      fetchAllUsers();
     } catch (error: any) {}
   };
   const router = useRouter();
@@ -284,9 +272,7 @@ const Users = () => {
       },
     },
   ];
-  useEffect(() => {
-    fetchAllUsers();
-  }, []);
+
   return (
     <ParentContainer>
       <DrawerCard title="Add User" open={isOpen} toggleDrawer={toggleDrawer}>

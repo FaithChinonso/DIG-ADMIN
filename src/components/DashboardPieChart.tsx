@@ -1,5 +1,8 @@
-import React, { PureComponent, useState } from "react";
+import moment from "moment";
+import React, { PureComponent, useEffect, useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
+import { statusData } from "src/utils/analytics";
+import { Months } from "src/utils/months";
 
 const data = [
   { name: "Group A", value: 400 },
@@ -82,6 +85,10 @@ const renderActiveShape = (props: any) => {
 };
 
 const DashboardPieChart = () => {
+  const [month, setMonth] = useState<any>("");
+  useEffect(() => {
+    setMonth(moment().format("MMM"));
+  }, []);
   //   static demoUrl =
   //     "https://codesandbox.io/s/pie-chart-with-customized-active-shape-y93si";
   const [activeIndex, setActiveIndex] = useState(0);
@@ -91,22 +98,70 @@ const DashboardPieChart = () => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height="100%" className="">
-      <PieChart width={400} height={400}>
-        <Pie
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape}
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={60}
-          outerRadius={80}
-          fill="rgba(107, 93, 211, 0.4)"
-          dataKey="value"
-          onMouseEnter={onPieEnter}
-        />
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="bg-white w-full md:w-[35%] h-[auto] z-4 shadow-3xl rounded-md p-7">
+      <div className=" flex justify-between items-center mb-5 p-5">
+        <div className="text-gray-800 text-3xl">Status</div>
+        <div>
+          <select
+            id="demo-simple-select"
+            value={month}
+            name="month"
+            onChange={(e: any) => setMonth(e.target.value)}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              background: "rgba(249, 250, 252)",
+              border: "none",
+              fontSize: "12px",
+              fontFamily: "Steradian",
+              color: "#212B4C",
+              height: "30px",
+            }}
+          >
+            {Months?.map((month: any) => (
+              <option
+                value={month}
+                style={{
+                  fontSize: "13px",
+                  fontFamily: "Steradian",
+                  color: "#212B4C",
+                  height: "30px",
+                }}
+                key={month}
+              >
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="h-[60%] w-full">
+        <ResponsiveContainer width="100%" height="100%" className="">
+          <PieChart width={400} height={400}>
+            <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              fill="rgba(107, 93, 211, 0.4)"
+              dataKey="value"
+              onMouseEnter={onPieEnter}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="flex justify-between">
+        {statusData.map(item => (
+          <div className="flex flex-col items-center" key={item.id}>
+            <h2 className="text-xl text-gray-600">{item.figure}</h2>
+            <h3 className="text-base text-gray-400">{item.name}</h3>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 export default DashboardPieChart;

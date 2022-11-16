@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const useInput = (validateFunction: any, error: string) => {
-  const [enteredInput, setEnteredInput] = useState<string>("");
+  const [enteredInput, setEnteredInput] = useState<any>();
   const [enteredRadioInput, setEnteredRadioInput] = useState({});
   const [isTouched, setIsTouched] = useState(false);
 

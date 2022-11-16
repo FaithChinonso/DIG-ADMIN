@@ -8,30 +8,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { useEffect, useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
+import { addProductCategory } from "src/redux/store/data-slice";
+import useHTTPGet from "src/Hooks/use-httpget";
+import { delivery } from "src/utils/analytics";
+import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
 
-const CreateProduct = ({ merchantId }: any) => {
-  const request = useHTTPPost();
+const CreateProduct = ({ merchantId, fetchAllProducts }: any) => {
+  const [price, setPrice] = useState(null);
+  const [devFee, setDevFee] = useState(null);
   const { productCategory } = useSelector((state: any) => state.data);
-
-  const dispatch = useDispatch();
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
-  const isNotEmpty = (value: string) => value.trim() !== "";
-  const isEmail = (value: any) =>
-    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-  const productQuantity = [
-    { id: 1, name: "Female" },
-    { id: 2, name: "Male" },
-  ];
 
-  const delivery = [
-    { id: 1, name: "Yes" },
-    { id: 2, name: "No" },
-  ];
-  const role = [
-    { id: 1, name: "consumer" },
-    { id: 2, name: "merchant" },
-  ];
+  const send = useHTTPPost();
+  const request = useHTTPGet();
+
+  const dispatch = useDispatch();
+
   const {
     enteredInput: enteredProductName,
     hasError: productNameHasError,
@@ -58,7 +52,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: productQuantityIsValid,
     updateInputHandler: productQuantityInputHandler,
     inputBlurHandler: productQuantityBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredCategory,
     hasError: categoryHasError,
@@ -85,7 +79,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: productWeightIsValid,
     updateInputHandler: productWeightInputHandler,
     inputBlurHandler: productWeightBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredDeliveryTag,
     hasError: deliveryTagHasError,
@@ -103,7 +97,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: discountPercentageIsValid,
     updateInputHandler: discountPercentageInputHandler,
     inputBlurHandler: discountPercentageBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredDiscount,
     hasError: discountHasError,
@@ -112,7 +106,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: discountIsValid,
     updateInputHandler: discountInputHandler,
     inputBlurHandler: discountBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredPrice,
     hasError: priceHasError,
@@ -121,7 +115,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: priceIsValid,
     updateInputHandler: priceInputHandler,
     inputBlurHandler: priceBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredDeliveryFee,
     hasError: deliveryFeeHasError,
@@ -130,7 +124,7 @@ const CreateProduct = ({ merchantId }: any) => {
     inputIsValid: deliveryFeeIsValid,
     updateInputHandler: deliveryFeeInputHandler,
     inputBlurHandler: deliveryFeeBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+  } = useInput(isNotEmptyNumber, "This field cannot be empty");
   const {
     enteredInput: enteredDescription,
     hasError: descriptionHasError,
@@ -148,51 +142,29 @@ const CreateProduct = ({ merchantId }: any) => {
     const payload = {
       name: enteredProductName,
       brand: enteredbrand,
-      price: enteredPrice,
+      price: price,
       description: enteredDescription,
       quantity: enteredProductQuantity,
       free_delivery: enteredDeliveryTag,
-      shiping_fee: enteredDeliveryFee,
-      category_id: "",
+      shipping_fee: devFee,
+      category_id: enteredCategory,
       product_waranty: enteredProductWarranty,
       discount_available: enteredDiscount,
       discount_percentage: enteredDiscountPercentage,
       weight: enteredProductWeight,
     };
     console.log(payload);
+    const dataFunction = (res: any) => {
+      console.log(res);
+      fetchAllProducts();
+    };
+    const accessToken = sessionStorage.getItem("accessToken");
 
-    if (
-      productNameIsValid &&
-      brandIsValid &&
-      priceIsValid &&
-      deliveryFeeIsValid &&
-      deliveryTagIsValid &&
-      descriptionIsValid &&
-      productQuantityIsValid &&
-      productWarrantyIsValid &&
-      discountIsValid &&
-      discountPercentageIsValid &&
-      productWeightIsValid
-    ) {
-      setFormIsValid(true);
-
-      dispatch(uiActions.openLoader(true));
-      const dataFunction = (res: any) => {
-        console.log(res);
-      };
-      const accessToken = sessionStorage.getItem("accessToken");
-
-      const url = `https://backendapi.flip.onl/api/admin/product/create-product/${merchantId}`;
-      request({ url, values: payload, accessToken }, dataFunction);
-    } else {
-      setFormIsValid(false);
-      return;
-    }
+    const url = `https://backendapi.flip.onl/api/admin/product/create-product/${merchantId}`;
+    send({ url, values: payload, accessToken }, dataFunction);
   };
-
-  useEffect(() => {}, []);
   return (
-    <form className="w-full h-full flex flex-col">
+    <form className="w-full h-full flex flex-col" onSubmit={submitFormHandler}>
       <label htmlFor="resume" className=" text-sm font-medium mx-auto">
         <Image src={userPic} alt={""} />
         <input
@@ -248,7 +220,7 @@ const CreateProduct = ({ merchantId }: any) => {
         </label>
 
         <input
-          type="text"
+          type="number"
           name="quantity"
           value={enteredProductQuantity}
           id="productQuantity"
@@ -283,10 +255,10 @@ const CreateProduct = ({ merchantId }: any) => {
           htmlFor="productWeight"
           className=" text-[10px] text-[#1D2939] bg-white"
         >
-          Product Weight
+          Product Weight(in kg)
         </label>
         <input
-          type="text"
+          type="number"
           name="productweight"
           value={enteredProductWeight}
           id="productweight"
@@ -315,8 +287,8 @@ const CreateProduct = ({ merchantId }: any) => {
         >
           {productCategory?.map((item: any) => (
             <option
-              value={item.id}
-              key={item.id}
+              value={item.categoryID}
+              key={item.categoryID}
               className=" text-[10px] text-[#1D2939] bg-white"
             >
               {item.name}
@@ -344,7 +316,7 @@ const CreateProduct = ({ merchantId }: any) => {
         >
           {delivery?.map((item: any) => (
             <option
-              value={item.id}
+              value={item.name}
               key={item.id}
               className=" text-[10px] text-[#1D2939] bg-white"
             >
@@ -353,26 +325,28 @@ const CreateProduct = ({ merchantId }: any) => {
           ))}
         </select>
       </div>
-
       <div className="text-red-400 text-[10px] ">{discountError}</div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="discountPercentage"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Discount Percentege
-        </label>
-        <input
-          type="number"
-          name="deliveryTag"
-          value={enteredDiscountPercentage}
-          id="discountPercentage"
-          onBlur={discountPercentageBlurHandler}
-          onChange={discountPercentageInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Discount Percentege"
-        />
-      </div>
+      {enteredDiscount === "Yes" && (
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="discountPercentage"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Discount Percentege
+          </label>
+          <input
+            type="number"
+            name="deliveryPercentage"
+            value={enteredDiscountPercentage}
+            id="discountPercentage"
+            onBlur={discountPercentageBlurHandler}
+            onChange={discountPercentageInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Discount Percentege"
+          />
+        </div>
+      )}
+
       <div className="text-red-400 text-[10px] ">{discountPercentageError}</div>
 
       <div className=" mt-[30px]">
@@ -381,7 +355,7 @@ const CreateProduct = ({ merchantId }: any) => {
         </label>
         <NumericFormat
           name="enteredPrice"
-          value={enteredPrice || ""}
+          value={price || ""}
           allowNegative={false}
           thousandSeparator={true}
           required
@@ -390,7 +364,8 @@ const CreateProduct = ({ merchantId }: any) => {
           onValueChange={(values: any, sourceInfo: any) => {
             const { formattedValue, value } = values;
             const { event, source } = sourceInfo;
-            priceInputHandler(value);
+            console.log(event.target.value);
+            setPrice(value);
           }}
         />
       </div>
@@ -422,28 +397,33 @@ const CreateProduct = ({ merchantId }: any) => {
       </div>
       <div className="text-red-400 text-[10px]">{deliveryTagError}</div>
 
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="deliveryFee"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Delivery Fee
-        </label>
-        <NumericFormat
-          name="enteredDeliveryFee"
-          value={enteredDeliveryFee || ""}
-          allowNegative={false}
-          thousandSeparator={true}
-          required
-          prefix={"₦"}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          onValueChange={(values: any, sourceInfo: any) => {
-            const { formattedValue, value } = values;
-            const { event, source } = sourceInfo;
-            deliveryFeeInputHandler(value);
-          }}
-        />
-      </div>
+      {enteredDeliveryTag === "No" && (
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="deliveryFee"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Delivery Fee
+          </label>
+          <NumericFormat
+            name="enteredDeliveryFee"
+            value={devFee || ""}
+            allowNegative={false}
+            thousandSeparator={true}
+            required
+            prefix={"₦"}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            onValueChange={(values: any, sourceInfo: any) => {
+              const { formattedValue, value } = values;
+
+              const { event, source } = sourceInfo;
+
+              setDevFee(value);
+            }}
+          />
+        </div>
+      )}
+
       <div className="text-red-400 text-[10px]">{deliveryFeeError}</div>
 
       <div className=" mt-[30px]">
@@ -466,7 +446,10 @@ const CreateProduct = ({ merchantId }: any) => {
       </div>
       <div className="text-red-400 text-[10px]">{descriptionError}</div>
 
-      <button className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4">
+      <button
+        type="submit"
+        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4"
+      >
         Create Product
       </button>
     </form>

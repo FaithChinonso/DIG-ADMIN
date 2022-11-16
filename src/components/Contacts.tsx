@@ -13,6 +13,7 @@ const Contacts = ({
         <Image
           src={contactImage}
           className="w-full h-full object-cover rounded-[50%]"
+          alt={""}
         />
       </div>
       <div className="flex flex-col">

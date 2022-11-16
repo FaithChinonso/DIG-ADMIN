@@ -3,9 +3,6 @@ import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
 const DrawerCard = ({ title, open, toggleDrawer, children }: any) => {
-  if (typeof window === "undefined") {
-    return <div></div>;
-  }
   const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
 
   const updateMedia = () => {
@@ -19,6 +16,9 @@ const DrawerCard = ({ title, open, toggleDrawer, children }: any) => {
       return () => window.removeEventListener("resize", updateMedia);
     }
   });
+  if (typeof window === "undefined") {
+    return <div></div>;
+  }
   return (
     <div>
       <Drawer

@@ -33,6 +33,7 @@ const ChatContainer = ({ contactImage, contactName, status, message }: any) => {
           <Image
             src={contactImage}
             className="w-full h-full object-cover rounded-[50%]"
+            alt={""}
           />
         </div>
         <div className="flex flex-col">
@@ -48,7 +49,10 @@ const ChatContainer = ({ contactImage, contactName, status, message }: any) => {
         {totalMessage?.map((item: any) =>
           item.type === "recieved" ? (
             // <div className="w-full flex justify-start items-center">
-            <div className=" flex justify-start items-start mb-4 flex-col">
+            <div
+              className=" flex justify-start items-start mb-4 flex-col"
+              key={item.id}
+            >
               <div className=" bg-white text-grey text-sm w-1/2  p-4 rounded-md ">
                 {item.text}{" "}
               </div>{" "}
@@ -58,7 +62,10 @@ const ChatContainer = ({ contactImage, contactName, status, message }: any) => {
             </div>
           ) : (
             // </div>
-            <div className=" flex justify-end items-end mb-4 flex-col">
+            <div
+              className=" flex justify-end items-end mb-4 flex-col"
+              key={item.id}
+            >
               <div className=" bg-darkPurple text-textD text-sm w-1/2  p-4 rounded-md">
                 {item.text}{" "}
               </div>{" "}
