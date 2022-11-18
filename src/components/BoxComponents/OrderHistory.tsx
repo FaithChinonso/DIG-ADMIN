@@ -9,71 +9,40 @@ import {
   order,
 } from "../../utils/analytics";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
+import { useEffect } from "react";
+import { addOrders } from "src/redux/store/data-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import useHTTPGet from "src/Hooks/use-httpget";
+import useHTTPDelete from "src/Hooks/use-httpdelete";
+import useHTTPPost from "src/Hooks/use-httppost";
+import moment from "moment";
+import { uiActions } from "src/redux/store/ui-slice";
+import ModalAction from "../ModalContent/ModalAction";
+import {
+  editorder,
+  getMyOrdersbyMerchant,
+} from "src/redux/store/features/order-slice";
+import OrderTable from "../tables/OrderTable";
 
-const OrderHistory = () => {
-  const columnOrder = [
-    {
-      Header: "User ID",
-      accessor: "id",
-      Filter: false,
-    },
-    {
-      Header: "Order",
-      accessor: "order",
-    },
-    {
-      Header: "Order Price",
-      accessor: "orderPrice",
-    },
-    {
-      Header: "Quantity",
-      accessor: "quantity",
-    },
-    {
-      Header: "Date Requested",
-      accessor: "dateRequested",
-    },
-    {
-      Header: "Merchant",
-      accessor: "merchant",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "number",
-    },
+const OrderHistory = ({ id }: any) => {
+  const dispatch = useAppDispatch();
+  const request = useHTTPGet();
+  const remove = useHTTPDelete();
+  const send = useHTTPPost();
+  const { orders } = useAppSelector((state: any) => state.data);
 
-    {
-      Header: "Status",
-      accessor: "status",
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem name="View Details" />
+  const fetchAllOrder = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    dispatch(getMyOrdersbyMerchant(id));
+  };
 
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
+  useEffect(() => {
+    fetchAllOrder();
+  }, []);
+
   return (
-    <div>
-      {" "}
-      <MultipleSelectTable
-        columns={columnOrder}
-        data={order}
-        emptyPlaceHolder="No Orders created yet!"
-        list
-      />
+    <div className=" p-[10px] md:p-[30px]">
+      <OrderTable data={orders} fetchAllOrders={fetchAllOrder} type="history" />
     </div>
   );
 };

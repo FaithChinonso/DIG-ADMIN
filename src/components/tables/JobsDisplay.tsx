@@ -6,42 +6,20 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { addJobs } from "src/redux/store/data-slice";
+import { deletejob, editjob } from "src/redux/store/features/job-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import { numberWithCommas } from "src/utils/formatNumber";
-import ActionMenuBase from "./ActionMenu/ActionMenuBase";
-import ActionMenuItem from "./ActionMenu/ActionMenuItem";
-import DrawerCard from "./Drawer";
-import AddJob from "./Forms/AddJob";
-import ModalAction from "./ModalContent/ModalAction";
-import MultipleSelectTable from "./multiple-select-table";
+import ActionMenuBase from "../ActionMenu/ActionMenuBase";
+import ActionMenuItem from "../ActionMenu/ActionMenuItem";
+import DataFilterTable from "../DataTable";
+import DrawerCard from "../Drawer";
+import AddJob from "../Forms/AddJob";
+import ModalAction from "../ModalContent/ModalAction";
+import MultipleSelectTable from "../multiple-select-table";
 
 const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const request = useHTTPGet();
-  const send = useHTTPPost();
-  const remove = useHTTPDelete();
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const editJobs = async (id: any, endpoint: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/job/${endpoint}/${id}`;
-    const dataFunction = (res: any) => {
-      fetchAll();
-    };
-    send({ url, accessToken, alert: "send" }, dataFunction);
-  };
-  const deleteJobs = async (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/job/delete-job-post/${id}`;
-    const dataFunction = (res: any) => {
-      fetchAll();
-    };
-    remove({ url, accessToken }, dataFunction);
-  };
 
   type Data = {
     jobID: number;
@@ -71,47 +49,47 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
     });
   const columnDasboard = [
     {
-      Header: "#",
-      accessor: "jobID",
+      name: "#",
+      selector: "jobID",
     },
     {
-      Header: "Headline",
-      accessor: "headline",
+      name: "Headline",
+      selector: "headline",
     },
     {
-      Header: "Experience Level",
-      accessor: "experienceLevel",
+      name: "Experience Level",
+      selector: "experienceLevel",
     },
     {
-      Header: "Job Duration",
-      accessor: "jobDuration",
+      name: "Job Duration",
+      selector: "jobDuration",
     },
     {
-      Header: "Budget",
-      accessor: "budget",
-      Cell: (prop: any) => (
+      name: "Budget",
+      selector: "budget",
+      cell: (prop: any) => (
         <div> &#8358; {numberWithCommas(Number(prop.value || 0))}</div>
       ),
     },
 
     {
-      Header: "Job Scope",
-      accessor: "jobScope",
+      name: "Job Scope",
+      selector: "jobScope",
     },
     {
-      Header: "Negotiable",
-      accessor: "isBudgetNegotiable",
+      name: "Negotiable",
+      selector: "isBudgetNegotiable",
     },
     {
-      Header: "Date Posted",
-      accessor: "datePosted",
+      name: "Date Posted",
+      selector: "datePosted",
     },
     ,
     {
-      Header: "Action",
-      accessor: "action",
+      name: "Action",
+      selector: "action",
       Filter: false,
-      Cell: (prop: any) => {
+      cell: (prop: any) => {
         return (
           <ActionMenuBase
             items={
@@ -119,13 +97,11 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
                 <ActionMenuItem
                   name="View More"
                   onClickFunction={() => {
-                    router.push(
-                      `${location.pathname}/${prop?.row.original?.id}`
-                    );
+                    router.push(`${location.pathname}/${prop?.id}`);
                   }}
                 />
 
-                {prop?.row.original?.isActive === true ? (
+                {prop?.isActive === true ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -140,9 +116,11 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
                                 action="deactivate"
                                 item="job post"
                                 actionFunction={() =>
-                                  editJobs(
-                                    prop?.row.original?.id,
-                                    "deactivate-job-post"
+                                  dispatch(
+                                    editjob({
+                                      endpoint: "deactivate-job-post",
+                                      jobID: prop?.id,
+                                    })
                                   )
                                 }
                               />
@@ -167,9 +145,11 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
                                 action="activate"
                                 item="job post"
                                 actionFunction={() =>
-                                  editJobs(
-                                    prop?.row.original?.id,
-                                    "activate-job-post"
+                                  dispatch(
+                                    editjob({
+                                      endpoint: "activate-job-post",
+                                      jobID: prop?.id,
+                                    })
                                   )
                                 }
                               />
@@ -195,7 +175,7 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
                               action="delete"
                               item="job post"
                               actionFunction={() =>
-                                deleteJobs(prop?.row.original?.id)
+                                dispatch(deletejob(prop?.id))
                               }
                             />
                           </>
@@ -214,19 +194,7 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
 
   return (
     <div>
-      <DrawerCard title="Add Job" open={isOpen} toggleDrawer={toggleDrawer}>
-        <AddJob userId={userId} />
-      </DrawerCard>
-
-      <MultipleSelectTable
-        columns={columnDasboard}
-        data={formatData}
-        emptyPlaceHolder="No Job Post created yet!"
-        extraButton={{ text: "Add Job Post" }}
-        s
-        list
-        onClickFunction={toggleDrawer}
-      />
+      <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );
 };

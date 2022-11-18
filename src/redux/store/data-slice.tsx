@@ -2,37 +2,42 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
 interface DataState {
-  users: (string | number | boolean | {})[];
+  // users: (string | number | boolean | {})[];
   productCategory: (string | number | boolean | {})[];
-  products: (string | number | boolean | {})[];
+
   merchants: (string | number | boolean | {})[];
   services: (string | number | boolean | {})[];
   jobs: (string | number | boolean | {})[];
+  orders: (string | number | boolean | {})[];
+  proposals: (string | number | boolean | {})[];
+  withdrawals: (string | number | boolean | {})[];
+  serviceCategory: (string | number | boolean | {})[];
 }
 // Define the initial state using that type
 const initialState: DataState = {
-  users: [],
+  // users: [],
   productCategory: [],
-  products: [],
+
   merchants: [],
   services: [],
   jobs: [],
+  orders: [],
+  proposals: [],
+  withdrawals: [],
+  serviceCategory: [],
 };
 
 const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
-    addUsers(state, action) {
-      state.users = [...action.payload];
-    },
+    // addUsers(state, action) {
+    //   state.users = [...action.payload];
+    // },
     addProductCategory(state, action) {
       state.productCategory = [...action.payload];
     },
 
-    addProducts(state, action) {
-      state.products = [...action.payload];
-    },
     addMerchants(state, action) {
       state.merchants = [...action.payload];
     },
@@ -42,15 +47,31 @@ const dataSlice = createSlice({
     addJobs(state, action) {
       state.jobs = [...action.payload];
     },
+    addOrders(state, action) {
+      state.orders = [...action.payload];
+    },
+    addProposal(state, action) {
+      state.proposals = [...action.payload];
+    },
+    addServiceCategory(state, action) {
+      state.serviceCategory = [...action.payload];
+    },
+    addWithdrawals(state, action) {
+      state.withdrawals = [...action.payload];
+    },
   },
 });
 export const {
-  addUsers,
+  // addUsers,
   addProductCategory,
-  addProducts,
+
   addMerchants,
   addServices,
   addJobs,
+  addOrders,
+  addWithdrawals,
+  addServiceCategory,
+  addProposal,
 } = dataSlice.actions;
 
 export default dataSlice;

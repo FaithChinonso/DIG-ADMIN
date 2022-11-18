@@ -11,6 +11,8 @@ import type { ReactElement } from "react";
 import Loader from "src/components/Loader";
 import { useRouter } from "next/router";
 import ErrorBoundary from "src/components/ErrorBoundary";
+import DrawerCard from "src/components/DrawerCard";
+import Toast from "src/components/Toast";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -31,6 +33,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <div>
           <Modal />
+          <Loader />
+          <Toast />
+          <DrawerCard />
 
           <Component {...pageProps} />
         </div>

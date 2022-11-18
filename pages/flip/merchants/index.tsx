@@ -22,56 +22,30 @@ import axios from "axios";
 import moment from "moment";
 import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import useHTTPGet from "src/Hooks/use-httpget";
-import { addMerchants, addUsers } from "src/redux/store/data-slice";
+import {
+  addMerchants,
+  addProductCategory,
+  addUsers,
+} from "src/redux/store/data-slice";
 import CreateProduct from "src/components/Forms/CreateProduct";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import AddService from "src/components/Forms/AddService";
+import { useAppSelector } from "src/Hooks/use-redux";
+import CreateWithrawalRequest from "src/components/Forms/CreateWithdrawalRequest";
+import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
+import { getMymerchant } from "src/redux/store/features/user-slice";
+import MerchantTable from "src/components/tables/MerchantTable";
 
 const Merchants = () => {
   const dispatch = useDispatch();
-  const request = useHTTPGet();
-  const remove = useHTTPDelete();
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenServ, setIsOpenServ] = useState(false);
 
-  const [merchantId, setMerchantId] = useState<any>("");
+  const { merchants } = useAppSelector((state: any) => state.user);
+  const { token } = useAppSelector((state: any) => state.auth);
 
-  const { merchants } = useSelector((state: any) => state.data);
-
-  const fetchAllMerchants = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/user/all-users?role=merchant`;
-    const dataFunction = (res: any) => {
-      console.log(res);
-      dispatch(addMerchants(res?.data.data));
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-  const deleteUser = async (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-    };
-    const url = `https://backendapi.flip.onl/api/admin/user/delete-user/${id}`;
-    remove({ url, accessToken }, dataFunction);
-  };
-  const editUser = async (id: any, endpoint: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      dispatch(addMerchants(res?.data.data));
-    };
-    const url = `https://backendapi.flip.onl/api/admin/user/${endpoint}/${id}`;
-    request({ url, accessToken }, dataFunction);
-  };
-
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-  const toggleDrawerServ = () => {
-    setIsOpenServ(!isOpenServ);
-  };
+  useEffect(() => {
+    dispatch(getMyproductCategories(accessToken));
+    dispatch(getMymerchant(accessToken));
+  }, [dispatch]);
 
   type Data = {
     userID: number;
@@ -112,7 +86,7 @@ const Merchants = () => {
         dateAdded: moment(client.dateAdded).format("ll"),
       };
     });
-  const columnMerchants = [
+  const columnUsers = [
     {
       Header: "Full Name",
       accessor: "fullName",
@@ -129,7 +103,10 @@ const Merchants = () => {
       Header: "Date Created",
       accessor: "dateAdded",
     },
-
+    {
+      Header: "Role",
+      accessor: "role",
+    },
     {
       Header: "Phone Number",
       accessor: "phone",
@@ -173,11 +150,13 @@ const Merchants = () => {
                             <>
                               <ModalAction
                                 action="Deactivate"
-                                item="user"
+                                item="merchant"
                                 actionFunction={() =>
-                                  editUser(
-                                    prop?.row.original?.id,
-                                    "deactivate-user"
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "deactivate-user",
+                                      userID: prop?.row.original?.id,
+                                    })
                                   )
                                 }
                               />
@@ -200,11 +179,13 @@ const Merchants = () => {
                             <>
                               <ModalAction
                                 action="Activate"
-                                item="user"
+                                item="merchant"
                                 actionFunction={() =>
-                                  editUser(
-                                    prop?.row.original?.id,
-                                    "activate-user"
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "activate-user",
+                                      userID: prop?.row.original?.id,
+                                    })
                                   )
                                 }
                               />
@@ -215,6 +196,24 @@ const Merchants = () => {
                     }
                   />
                 )}
+                <ActionMenuItem
+                  name="Create Job posting"
+                  onClickFunction={() => {
+                    setUserId(prop?.row.original?.id);
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <AddJob userId={prop?.row.original?.id} />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                />
 
                 <ActionMenuItem
                   name="Delete"
@@ -228,9 +227,13 @@ const Merchants = () => {
                           <>
                             <ModalAction
                               action="delete"
-                              item="user"
+                              item="merchant"
                               actionFunction={() =>
-                                deleteUser(prop?.row.original?.id)
+                                dispatch(
+                                  deleteuser({
+                                    userID: prop?.row.original?.id,
+                                  })
+                                )
                               }
                             />
                           </>
@@ -240,18 +243,67 @@ const Merchants = () => {
                   }
                 />
                 <ActionMenuItem
+                  name="Create Withdrawal Request"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <CreateWithrawalRequest
+                              merchantId={prop?.row.original?.id}
+                            />
+                          </>
+                        ),
+                      })
+                    );
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: <></>,
+                      })
+                    );
+                  }}
+                />
+                <ActionMenuItem
                   name="Add Product"
                   onClickFunction={() => {
-                    toggleDrawer();
-                    setMerchantId(prop?.row.original?.id);
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <CreateProduct
+                              merchantId={prop?.row.original?.id}
+                            />
+                          </>
+                        ),
+                      })
+                    );
                   }}
                 />
 
                 <ActionMenuItem
                   name="Add Service"
                   onClickFunction={() => {
-                    toggleDrawerServ();
-                    setMerchantId(prop?.row.original?.id);
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <AddService merchantId={prop?.row.original?.id} />;
+                          </>
+                        ),
+                      })
+                    );
                   }}
                 />
               </>
@@ -261,34 +313,19 @@ const Merchants = () => {
       },
     },
   ];
-  useEffect(() => {
-    fetchAllMerchants();
-  }, []);
+
+  // useEffect(() => {
+
+  //   fetchAllCategory();
+  //   fetchAllMerchants();
+  // }, []);
   return (
     <ParentContainer>
-      <DrawerCard title="Add Product" open={isOpen} toggleDrawer={toggleDrawer}>
-        <CreateProduct
-          merchantId={merchantId}
-          fetchAllMerchants={fetchAllMerchants}
-        />
-      </DrawerCard>
-      <DrawerCard
-        title="Add Service"
-        open={isOpenServ}
-        toggleDrawer={toggleDrawerServ}
-      >
-        <AddService
-          merchantId={merchantId}
-          fetchAllMerchants={fetchAllMerchants}
-        />
-      </DrawerCard>
       <div className=" p-[10px] md:p-[30px]">
         <MultipleSelectTable
-          columns={columnMerchants}
+          columns={columnUsers}
           data={formatData}
           emptyPlaceHolder="No Merchant created yet!"
-          list
-          onClickFunction={toggleDrawer}
         />
       </div>
     </ParentContainer>

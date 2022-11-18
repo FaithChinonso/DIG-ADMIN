@@ -29,3 +29,18 @@ a {
   box-sizing: border-box;
   font-family: ClashDisplay;
 }
+.rdt_Table {
+  padding-bottom: 150px;
+  position: relative;
+  z-index: 10;
+  max-width: 100%;
+  overflow-y: auto;
+}
+.rdt_TableHeadRow {
+  color: rgba(82, 68, 192, 1);
+  font-size: 14px;
+  text-align: center;
+}
+.rdt_TableRow {
+  height: 52px;
+}

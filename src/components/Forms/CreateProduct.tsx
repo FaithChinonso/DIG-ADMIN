@@ -13,18 +13,25 @@ import { addProductCategory } from "src/redux/store/data-slice";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { delivery } from "src/utils/analytics";
 import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
+import DrawerWrapper from "../DrawerWrapper";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { createproduct } from "src/redux/store/features/product-slice";
+import SuccessfulModal from "../ModalContent/SuccessfulModal";
 
-const CreateProduct = ({ merchantId, fetchAllProducts }: any) => {
+const CreateProduct = ({ merchantId }: any) => {
+  const dispatch = useAppDispatch();
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.product
+  );
   const [price, setPrice] = useState(null);
   const [devFee, setDevFee] = useState(null);
-  const { productCategory } = useSelector((state: any) => state.data);
+  const { productCategory } = useSelector(
+    (state: any) => state.productCategory
+  );
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
 
   const send = useHTTPPost();
-  const request = useHTTPGet();
-
-  const dispatch = useDispatch();
 
   const {
     enteredInput: enteredProductName,
@@ -154,260 +161,234 @@ const CreateProduct = ({ merchantId, fetchAllProducts }: any) => {
       weight: enteredProductWeight,
     };
     console.log(payload);
-    const dataFunction = (res: any) => {
-      console.log(res);
-      fetchAllProducts();
-    };
-    const accessToken = sessionStorage.getItem("accessToken");
-
-    const url = `https://backendapi.flip.onl/api/admin/product/create-product/${merchantId}`;
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(createproduct(payload));
+    if (success === true) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalStyles: {
+            padding: 0,
+          },
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+    }
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (success === false) {
+      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+    }
   };
   return (
-    <form className="w-full h-full flex flex-col" onSubmit={submitFormHandler}>
-      <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-        <Image src={userPic} alt={""} />
-        <input
-          type="file"
-          name="resume"
-          id="resume"
-          accept="image/png, image/jpg, image/gif, image/jpeg"
-          className="hidden"
-        />{" "}
-      </label>
-
-      <div className="mt-[10px]">
-        <label
-          htmlFor="productName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Name
-        </label>
-        <input
-          type="text"
-          name="productName"
-          value={enteredProductName}
-          id="productName"
-          onBlur={productNameBlurHandler}
-          onChange={productNameInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Name "
-        />
-      </div>
-      <div className="text-red-400 text-[10px]">{productNameError}</div>
-      <div className="mt-[10px]">
-        <label htmlFor="brand" className=" text-[10px] text-[#1D2939] bg-white">
-          Brand
-        </label>
-        <input
-          type="text"
-          name="brand"
-          value={enteredbrand}
-          id="brand"
-          onBlur={brandBlurHandler}
-          onChange={brandInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Brand"
-        />
-      </div>
-      <div className="text-red-400 text-[10px]">{brandError}</div>
-      <div className=" mt-[10px]">
-        <label
-          htmlFor="productQuantity"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Quantity
+    <DrawerWrapper title="Create Product">
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
+      >
+        <label htmlFor="resume" className=" text-sm font-medium mx-auto">
+          <Image src={userPic} alt={""} />
+          <input
+            type="file"
+            name="resume"
+            id="resume"
+            accept="image/png, image/jpg, image/gif, image/jpeg"
+            className="hidden"
+          />{" "}
         </label>
 
-        <input
-          type="number"
-          name="quantity"
-          value={enteredProductQuantity}
-          id="productQuantity"
-          onBlur={productQuantityBlurHandler}
-          onChange={productQuantityInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Quatity"
-        />
-      </div>
-      <div className="text-red-400 text-[10px]">{productQuantityError}</div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="productWarranty"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Warranty
-        </label>
-        <input
-          type="text"
-          name="productWarranty"
-          value={enteredProductWarranty}
-          id="productWarranty"
-          onBlur={productWarrantyBlurHandler}
-          onChange={productWarrantyInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Warranty"
-        />
-      </div>
-      <div className="text-red-400 text-[10px] ">{productWarrantyError}</div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="productWeight"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Weight(in kg)
-        </label>
-        <input
-          type="number"
-          name="productweight"
-          value={enteredProductWeight}
-          id="productweight"
-          onBlur={productWeightBlurHandler}
-          onChange={productWeightInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product weight"
-        />
-      </div>
-      <div className="text-red-400 text-[10px] ">{productWeightError}</div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="category"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Category
-        </label>
-
-        <select
-          name="category"
-          value={enteredCategory}
-          id="category"
-          onChange={categoryInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Category"
-        >
-          {productCategory?.map((item: any) => (
-            <option
-              value={item.categoryID}
-              key={item.categoryID}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="text-red-400 text-[10px] ">{categoryError}</div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="discount"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Discount Available
-        </label>
-
-        <select
-          name="discount"
-          value={enteredDiscount}
-          id="discount"
-          onChange={discountInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="discount"
-        >
-          {delivery?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="text-red-400 text-[10px] ">{discountError}</div>
-      {enteredDiscount === "Yes" && (
-        <div className=" mt-[30px]">
+        <div className="mt-[10px]">
           <label
-            htmlFor="discountPercentage"
+            htmlFor="productName"
             className=" text-[10px] text-[#1D2939] bg-white"
           >
-            Discount Percentege
+            Product Name
+          </label>
+          <input
+            type="text"
+            name="productName"
+            value={enteredProductName}
+            id="productName"
+            onBlur={productNameBlurHandler}
+            onChange={productNameInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Name "
+          />
+        </div>
+        <div className="text-red-400 text-[10px]">{productNameError}</div>
+        <div className="mt-[10px]">
+          <label
+            htmlFor="brand"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Brand
+          </label>
+          <input
+            type="text"
+            name="brand"
+            value={enteredbrand}
+            id="brand"
+            onBlur={brandBlurHandler}
+            onChange={brandInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Brand"
+          />
+        </div>
+        <div className="text-red-400 text-[10px]">{brandError}</div>
+        <div className=" mt-[10px]">
+          <label
+            htmlFor="productQuantity"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Quantity
+          </label>
+
+          <input
+            type="number"
+            name="quantity"
+            value={enteredProductQuantity}
+            id="productQuantity"
+            onBlur={productQuantityBlurHandler}
+            onChange={productQuantityInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Quatity"
+          />
+        </div>
+        <div className="text-red-400 text-[10px]">{productQuantityError}</div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="productWarranty"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Warranty
+          </label>
+          <input
+            type="text"
+            name="productWarranty"
+            value={enteredProductWarranty}
+            id="productWarranty"
+            onBlur={productWarrantyBlurHandler}
+            onChange={productWarrantyInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Warranty"
+          />
+        </div>
+        <div className="text-red-400 text-[10px] ">{productWarrantyError}</div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="productWeight"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Weight(in kg)
           </label>
           <input
             type="number"
-            name="deliveryPercentage"
-            value={enteredDiscountPercentage}
-            id="discountPercentage"
-            onBlur={discountPercentageBlurHandler}
-            onChange={discountPercentageInputHandler}
+            name="productweight"
+            value={enteredProductWeight}
+            id="productweight"
+            onBlur={productWeightBlurHandler}
+            onChange={productWeightInputHandler}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-            placeholder="Discount Percentege"
+            placeholder="Product weight"
           />
         </div>
-      )}
-
-      <div className="text-red-400 text-[10px] ">{discountPercentageError}</div>
-
-      <div className=" mt-[30px]">
-        <label htmlFor="price" className=" text-[10px] text-[#1D2939] bg-white">
-          Price
-        </label>
-        <NumericFormat
-          name="enteredPrice"
-          value={price || ""}
-          allowNegative={false}
-          thousandSeparator={true}
-          required
-          prefix={"₦"}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          onValueChange={(values: any, sourceInfo: any) => {
-            const { formattedValue, value } = values;
-            const { event, source } = sourceInfo;
-            console.log(event.target.value);
-            setPrice(value);
-          }}
-        />
-      </div>
-      <div className="text-red-400 text-[10px] ">{priceError}</div>
-
-      <div className=" mt-[30px]">
-        <label htmlFor="role" className=" text-[10px] text-[#1D2939] bg-white">
-          Delivery Tag
-        </label>
-
-        <select
-          name="delivery"
-          value={enteredDeliveryTag}
-          id="delivery"
-          onChange={deliveryTagInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Delivery Tag"
-        >
-          {delivery?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="text-red-400 text-[10px]">{deliveryTagError}</div>
-
-      {enteredDeliveryTag === "No" && (
+        <div className="text-red-400 text-[10px] ">{productWeightError}</div>
         <div className=" mt-[30px]">
           <label
-            htmlFor="deliveryFee"
+            htmlFor="category"
             className=" text-[10px] text-[#1D2939] bg-white"
           >
-            Delivery Fee
+            Category
+          </label>
+
+          <select
+            name="category"
+            value={enteredCategory}
+            id="category"
+            onChange={categoryInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Category"
+          >
+            {productCategory?.map((item: any) => (
+              <option
+                value={item.categoryID}
+                key={item.categoryID}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="text-red-400 text-[10px] ">{categoryError}</div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="discount"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Discount Available
+          </label>
+
+          <select
+            name="discount"
+            value={enteredDiscount}
+            id="discount"
+            onChange={discountInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="discount"
+          >
+            {delivery?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-red-400 text-[10px] ">{discountError}</div>
+        {enteredDiscount === "Yes" && (
+          <div className=" mt-[30px]">
+            <label
+              htmlFor="discountPercentage"
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              Discount Percentege
+            </label>
+            <input
+              type="number"
+              name="deliveryPercentage"
+              value={enteredDiscountPercentage}
+              id="discountPercentage"
+              onBlur={discountPercentageBlurHandler}
+              onChange={discountPercentageInputHandler}
+              className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+              placeholder="Discount Percentege"
+            />
+          </div>
+        )}
+
+        <div className="text-red-400 text-[10px] ">
+          {discountPercentageError}
+        </div>
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="price"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Price
           </label>
           <NumericFormat
-            name="enteredDeliveryFee"
-            value={devFee || ""}
+            name="enteredPrice"
+            value={price || ""}
             allowNegative={false}
             thousandSeparator={true}
             required
@@ -415,44 +396,100 @@ const CreateProduct = ({ merchantId, fetchAllProducts }: any) => {
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             onValueChange={(values: any, sourceInfo: any) => {
               const { formattedValue, value } = values;
-
               const { event, source } = sourceInfo;
-
-              setDevFee(value);
+              console.log(event.target.value);
+              setPrice(value);
             }}
           />
         </div>
-      )}
+        <div className="text-red-400 text-[10px] ">{priceError}</div>
 
-      <div className="text-red-400 text-[10px]">{deliveryFeeError}</div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="role"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Delivery Tag
+          </label>
 
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="description"
-          className=" text-[10px] text-[#1D2939] bg-white"
+          <select
+            name="delivery"
+            value={enteredDeliveryTag}
+            id="delivery"
+            onChange={deliveryTagInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Delivery Tag"
+          >
+            {delivery?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-red-400 text-[10px]">{deliveryTagError}</div>
+
+        {enteredDeliveryTag === "No" && (
+          <div className=" mt-[30px]">
+            <label
+              htmlFor="deliveryFee"
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              Delivery Fee
+            </label>
+            <NumericFormat
+              name="enteredDeliveryFee"
+              value={devFee || ""}
+              allowNegative={false}
+              thousandSeparator={true}
+              required
+              prefix={"₦"}
+              className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+              onValueChange={(values: any, sourceInfo: any) => {
+                const { formattedValue, value } = values;
+
+                const { event, source } = sourceInfo;
+
+                setDevFee(value);
+              }}
+            />
+          </div>
+        )}
+
+        <div className="text-red-400 text-[10px]">{deliveryFeeError}</div>
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="description"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Description
+          </label>
+          <input
+            type="text"
+            name="status"
+            value={enteredDescription}
+            id="status"
+            onBlur={descriptionBlurHandler}
+            onChange={descriptionInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Description"
+          />
+        </div>
+        <div className="text-red-400 text-[10px]">{descriptionError}</div>
+
+        <button
+          type="submit"
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4"
         >
-          Description
-        </label>
-        <input
-          type="text"
-          name="status"
-          value={enteredDescription}
-          id="status"
-          onBlur={descriptionBlurHandler}
-          onChange={descriptionInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Description"
-        />
-      </div>
-      <div className="text-red-400 text-[10px]">{descriptionError}</div>
-
-      <button
-        type="submit"
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4"
-      >
-        Create Product
-      </button>
-    </form>
+          Create Product
+        </button>
+      </form>
+    </DrawerWrapper>
   );
 };
 export default CreateProduct;

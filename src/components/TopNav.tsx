@@ -26,17 +26,6 @@ const TopNav = () => {
         <div className="text-lg text-grey">{array[2]}</div>
       </div>
 
-      <div className="rounded gap-2 flex items-center w-max  h-[40px] bg-lightGray px-4">
-        <h4 className="text-sm text-softGrey border-r border-softGray pr-2">
-          All Category
-        </h4>
-        <input
-          className="md:w-[220px] text-softGray focus:outline-none bg-transparent"
-          placeholder="Search Here"
-        />
-        <SearchIcon style={{ color: "#d7d7d7" }} />
-      </div>
-
       <div className="w-[155px] flex justify-around">
         <div className="h-6 w-6">
           <Image src={bell} alt={""} />

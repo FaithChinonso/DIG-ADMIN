@@ -31,68 +31,42 @@ import axios from "axios";
 
 import CreateProduct from "src/components/Forms/CreateProduct";
 import DrawerCard from "src/components/Drawer";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import JobsDisplay from "src/components/jobsDisplay";
+import useHTTPGet from "src/Hooks/use-httpget";
 
 const OneMerchant = () => {
+  const request = useHTTPGet();
   const router = useRouter();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
   };
+  const id = router.query.merchantId;
 
   const [user, setUser] = useState<any>();
+  const [job, setJob] = useState<any>();
   console.log(router.query.usersId);
-  const fetchAUser = async () => {
-    const id = router.query.merchantId;
+  const fetchAUser = (id: any) => {
     console.log(id);
+
     const accessToken = sessionStorage.getItem("accessToken");
-    try {
-      const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/user/single-user/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
-      console.log(res?.data.data);
-      setUser(res?.data.data);
-    } catch (error: any) {}
+    const url = `https://backendapi.flip.onl/api/admin/user/single-user/${id}`;
+    const dataFunction = (res: any) => {
+      setUser(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
+  const fetchAllJobs = (id: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+    const dataFunction = (res: any) => {
+      setJob(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
   };
 
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }
-
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const [selected, setSelected] = useState(1);
   const useStyles = makeStyles({
     flexContainer: {
@@ -109,7 +83,11 @@ const OneMerchant = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
+  useEffect(() => {
+    const id = router.query.usersId;
+    fetchAUser(id);
+    fetchAllJobs(id);
+  }, [router]);
   return (
     <ParentContainer>
       <DrawerCard title="Add Product" open={isOpen} toggleDrawer={toggleDrawer}>
@@ -188,7 +166,7 @@ const OneMerchant = () => {
             </div>
           </div>
         </div>
-        <div className="mt-[30px]">
+        <div className="mt-[30px] max-w-screen overflow-x-scroll">
           {" "}
           <Box
             sx={{ width: "100%" }}
@@ -210,7 +188,6 @@ const OneMerchant = () => {
                     style={{
                       backgroundColor:
                         selected === value.id ? "white" : "transparent",
-                      fontFamily: "Steradian",
                       fontStyle: "normal",
                       fontWeight: "normal",
                       fontSize: "14px",
@@ -231,16 +208,19 @@ const OneMerchant = () => {
               <SupportingDocuments />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <BankDetails />
+              <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <OrderHistory />
+              <OrderHistory id={id} />
             </TabPanel>
             <TabPanel value={value} index={3}>
               <TransactionHistory />
             </TabPanel>
             <TabPanel value={value} index={4}>
-              <OrderHistory />
+              <JobsDisplay
+                jobs={job}
+                userId={id}
+              />
             </TabPanel>
           </Box>
         </div>

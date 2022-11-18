@@ -35,31 +35,30 @@ const MultipleSelectTable = ({
   data,
   columns,
   emptyPlaceHolder,
-  loader,
   recent,
   extraButton,
   list,
   onClickFunction,
-  rowClickable,
 }: Partial<any>) => {
   const router = useRouter();
+  console.log(data, columns, recent);
 
-  const IndeterminateCheckbox = React.forwardRef(
-    ({ indeterminate, ...rest }: any, ref: any) => {
-      const defaultRef = React.useRef();
-      const resolvedRef = ref || defaultRef;
+  // const IndeterminateCheckbox = React.forwardRef(
+  //   ({ indeterminate, ...rest }: any, ref: any) => {
+  //     const defaultRef = React.useRef();
+  //     const resolvedRef = ref || defaultRef;
 
-      React.useEffect(() => {
-        resolvedRef.current.indeterminate = indeterminate;
-      }, [resolvedRef, indeterminate]);
+  //     // React.useEffect(() => {
+  //     //   resolvedRef.current.indeterminate = indeterminate;
+  //     // }, [resolvedRef, indeterminate]);
 
-      return (
-        <>
-          <input type="checkbox" ref={resolvedRef} {...rest} />
-        </>
-      );
-    }
-  );
+  //     return (
+  //       <>
+  //         <input type="checkbox" ref={resolvedRef} {...rest} />
+  //       </>
+  //     );
+  //   }
+  // );
 
   const {
     getTableProps,
@@ -81,35 +80,35 @@ const MultipleSelectTable = ({
     useFilters,
     useSortBy,
     usePagination,
-    useRowSelect,
-    hooks => {
-      hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
-        {
-          id: "selection",
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    }
+    useRowSelect
+    // hooks => {
+    //   hooks.visibleColumns.push(columns => [
+    //     // Let's make a column for selection
+    //     {
+    //       id: "selection",
+    //       // The header can use the table's getToggleAllRowsSelectedProps method
+    //       // to render a checkbox
+    //       Header: ({ getToggleAllRowsSelectedProps }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    //         </div>
+    //       ),
+    //       // The cell can use the individual row's getToggleRowSelectedProps method
+    //       // to the render a checkbox
+    //       Cell: ({ row }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //         </div>
+    //       ),
+    //     },
+    //     ...columns,
+    //   ]);
+    // }
   );
 
   return (
     <>
-      {loader ? null : (
+      {
         <div className="h-full">
           {data?.length === 0 ? null : (
             <div className="w-full flex justify-between">
@@ -162,9 +161,9 @@ const MultipleSelectTable = ({
                 {/* {showList && (
 
                    )} */}
-                {extraButton?.text && (
+                {/* {extraButton?.text && (
                   <button
-                    onClick={() => onClickFunction()}
+                    onClick={onClickFunction}
                     className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
                   >
                     <span style={{ marginRight: "3px", translate: "0 3px" }}>
@@ -175,7 +174,7 @@ const MultipleSelectTable = ({
                     </span>
                     {extraButton.text}
                   </button>
-                )}
+                )} */}
               </div>{" "}
             </div>
           )}
@@ -218,14 +217,14 @@ const MultipleSelectTable = ({
                   return (
                     <tr
                       key={row.id}
-                      {...row.getRowProps()}
-                      onClick={() => {
-                        if (rowClickable === true) {
-                          router.push(
-                            `${location.pathname}/${row?.original.id}`
-                          );
-                        }
-                      }}
+                      // {...row.getRowProps()}
+                      // onClick={() => {
+                      //   if (rowClickable === true) {
+                      //     router.push(
+                      //       `${location.pathname}/${row?.original.id}`
+                      //     );
+                      //   }
+                      // }}
                       className="px-[30px] py-[20px] border-b border-[#e5e5e5] h-[82px]  children-even:bg-[#cb91df]"
                     >
                       {row?.cells.map((cell: any) => {
@@ -261,13 +260,13 @@ const MultipleSelectTable = ({
                 <div className="text-sm text-[#adafb0] mb-5">
                   {emptyPlaceHolder}
                 </div>
-                <button
+                {/* <button
                   onClick={onClickFunction}
                   className="text-sm text-white bg-lightPurple py-3 px-9 rounded-md flex items-center justify-center"
                 >
                   {" "}
                   {extraButton?.text}
-                </button>
+                </button> */}
               </div>
             )}
 
@@ -309,7 +308,7 @@ const MultipleSelectTable = ({
             {/* Pagination */}
           </div>{" "}
         </div>
-      )}
+      }
     </>
   );
 };

@@ -1,14 +1,19 @@
+import { Box, Tab, Tabs } from "@mui/material";
+import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddService from "src/components/Forms/AddService";
 import ParentContainer from "src/components/ParentContainer";
+import ServiceCategory from "src/components/ServiceCategory";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { addServices } from "src/redux/store/data-slice";
+import { MyServiceValue } from "src/utils/boxValues";
 import { numberWithCommas } from "src/utils/formatNumber";
+import { a11yProps, TabPanel } from "src/utils/helperFunctions";
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../../src/components/Drawer";
@@ -24,245 +29,88 @@ import {
   tableData,
   tableLoad,
 } from "../../../src/utils/analytics";
+import {
+  deleteservice,
+  editservice,
+  getMyservice,
+} from "src/redux/store/features/service-slice";
+import ServiceTable from "src/components/tables/ServiceTable";
 
 const Service = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
-  const request = useHTTPGet();
-  const remove = useHTTPDelete();
-  const [isOpen, setIsOpen] = useState(false);
-  const { services } = useAppSelector(state => state.data);
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
+
+  const { services } = useAppSelector(state => state.service);
+  const { token } = useAppSelector(state => state.auth);
+
+  const [selected, setSelected] = useState(1);
+
+  const useStyles = makeStyles({
+    flexContainer: {
+      alignItems: "center",
+      justifyContent: "space-between !important",
+    },
+    check: {
+      padding: "0px",
+    },
+  });
+
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
   };
-
-  const fetchAllServices = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = "https://backendapi.flip.onl/api/admin/service/all-services";
-    const dataFunction = (res: any) => {
-      dispatch(addServices(res.data.data));
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-
-  const editServices = async (id: any, endpoint: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/service/${endpoint}/${id}`;
-    const dataFunction = (res: any) => {
-      fetchAllServices();
-    };
-    request({ url, accessToken, alert: "send" }, dataFunction);
-  };
-  const deleteServices = async (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/service/delete-service/${id}`;
-    const dataFunction = (res: any) => {
-      fetchAllServices();
-    };
-    remove({ url, accessToken }, dataFunction);
-  };
-
-  type Data = {
-    service: {
-      serviceID: number;
-      serial: string;
-      serviceName: string;
-      phoneNumber: string;
-      pricing: string;
-      location: string;
-      yearsOfExperience: number;
-      isActive: boolean;
-      datePosted: string;
-    };
-
-    category: {
-      name: string;
-    };
-  };
-  const formatData = services
-    ?.slice(0)
-    .reverse()
-    .map((client: any) => {
-      return {
-        id: client.service.serviceID,
-        serial: client.service.serial,
-        location: client.service.location,
-        serviceName: client.service.serviceName,
-        phoneNumber: client.service.phoneNumber,
-        pricing: client.service.pricing,
-        isActive: client.service.isActive,
-        yearsOfExperience: client.service.yearsOfExperience,
-        categoryName: client.category.name,
-        datePosted: moment(client.service.datePosted).format("ll"),
-      };
-    });
-  const columnDasboard = [
-    {
-      Header: "#",
-      accessor: "serial",
-    },
-    {
-      Header: "Service Name",
-      accessor: "serviceName",
-    },
-    {
-      Header: "Location",
-      accessor: "location",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "phoneNumber",
-    },
-    {
-      Header: "Pricing",
-      accessor: "pricing",
-      Cell: (prop: any) => (
-        <div> &#8358; {numberWithCommas(Number(prop.value || 0))}</div>
-      ),
-    },
-
-    {
-      Header: "Years Of Experience",
-      accessor: "yearsOfExperience",
-    },
-    {
-      Header: "Category",
-      accessor: "categoryName",
-    },
-    {
-      Header: "Date Posted",
-      accessor: "datePosted",
-    },
-    ,
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    router.push(
-                      `${location.pathname}/${prop?.row.original?.id}`
-                    );
-                  }}
-                />
-
-                {prop?.row.original?.isActive === true ? (
-                  <ActionMenuItem
-                    name="Deactivate"
-                    onClickFunction={() =>
-                      dispatch(
-                        uiActions.openModalAndSetContent({
-                          modalStyles: {
-                            padding: 0,
-                          },
-                          modalContent: (
-                            <>
-                              <ModalAction
-                                action="Deactivate"
-                                item="product"
-                                actionFunction={() =>
-                                  editServices(
-                                    prop?.row.original?.id,
-                                    "deactivate-service"
-                                  )
-                                }
-                              />
-                            </>
-                          ),
-                        })
-                      )
-                    }
-                  />
-                ) : (
-                  <ActionMenuItem
-                    name="Activate"
-                    onClickFunction={() =>
-                      dispatch(
-                        uiActions.openModalAndSetContent({
-                          modalStyles: {
-                            padding: 0,
-                          },
-                          modalContent: (
-                            <>
-                              <ModalAction
-                                action="Activate"
-                                item="product"
-                                actionFunction={() =>
-                                  editServices(
-                                    prop?.row.original?.id,
-                                    "activate-service"
-                                  )
-                                }
-                              />
-                            </>
-                          ),
-                        })
-                      )
-                    }
-                  />
-                )}
-
-                <ActionMenuItem
-                  name="Delete Service"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction
-                              action="delete"
-                              item="product"
-                              actionFunction={() =>
-                                deleteServices(prop?.row.original?.id)
-                              }
-                            />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
 
   useEffect(() => {
-    const fetchAllServices = () => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const url = "https://backendapi.flip.onl/api/admin/service/all-services";
-      const dataFunction = (res: any) => {
-        dispatch(addServices(res.data.data));
-      };
-      request({ url, accessToken }, dataFunction);
-    };
-    fetchAllServices();
-  }, []);
+    dispatch(getMyservice(token));
+  }, [dispatch]);
   return (
     <ParentContainer>
-      <DrawerCard title="Add Service" open={isOpen} toggleDrawer={toggleDrawer}>
-        <AddService />
-      </DrawerCard>
-      <div className=" p-[10px] md:p-[30px]">
-        <MultipleSelectTable
-          columns={columnDasboard}
-          data={formatData}
-          emptyPlaceHolder="No services yet!"
-          onClickFunction={toggleDrawer}
-        />
-      </div>
+      <Box
+        sx={{ width: "100%" }}
+        style={{ background: "white", height: "100vh" }}
+      >
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            style={{ background: "#edf2f7" }}
+            // classes={{ flexContainer: classes.flexContainer }}
+          >
+            {MyServiceValue.map(value => (
+              <Tab
+                label={value.label}
+                {...a11yProps(value.id)}
+                key={value.id}
+                style={{
+                  backgroundColor:
+                    selected === value.id ? "white" : "transparent",
+                  fontFamily: "Steradian",
+                  fontStyle: "normal",
+                  fontWeight: "normal",
+                  fontSize: "14px",
+                  lineHeight: "136.52%",
+                  textAlign: "center",
+                  color: "#979797",
+                  textTransform: "capitalize",
+                }}
+                onClick={() => {
+                  setSelected(value.id);
+                }}
+              />
+            ))}
+          </Tabs>
+        </Box>
+
+        <TabPanel value={value} index={0}>
+          <div className=" p-[10px] md:p-[30px]">
+            <ServiceTable data={services} />
+          </div>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <ServiceCategory />
+        </TabPanel>
+      </Box>
     </ParentContainer>
   );
 };

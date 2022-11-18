@@ -8,17 +8,21 @@ import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { useState } from "react";
 import axios from "axios";
 import useHTTPPost from "src/Hooks/use-httppost";
+import DrawerWrapper from "../DrawerWrapper";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { createuser } from "src/redux/store/features/user-slice";
+import { is8Chars, isEmail, isNotEmpty } from "src/utils/helperFunctions";
+import { category, gender, merchantType, role } from "src/utils/analytics";
 
 const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.user
+  );
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(0);
 
-  const send = useHTTPPost();
-
-  const isNotEmpty = (value: string) => value?.trim() !== "";
-  const is8Chars = (value: string) => value?.trim().length > 7;
   const isNotEmptyMerchant = (value: string) => {
     if (enteredRole === "Merchant") {
       value?.trim() !== "";
@@ -26,25 +30,6 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
       value?.trim() === "";
     }
   };
-  const isEmail = (value: any) =>
-    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-  const gender = [
-    { id: 1, name: "Female" },
-    { id: 2, name: "Male" },
-  ];
-  const role = [
-    { id: 1, name: "consumer" },
-    { id: 2, name: "merchant" },
-  ];
-  const category = [
-    { id: 1, name: "electronics" },
-    { id: 2, name: "Car Dealership" },
-    { id: 3, name: "Beauty Products" },
-  ];
-  const merchantType = [
-    { id: 1, name: "business" },
-    { id: 2, name: "personal" },
-  ];
 
   const onChangeNumber = (event: any) => {
     setPhoneNumber(event);
@@ -163,250 +148,270 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
       categoryIsValid
     ) {
       setFormIsValid(true);
-
-      dispatch(uiActions.openLoader(true));
-      const dataFunction = (res: any) => {
-        console.log(res);
-      };
-      const accessToken = sessionStorage.getItem("accessToken");
-
-      const url = "https://backendapi.flip.onl/api/admin/user/create-user";
-      send({ url, values: payload, accessToken }, dataFunction);
-
-      emailReset();
-
-      passwordReset();
-    } else {
-      setFormIsValid(false);
-      return;
+      dispatch(createuser(payload));
+      if (success === true) {
+        dispatch(uiActions.closedrawer());
+        dispatch(
+          uiActions.openModalAndSetContent({
+            modalStyles: {
+              padding: 0,
+            },
+            modalContent: (
+              <>
+                <SuccessfulModal title="Successful" message={message} />
+              </>
+            ),
+          })
+        );
+      }
+      if (loading === true) {
+        dispatch(uiActions.openLoader());
+      }
+      if (success === false) {
+        dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+      }
     }
   };
 
   return (
-    <form
-      className="w-full h-full flex flex-col"
-      onSubmit={submitFormHandler}
-      autoComplete="off"
-    >
-      {showFormError && (
-        <p className="text-red-400 text-[10px]">
-          Fill form correctly to summit
-        </p>
-      )}
-
-      <label htmlFor="resume" className="secondary text-sm font-medium mx-auto">
-        <Image src={userPic} alt={""} />
-        <input
-          type="file"
-          name="resume"
-          id="resume"
-          accept="image/png, image/jpg, image/gif, image/jpeg"
-          className="hidden"
-        />{" "}
-      </label>
-
-      <div className="mt-[10px]">
-        <label
-          htmlFor="firstName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          First Name
-        </label>
-        <input
-          type="text"
-          name="firstName"
-          value={enteredfirstName}
-          id="firstName"
-          onBlur={firstNameBlurHandler}
-          onChange={firstNameInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="First Name "
-        />
-      </div>
-      <div className="mt-[10px]">
-        <label
-          htmlFor="lastName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Last Name
-        </label>
-        <input
-          type="text"
-          name="lastName"
-          value={enteredLastName}
-          id="lastName"
-          onBlur={lastNameBlurHandler}
-          onChange={lastNameInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Last Name"
-        />
-      </div>
-      <div className=" mt-[10px]">
-        <label
-          htmlFor="gender"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Gender
-        </label>
-
-        <select
-          name="gender"
-          value={enteredGender}
-          id="gender"
-          onChange={genderInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="gender"
-        >
-          {gender?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className=" mt-[30px]">
-        <label htmlFor="email" className=" text-[10px] text-[#1D2939] bg-white">
-          Email Address
-        </label>
-        <input
-          type="text"
-          name="email"
-          value={enteredEmail}
-          id="email"
-          onBlur={emailBlurHandler}
-          onChange={emailInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Email Address"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="password"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Password
-        </label>
-        <input
-          type="text"
-          name="password"
-          value={enteredPassword}
-          id="password"
-          onBlur={passwordBlurHandler}
-          onChange={passwordInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="password"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label htmlFor="phone" className=" text-[10px] text-[#1D2939] bg-white">
-          Phone Number
-        </label>
-        <MuiPhoneNumber
-          defaultCountry={"ng"}
-          name="businessPhoneNumber"
-          sx={{
-            svg: {
-              height: "20px",
-            },
-          }}
-          value={phoneNumber}
-          onChange={onChangeNumber}
-          autoComplete="off"
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
-          required
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label htmlFor="role" className=" text-[10px] text-[#1D2939] bg-white">
-          Role
-        </label>
-
-        <select
-          name="role"
-          value={enteredRole}
-          id="role"
-          onChange={roleInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="role"
-        >
-          {role?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="category"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Category
-        </label>
-
-        <select
-          name="category"
-          value={enteredCategory}
-          id="category"
-          onChange={categoryInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="category"
-        >
-          {category?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="merchantType"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          merchant Type
-        </label>
-
-        <select
-          name="merchantType"
-          value={enteredMerchantType}
-          id="merchantType"
-          onChange={merchantTypeInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="merchantType"
-        >
-          {merchantType?.map((item: any) => (
-            <option
-              value={item.name}
-              key={item.id}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
-        type="submit"
+    <DrawerWrapper title="Create User">
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
+        autoComplete="off"
       >
-        Add User
-      </button>
-    </form>
+        {showFormError && (
+          <p className="text-red-400 text-[10px]">
+            Fill form correctly to summit
+          </p>
+        )}
+
+        <label
+          htmlFor="resume"
+          className="secondary text-sm font-medium mx-auto"
+        >
+          <Image src={userPic} alt={""} />
+          <input
+            type="file"
+            name="resume"
+            id="resume"
+            accept="image/png, image/jpg, image/gif, image/jpeg"
+            className="hidden"
+          />{" "}
+        </label>
+
+        <div className="mt-[10px]">
+          <label
+            htmlFor="firstName"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            First Name
+          </label>
+          <input
+            type="text"
+            name="firstName"
+            value={enteredfirstName}
+            id="firstName"
+            onBlur={firstNameBlurHandler}
+            onChange={firstNameInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="First Name "
+          />
+        </div>
+        <div className="mt-[10px]">
+          <label
+            htmlFor="lastName"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Last Name
+          </label>
+          <input
+            type="text"
+            name="lastName"
+            value={enteredLastName}
+            id="lastName"
+            onBlur={lastNameBlurHandler}
+            onChange={lastNameInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Last Name"
+          />
+        </div>
+        <div className=" mt-[10px]">
+          <label
+            htmlFor="gender"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Gender
+          </label>
+
+          <select
+            name="gender"
+            value={enteredGender}
+            id="gender"
+            onChange={genderInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="gender"
+          >
+            {gender?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="email"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Email Address
+          </label>
+          <input
+            type="text"
+            name="email"
+            value={enteredEmail}
+            id="email"
+            onBlur={emailBlurHandler}
+            onChange={emailInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Email Address"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="password"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Password
+          </label>
+          <input
+            type="text"
+            name="password"
+            value={enteredPassword}
+            id="password"
+            onBlur={passwordBlurHandler}
+            onChange={passwordInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="password"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="phone"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Phone Number
+          </label>
+          <MuiPhoneNumber
+            defaultCountry={"ng"}
+            name="businessPhoneNumber"
+            sx={{
+              svg: {
+                height: "20px",
+              },
+            }}
+            value={phoneNumber}
+            onChange={onChangeNumber}
+            autoComplete="off"
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
+            required
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="role"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Role
+          </label>
+
+          <select
+            name="role"
+            value={enteredRole}
+            id="role"
+            onChange={roleInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="role"
+          >
+            {role?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="category"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Category
+          </label>
+
+          <select
+            name="category"
+            value={enteredCategory}
+            id="category"
+            onChange={categoryInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="category"
+          >
+            {category?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="merchantType"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            merchant Type
+          </label>
+
+          <select
+            name="merchantType"
+            value={enteredMerchantType}
+            id="merchantType"
+            onChange={merchantTypeInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="merchantType"
+          >
+            {merchantType?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
+          type="submit"
+        >
+          Add User
+        </button>
+      </form>
+    </DrawerWrapper>
   );
 };
 export default AddUser;

@@ -18,7 +18,7 @@ const ModalAction = ({ action, item, actionFunction }: any) => {
       <div className="flex items-center gap-5 p-8">
         <div
           className="text-sm text-darkPurple border border-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto cursor-pointer"
-          onClick={() => dispatch(uiActions.closeModal(false))}
+          onClick={() => dispatch(uiActions.closeModal())}
         >
           Cancel
         </div>

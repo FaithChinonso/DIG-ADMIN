@@ -14,14 +14,12 @@ import { uiActions } from "src/redux/store/ui-slice";
 import axios from "axios";
 import store from "src/redux/store";
 import { authActions } from "src/redux/store/auth-slice";
+import { is8Chars, isNotEmpty } from "src/utils/helperFunctions";
 
 const SignInForm = ({ login }: any) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const is8Chars = (value: string) => value?.trim().length > 7;
-  const isEmail = (value: any) =>
-    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-  const isNotEmpty = (value: string) => value?.trim() !== "";
+
   const [formisValid, setFormIsValid] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);

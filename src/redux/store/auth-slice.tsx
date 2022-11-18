@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
 interface AuthState {
-  token: string;
-  adminDetails: {};
+  token: string | null;
+  adminDetails: {} | null;
   loading: boolean;
   error: string;
   success: boolean;
@@ -11,8 +11,14 @@ interface AuthState {
 }
 // Define the initial state using that type
 const initialState: AuthState = {
-  token: "",
-  adminDetails: {},
+  token:
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("accessToken")
+      : null,
+  adminDetails:
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("adminDetails")
+      : null,
   loading: false,
   error: "",
   success: false,

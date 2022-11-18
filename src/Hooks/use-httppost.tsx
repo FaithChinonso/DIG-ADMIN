@@ -8,6 +8,7 @@ const useHTTPPost = () => {
   const dispatch = useDispatch();
 
   const send = async ({ url, values, accessToken }: any, dataFunction: any) => {
+    dispatch(uiActions.openLoader());
     await axios
       .post(url, values, {
         headers: {
@@ -16,6 +17,7 @@ const useHTTPPost = () => {
         },
       })
       .then(res => {
+        dispatch(uiActions.closeLoader());
         dataFunction(res);
         console.log("here");
         dispatch(
@@ -35,6 +37,7 @@ const useHTTPPost = () => {
         );
       })
       .catch((error: any) => {
+        dispatch(uiActions.closeLoader());
         if (error.response) {
           Notify({ message: "" });
         } else if (error.request) {

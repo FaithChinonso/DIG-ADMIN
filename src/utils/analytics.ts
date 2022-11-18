@@ -234,43 +234,50 @@ export const innerNav = [
         id: 1,
         name: "Dashboard",
         value: "dashboard",
-        route: "/",
+        route: "/dashboard",
       },
+
       {
-        id: 2,
+        id: 4,
         name: "Media & Communications",
         value: "dashboard",
         route: "/dashboard/media",
       },
       {
-        id: 3,
+        id: 5,
         name: "Users",
         value: "dashboard",
         route: "/dashboard/users",
       },
       {
-        id: 4,
+        id: 6,
         name: "Transactions",
         value: "dashboard",
         route: "/dashboard/transactions",
       },
       {
-        id: 5,
+        id: 6,
+        name: "Proposals",
+        value: "dashboard",
+        route: "/dashboard/proposals",
+      },
+      {
+        id: 6,
+        name: "Withdrawal",
+        value: "dashboard",
+        route: "/dashboard/withdrawal",
+      },
+      {
+        id: 7,
         name: "Audit Trail",
         value: "dashboard",
         route: "/dashboard/audit",
       },
       {
-        id: 6,
+        id: 8,
         name: "Settings",
         value: "dashboard",
         route: "/dashboard/settings",
-      },
-      {
-        id: 7,
-        name: "Budgets",
-        value: "dashboard",
-        route: "/dashboard/budgets",
       },
     ],
   },
@@ -285,20 +292,20 @@ export const innerNav = [
     route: "/flip",
     navItems: [
       {
-        id: 1,
+        id: 10,
         name: "Orders",
         value: "flip",
         route: "/flip/orders",
       },
 
       {
-        id: 2,
+        id: 11,
         name: "Products",
         value: "flip",
         route: "/flip/products",
       },
       {
-        id: 29,
+        id: 12,
         name: "Services",
         value: "flip",
         route: "/flip/services",
@@ -310,28 +317,22 @@ export const innerNav = [
         route: "/flip/jobs",
       },
       {
-        id: 3,
+        id: 13,
         name: "Carts",
         value: "flip",
         route: "/flip/carts",
       },
       {
-        id: 4,
+        id: 14,
         name: "Merchants",
         value: "flip",
         route: "/flip/merchants",
       },
       {
-        id: 5,
+        id: 15,
         name: "Payment - Withdrawal",
         value: "flip",
-        route: "/flip/payment",
-      },
-      {
-        id: 6,
-        name: "Approvals",
-        value: "second",
-        route: "/flip/approval",
+        route: "/flip/withdrawal",
       },
     ],
   },
@@ -394,7 +395,7 @@ export const outerNav = [
     id: 1,
     name: "Dashboard",
     value: "dashboard",
-    route: "/dashboard/",
+    route: "/dashboard",
   },
 
   {
@@ -416,6 +417,18 @@ export const outerNav = [
     route: "/dashboard/transactions",
   },
   {
+    id: 6,
+    name: "Proposals",
+    value: "dashboard",
+    route: "/dashboard/proposals",
+  },
+  {
+    id: 6,
+    name: "Withdrawal",
+    value: "dashboard",
+    route: "/dashboard/withdrawal",
+  },
+  {
     id: 7,
     name: "Audit Trail",
     value: "dashboard",
@@ -427,12 +440,7 @@ export const outerNav = [
     value: "dashboard",
     route: "/dashboard/settings",
   },
-  {
-    id: 9,
-    name: "Budgets",
-    value: "dashboard",
-    route: "/dashboard/budgets",
-  },
+
   {
     id: 10,
     name: "Orders",
@@ -474,14 +482,14 @@ export const outerNav = [
     id: 15,
     name: "Payment - Withdrawal",
     value: "flip",
-    route: "/flip/payment",
+    route: "/flip/withdrawal",
   },
-  {
-    id: 16,
-    name: "Approvals",
-    value: "flip",
-    route: "/flip/approval",
-  },
+  // {
+  //   id: 27,
+  //   name: "Audit Trail",
+  //   value: "flip",
+  //   route: "/flip/audit",
+  // },
   {
     id: 17,
     name: "Trips",
@@ -506,12 +514,12 @@ export const outerNav = [
     value: "cue",
     route: "/cue/payment",
   },
-  {
-    id: 21,
-    name: "Approvals",
-    value: "cue",
-    route: "/cue/approval",
-  },
+  // {
+  //   id: 87,
+  //   name: "Audit Trail",
+  //   value: "cue",
+  //   route: "/cue/audit",
+  // },
 ];
 
 export const bottomNav = [
@@ -679,4 +687,22 @@ export const productLevel = [
 export const bool = [
   { id: 0, name: "Yes" },
   { id: 1, name: "No" },
+];
+export const negotiable = [
+  { id: 1, name: "Yes" },
+  { id: 0, name: "No" },
+];
+export const gender = [
+  { id: 1, name: "Female" },
+  { id: 2, name: "Male" },
+];
+
+export const category = [
+  { id: 1, name: "electronics" },
+  { id: 2, name: "Car Dealership" },
+  { id: 3, name: "Beauty Products" },
+];
+export const merchantType = [
+  { id: 1, name: "business" },
+  { id: 2, name: "personal" },
 ];

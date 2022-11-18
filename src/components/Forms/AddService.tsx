@@ -10,15 +10,21 @@ import { isNotEmpty } from "src/utils/helperFunctions";
 import { useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import DrawerWrapper from "../DrawerWrapper";
+import { createservice } from "src/redux/store/features/service-slice";
 
 const AddService = ({ merchantId, fetchAllMerchants }: any) => {
-  const dispatch = useDispatch();
-  const { productCategory } = useAppSelector((state: any) => state.data);
+  const dispatch = useAppDispatch();
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.service
+  );
+  const { productCategory } = useAppSelector(
+    (state: any) => state.productCategory
+  );
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [amount, setamount] = useState(null);
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
-  const send = useHTTPPost();
 
   let handleChange = (index: any, e: any) => {
     let newItems = [...items];
@@ -80,189 +86,217 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
-    console.log(payload);
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/service/create-service/${merchantId}`;
-    const dataFunction = (res: any) => {};
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(createservice(payload));
+    if (success === true) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalStyles: {
+            padding: 0,
+          },
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+    }
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (success === false) {
+      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+    }
   };
 
   return (
-    <form className="w-full h-full flex flex-col" onSubmit={submitFormHandler}>
-      <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-        <Image src={userPic} alt={""} />
-        <input
-          type="file"
-          name="resume"
-          id="resume"
-          accept="image/png, image/jpg, image/gif, image/jpeg"
-          className="hidden"
-        />{" "}
-      </label>
-
-      <div className="mt-[10px]">
-        <label
-          htmlFor="serviceName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          service Name
-        </label>
-        <input
-          type="text"
-          name="serviceName"
-          value={enteredserviceName}
-          id="serviceName"
-          onBlur={serviceNameBlurHandler}
-          onChange={serviceNameInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="service Name "
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="category"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Category
-        </label>
-
-        <select
-          name="category"
-          value={enteredCategory}
-          id="category"
-          onChange={categoryInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Category"
-        >
-          {productCategory?.map((item: any) => (
-            <option
-              value={item.categoryID}
-              key={item.categoryID}
-              className=" text-[10px] text-[#1D2939] bg-white"
-            >
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mt-[10px]">
-        <label
-          htmlFor="loaction"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Location
-        </label>
-        <input
-          type="text"
-          name="loaction"
-          value={enteredlocationd}
-          id="locationd"
-          onBlur={locationdBlurHandler}
-          onChange={locationdInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Location"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label htmlFor="phone" className=" text-[10px] text-[#1D2939] bg-white">
-          Phone Number
-        </label>
-        <MuiPhoneNumber
-          defaultCountry={"ng"}
-          name="businessPhoneNumber"
-          sx={{
-            svg: {
-              height: "20px",
-            },
-          }}
-          value={phoneNumber}
-          onChange={onChangeNumber}
-          autoComplete="off"
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
-          required
-        />
-      </div>
-      <div className=" mt-[10px]">
-        <label
-          htmlFor="experience"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Years Of Experience
-        </label>
-
-        <input
-          type="number"
-          name="lastName"
-          value={enteredexperience}
-          id="experience"
-          onBlur={experienceBlurHandler}
-          onChange={experienceInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Years Of Experience"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="description"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Description
-        </label>
-        <input
-          type="text"
-          name="description"
-          value={entereddescription}
-          id="description"
-          onBlur={descriptionBlurHandler}
-          onChange={descriptionInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Description"
-        />
-      </div>
-
-      <div className=" mt-[30px]">
-        <label htmlFor="price" className=" text-[10px] text-[#1D2939] bg-white">
-          Amount
-        </label>
-        <NumericFormat
-          name="enteredPrice"
-          value={amount || ""}
-          allowNegative={false}
-          thousandSeparator={true}
-          required
-          prefix={"₦"}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          onValueChange={(values: any, sourceInfo: any) => {
-            const { formattedValue, value } = values;
-            const { event, source } = sourceInfo;
-            console.log(event.target.value);
-            setamount(value);
-          }}
-        />
-      </div>
-      <div className=" text-base text-[#1D2939] bg-white">Other Details</div>
-
-      {items?.map((element, index) => (
-        <MultipleInput
-          index={index}
-          element={element}
-          handleChange={handleChange}
-          removeFormFields={removeFormFields}
-        />
-      ))}
-      <div>
-        <div onClick={addFormFields} className="text-xs text-gray-600">
-          &plus; Add Items
-        </div>
-      </div>
-
-      <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
-        type="submit"
+    <DrawerWrapper title="Create Service">
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
       >
-        Create Service
-      </button>
-    </form>
+        <label htmlFor="resume" className=" text-sm font-medium mx-auto">
+          <Image src={userPic} alt={""} />
+          <input
+            type="file"
+            name="resume"
+            id="resume"
+            accept="image/png, image/jpg, image/gif, image/jpeg"
+            className="hidden"
+          />{" "}
+        </label>
+
+        <div className="mt-[10px]">
+          <label
+            htmlFor="serviceName"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            service Name
+          </label>
+          <input
+            type="text"
+            name="serviceName"
+            value={enteredserviceName}
+            id="serviceName"
+            onBlur={serviceNameBlurHandler}
+            onChange={serviceNameInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="service Name "
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="category"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Category
+          </label>
+
+          <select
+            name="category"
+            value={enteredCategory}
+            id="category"
+            onChange={categoryInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Category"
+          >
+            {productCategory?.map((item: any) => (
+              <option
+                value={item.categoryID}
+                key={item.categoryID}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mt-[10px]">
+          <label
+            htmlFor="loaction"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Location
+          </label>
+          <input
+            type="text"
+            name="loaction"
+            value={enteredlocationd}
+            id="locationd"
+            onBlur={locationdBlurHandler}
+            onChange={locationdInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Location"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="phone"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Phone Number
+          </label>
+          <MuiPhoneNumber
+            defaultCountry={"ng"}
+            name="businessPhoneNumber"
+            sx={{
+              svg: {
+                height: "20px",
+              },
+            }}
+            value={phoneNumber}
+            onChange={onChangeNumber}
+            autoComplete="off"
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
+            required
+          />
+        </div>
+        <div className=" mt-[10px]">
+          <label
+            htmlFor="experience"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Years Of Experience
+          </label>
+
+          <input
+            type="number"
+            name="lastName"
+            value={enteredexperience}
+            id="experience"
+            onBlur={experienceBlurHandler}
+            onChange={experienceInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Years Of Experience"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="description"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Description
+          </label>
+          <input
+            type="text"
+            name="description"
+            value={entereddescription}
+            id="description"
+            onBlur={descriptionBlurHandler}
+            onChange={descriptionInputHandler}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Description"
+          />
+        </div>
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="price"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Amount
+          </label>
+          <NumericFormat
+            name="enteredPrice"
+            value={amount || ""}
+            allowNegative={false}
+            thousandSeparator={true}
+            required
+            prefix={"₦"}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            onValueChange={(values: any, sourceInfo: any) => {
+              const { formattedValue, value } = values;
+              const { event, source } = sourceInfo;
+              console.log(event.target.value);
+              setamount(value);
+            }}
+          />
+        </div>
+        <div className=" text-base text-[#1D2939] bg-white">Other Details</div>
+
+        {items?.map((element, index) => (
+          <MultipleInput
+            index={index}
+            element={element}
+            handleChange={handleChange}
+            removeFormFields={removeFormFields}
+          />
+        ))}
+        <div>
+          <div onClick={addFormFields} className="text-xs text-gray-600">
+            &plus; Add Items
+          </div>
+        </div>
+
+        <button
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
+          type="submit"
+        >
+          Create Service
+        </button>
+      </form>
+    </DrawerWrapper>
   );
 };
 export default AddService;

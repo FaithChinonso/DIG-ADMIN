@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
+import DrawerWrapper from "../DrawerWrapper";
 import MultipleInput from "../MultipleInput";
 
 const AddProductSpec = ({ id }: any) => {
@@ -27,35 +28,41 @@ const AddProductSpec = ({ id }: any) => {
   };
   console.log(items);
   const submitFormHandler = (e: any) => {
+    const payload = {
+      spec: items,
+    };
+    console.log(payload);
     e.preventDefault();
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/product/add-product-specs/${id}`;
     const dataFunction = (res: any) => {};
-    send({ url, items, accessToken }, dataFunction);
+    send({ url, values: payload, accessToken }, dataFunction);
   };
 
   return (
-    <form onSubmit={submitFormHandler}>
-      {items?.map((element, index) => (
-        <MultipleInput
-          index={index}
-          element={element}
-          handleChange={handleChange}
-          removeFormFields={removeFormFields}
-        />
-      ))}
-      <div>
-        <div onClick={addFormFields} className="text-xs text-gray-600">
-          &plus; Add Items
+    <DrawerWrapper title="App Product Spec">
+      <form onSubmit={submitFormHandler}>
+        {items?.map((element, index) => (
+          <MultipleInput
+            index={index}
+            element={element}
+            handleChange={handleChange}
+            removeFormFields={removeFormFields}
+          />
+        ))}
+        <div>
+          <div onClick={addFormFields} className="text-xs text-gray-600">
+            &plus; Add Items
+          </div>
         </div>
-      </div>
-      <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-6"
-        type="submit"
-      >
-        Add Specification
-      </button>
-    </form>
+        <button
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-6"
+          type="submit"
+        >
+          Add Specification
+        </button>
+      </form>{" "}
+    </DrawerWrapper>
   );
 };
 

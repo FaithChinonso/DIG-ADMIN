@@ -29,77 +29,33 @@ import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
-import JobsDisplay from "src/components/jobsDisplay";
+import JobsDisplay from "../../../src/components/tables/JobsDisplay";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import { getAUser } from "src/redux/store/features/user-slice";
 
 const OneUser = () => {
   const router = useRouter();
   const request = useHTTPGet();
   const dispatch = useDispatch();
-
-  const [user, setUser] = useState<any>();
+  const { user } = useSelector((state: any) => state.user);
   const [job, setJob] = useState<any>();
 
   const id = router.query.usersId;
   console.log(router.query.usersId);
 
   const fetchAUser = async (id: any) => {
-    const dataFunction = (res: any) => {
-      setUser(res?.data.data);
-    };
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/user/single-user/${id}`;
-    request({ url, accessToken }, dataFunction);
+    dispatch(getAUser(id));
   };
   const fetchAllJobs = (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
     const dataFunction = (res: any) => {
-      dispatch(setJob(res.data.data));
+      setJob(res.data.data);
     };
     request({ url, accessToken }, dataFunction);
   };
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }
 
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const [selected, setSelected] = useState(1);
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
 
   const [value, setValue] = useState(0);
 
@@ -110,7 +66,7 @@ const OneUser = () => {
     const id = router.query.usersId;
     fetchAUser(id);
     fetchAllJobs(id);
-  }, [router]);
+  }, [id]);
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">
@@ -172,7 +128,7 @@ const OneUser = () => {
           </div>
           <div className="text-white flex flex-col w-[404px]">
             <h3 className="text-[13px] mt-[28px]">About</h3>
-            <p className="text-[10px]">{user?.profile.bio}</p>
+            <p className="text-[10px]">{user?.profile?.bio}</p>
           </div>
           <div className="flex flex-col items-center justify-around text-white">
             <div className="text-white text-[13px]">Total Orders</div>
@@ -239,7 +195,7 @@ const OneUser = () => {
               <TransactionHistory />
             </TabPanel>
             <TabPanel value={value} index={4}>
-              <OrderHistory />
+              <OrderHistory id={id} />
             </TabPanel>
             <TabPanel value={value} index={5}>
               <JobsDisplay

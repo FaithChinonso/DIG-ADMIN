@@ -15,6 +15,8 @@ interface uiState {
   };
   drawerOpened: boolean;
   loaderOpened: boolean;
+  toastOpened: boolean;
+  toastContent: string | Element | JSX.Element | FunctionComponent;
 }
 // Define the initial state using that type
 const initialState: uiState = {
@@ -28,6 +30,8 @@ const initialState: uiState = {
   },
   drawerOpened: false,
   loaderOpened: false,
+  toastOpened: false,
+  toastContent: "",
 };
 
 const uiSlice = createSlice({
@@ -55,8 +59,21 @@ const uiSlice = createSlice({
     closedrawer(state) {
       return { ...state, drawerOpened: false };
     },
-    openLoader(state, action) {
-      state.loaderOpened = action.payload;
+    openLoader(state) {
+      return { ...state, loaderOpened: true };
+    },
+    closeLoader(state) {
+      return { ...state, loaderOpened: false };
+    },
+    openToastAndSetContent(state, action: PayloadAction<any>) {
+      return {
+        ...state,
+        toastOpened: true,
+        toastContent: action.payload.toastContent,
+      };
+    },
+    closeToast(state) {
+      return { ...state, toastOpened: false };
     },
   },
 });

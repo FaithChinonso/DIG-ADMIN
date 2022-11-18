@@ -6,12 +6,12 @@ import { useDispatch } from "react-redux";
 const SuccessfulModal = ({ title, message }: any) => {
   const dispatch = useDispatch();
   return (
-    <div className="w-[90vw] lg:w-[640px] flex flex-col py-[50px] px-[30px] gap-[15px] bg-white rounded-3xl">
+    <div className="w-[90vw] lg:w-[640px] flex flex-col items-center py-[50px] px-[30px] gap-[15px] bg-white rounded-3xl">
       <Image src={sucessPic} alt={""} />
       <div className="text-[21px] text-darkPurple">{title}</div>
       <div className="text-[12px] text-softGray"> {message}</div>
       <button
-        onClick={() => dispatch(uiActions.closeModal(false))}
+        onClick={() => dispatch(uiActions.closeModal())}
         className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
       >
         Close

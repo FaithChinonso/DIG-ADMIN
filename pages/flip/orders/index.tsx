@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Cell } from "recharts";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../../src/components/Drawer";
 import FilterTable from "../../../src/components/filter-table";
+import AddUser from "../../../src/components/Forms/AddUser";
 import ModalAction from "../../../src/components/ModalContent/ModalAction";
 import MultipleSelectTable from "../../../src/components/multiple-select-table";
 
@@ -16,143 +16,34 @@ import {
   statusData,
   tableData,
   tableLoad,
-  order,
 } from "../../../src/utils/analytics";
 import axios from "axios";
 
+import moment from "moment";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
+import useHTTPGet from "src/Hooks/use-httpget";
+import { addOrders, addUsers } from "src/redux/store/data-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import AddJob from "src/components/Forms/AddJob";
+import useHTTPDelete from "src/Hooks/use-httpdelete";
+import useHTTPPost from "src/Hooks/use-httppost";
+import { getMyOrders } from "src/redux/store/features/order-slice";
+import OrderTable from "src/components/tables/OrderTable";
+
 const Orders = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [image, setImage] = useState(false);
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-  const uploadHandler = (e: any) => {
-    const file = e.target.files[0];
-    setImage(file);
-  };
-  const createCategory = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    console.log(image);
-    const res = axios.post(
-      "https://backendapi.flip.onl/api/admin/productcategory/create-product-category",
-      {
-        name: "name",
-        image: image,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    console.log(image);
-  };
-  const columnOrders = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "Order",
-      accessor: "order",
-    },
-    {
-      Header: "Order Price",
-      accessor: "orderPrice",
-    },
-    {
-      Header: "Quantity",
-      accessor: "quantity",
-    },
-    {
-      Header: "Date Requested",
-      accessor: "dateRequested",
-    },
+  const dispatch = useAppDispatch();
 
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Merchant",
-      accessor: "merchant",
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    router.push(
-                      `${location.pathname}/${prop?.row.original?.id}`
-                    );
-                  }}
-                />
+  const { orders } = useAppSelector((state: any) => state.order);
+  const { token } = useAppSelector((state: any) => state.auth);
 
-                <ActionMenuItem
-                  name="Cancel Order"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Cancel" item="order" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-                <ActionMenuItem name="Modify Order" />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
+  useEffect(() => {
+    dispatch(getMyOrders(token));
+  }, [dispatch]);
+
   return (
     <ParentContainer>
-      <div>
-        {" "}
-        <input
-          type="file"
-          accept="image/png, image/jpg, image/gif, image/jpeg"
-          onChange={uploadHandler}
-          id="image"
-          name="image"
-        />
-        <button onClick={() => createCategory()}>send</button>
-      </div>
-      <DrawerCard title="Add Orders" open={isOpen} toggleDrawer={toggleDrawer}>
-        <div>red</div>
-      </DrawerCard>
       <div className=" p-[10px] md:p-[30px]">
-        <MultipleSelectTable
-          columns={columnOrders}
-          data={order}
-          emptyPlaceHolder="No orders yet!"
-          list
-          extraButton={{ text: "Add Orders" }}
-          onClickFunction={toggleDrawer}
-        />
+        <OrderTable data={orders} />
       </div>
     </ParentContainer>
   );

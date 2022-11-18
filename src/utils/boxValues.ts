@@ -17,6 +17,14 @@ export const MyDriversValue = [
   { id: 3, label: "Tracking" },
 ];
 export const MyProductValue = [
-  { id: 1, label: "Producty" },
-  { id: 2, label: "ProductCategory" },
+  { id: 1, label: "Product" },
+  { id: 2, label: "Product Category" },
+];
+export const MyServiceValue = [
+  { id: 1, label: "Service Category" },
+  { id: 2, label: "Service Category" },
+];
+export const MyTransactionValue = [
+  { id: 1, label: "Wallet" },
+  { id: 2, label: "Paystack" },
 ];

@@ -26,21 +26,17 @@ const BankDetails = ({ data }: any) => {
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-[#8487A3]">Bank Name</div>
-            <div className="text-base text-[#090F47]">{data.bankName}</div>
+            <div className="text-base text-[#090F47]">{data?.bankName}</div>
           </div>
         </div>
         <div className="flex justify-between mt-5 w-full">
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-text"> Bank Code</div>
-            <div className="text-base text-text">{data.weight}kg</div>
-          </div>
-          <div className="flex flex-col gap-3">
             <div className="text-xs text-text">Delivery Tag</div>
-            <div className="text-base text-text">{data.bankCode}</div>
+            <div className="text-base text-text">{data?.bankCode}</div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text">Abbreviation</div>
-            <div className="text-base text-text">₦ {data.abbreviation}</div>
+            <div className="text-base text-text">₦ {data?.abbreviation}</div>
           </div>
         </div>
       </div>{" "}
