@@ -7,21 +7,27 @@ import DashboardChart from "./DashboardChart";
 import DashboardPieChart from "./DashboardPieChart";
 import FilterTable from "./filter-table";
 import ParentContainer from "./ParentContainer";
+import PieChartDashboard from "./PieChart";
 import SmallTable from "./SmallTable";
 import UserTable from "./tables/UserTable";
 
-const Dashboard = ({ recentUsers, transactions, orders }: any) => {
+const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {
   return (
     <ParentContainer>
       <div className="w-full overflow-x-hidden bg-lightGray ">
-        <CardContainer />
+        <CardContainer
+          orders={orders}
+          transaction={transactions}
+          users={users}
+        />
         {/* <div className="flex gap-5 flex-col lg:flex-row "> */}
-        <div className="w-full flex flex-col md:flex-row gap-8 p-[10px] md:p-[30px]">
+        <div className="w-full flex flex-col md:flex-row gap-8 p-[10px] md:p-[30px] h-[500px]">
           <div className="w-full md:w-[65%] overflow-x-auto bg-white p-4 md:p-8 rounded-sm shadow-2xl">
             {" "}
             <DashboardChart transaction={transactions} />
           </div>
-          <DashboardPieChart data={orders} />
+
+          <PieChartDashboard orders={orders} />
         </div>
         <div className="w-full flex flex-col md:flex-row gap-5 items-start p-[10px] md:p-[30px]">
           <div className=" bg-white p-8 rounded-sm shadow-2xl w-full md:w-[65%] max-h-[400px] overflow-hidden ">
@@ -32,7 +38,7 @@ const Dashboard = ({ recentUsers, transactions, orders }: any) => {
           </div>
           <div className="w-full md:w-[35%] h-[400px] bg-white rounded-md shadow-md p-8 max-h-[400px] overflow-auto">
             {" "}
-            <SmallTable />
+            {/* <SmallTable /> */}
           </div>
         </div>
       </div>

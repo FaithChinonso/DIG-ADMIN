@@ -18,6 +18,7 @@ import { getMyproductCategories } from "src/redux/store/features/product-categor
 import { getMyTransactions } from "src/redux/store/features/transaction-slice";
 import { getMylogs } from "src/redux/store/features/log-slice";
 import { useSelector } from "react-redux";
+import { getMyOrders } from "src/redux/store/features/order-slice";
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -40,12 +41,14 @@ const Home = () => {
     dispatch(getMyTransactions(accessToken));
     dispatch(getMylogs(accessToken));
     dispatch(getMymerchant(accessToken));
+    dispatch(getMyOrders(accessToken));
   }, [dispatch, accessToken]);
   return (
     <Dashboard
       recentUsers={last10Users}
       transactions={transactions}
       orders={orders}
+      users={users}
     />
   );
 };

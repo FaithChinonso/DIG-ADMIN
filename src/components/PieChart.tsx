@@ -1,7 +1,7 @@
+import { Box, Stack, Typography } from "@mui/material";
 import moment from "moment";
 import React, { PureComponent, useEffect, useState } from "react";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { statusData } from "src/utils/analytics";
 import { Months } from "src/utils/months";
 
 const data = [
@@ -10,7 +10,8 @@ const data = [
   { name: "Group C", value: 300 },
   { name: "Group D", value: 200 },
 ];
-const COLORS = ["red", "#00C49F", "#FFBB28", "#FF8042"];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -30,7 +31,7 @@ const renderCustomizedLabel = ({
     <text
       x={x}
       y={y}
-      fill="red"
+      fill="white"
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
@@ -39,7 +40,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-const DashboardPieChart = ({ orders }: any) => {
+const PieChartDashboard = ({ orders }: any) => {
   const [month, setMonth] = useState<any>("");
   const [statusGroup, setStatusGroup] = useState<any>([]);
 
@@ -47,14 +48,6 @@ const DashboardPieChart = ({ orders }: any) => {
     const formDate = moment(tr?.orderDate).format("MMM");
     return formDate === month;
   });
-
-  //   static demoUrl =
-  //     "https://codesandbox.io/s/pie-chart-with-customized-active-shape-y93si";
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const onPieEnter = ({ _, index }: any) => {
-    setActiveIndex(index);
-  };
 
   useEffect(() => {
     setMonth(moment().format("MMM"));
@@ -83,7 +76,6 @@ const DashboardPieChart = ({ orders }: any) => {
     ]);
     console.log(orders, statusGroup);
   }, []);
-
   return (
     <div className="bg-white w-full md:w-[35%] h-[auto] z-4 shadow-3xl rounded-md p-7">
       <div className=" flex justify-between items-center mb-5 p-5">
@@ -123,7 +115,7 @@ const DashboardPieChart = ({ orders }: any) => {
         </div>
       </div>
       <div className="h-[60%] w-full">
-        <ResponsiveContainer width="100%" height="100%" className="">
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart width={400} height={400}>
             <Pie
               data={statusGroup}
@@ -134,18 +126,45 @@ const DashboardPieChart = ({ orders }: any) => {
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
-            />
-
-            {statusGroup.map((item: any, index: any) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
+            >
+              {statusGroup.map((_entry: any, index: number) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
           </PieChart>
+
+          {/* <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+            {COLORS.map((color, i) => (
+              <Stack key={color} alignItems="center" spacing={1}>
+                <Box sx={{ width: 20, height: 20, background: color }} />
+                <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                  {statusGroup[i]?.name}
+                </Typography>
+              </Stack>
+            ))}
+          </Box> */}
         </ResponsiveContainer>
+
+        <div className="flex w-full items-center justify-around">
+          {COLORS.map((color, i) => (
+            <div key={color} className="flex flex-col items-center">
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  background: color,
+                  borderRadius: "50%",
+                }}
+              />
+              <div>{statusGroup[i]?.name}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-export default DashboardPieChart;
+export default PieChartDashboard;

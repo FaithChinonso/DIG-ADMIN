@@ -12,6 +12,8 @@ import moment from "moment";
 import { ChartType, Transaction, TransactionData } from "../@types/chart";
 import { useEffect, useState } from "react";
 import { Months } from "src/utils/months";
+import { numberWithCommas } from "src/utils/formatNumber";
+import Orders from "pages/flip/orders";
 
 const DashboardChart = ({ transaction }: any) => {
   const [month, setMonth] = useState<any>("");
@@ -24,8 +26,8 @@ const DashboardChart = ({ transaction }: any) => {
     return formDate === month;
   });
   const data = filterTransactions?.map((pc: any) => {
-    const wallet = pc.paymentMethod === "wallet" ? pc?.amount : 0;
-    const paystack = pc.paymentMethod === "paystack" ? pc?.amount : 0;
+    const wallet = pc.paymentMethod === "wallet" ? Number(pc?.amount) : 0;
+    const paystack = pc.paymentMethod === "paystack" ? Number(pc?.amount) : 0;
     return {
       date: moment(pc?.transDate).format("dddd, h:mm a"),
       wallet,
@@ -36,6 +38,7 @@ const DashboardChart = ({ transaction }: any) => {
     return pc?.wallet || pc?.paystack;
   });
   const mode = Math.max(...(transactionFlow || []));
+
   return (
     <div className="w-full">
       <div className="flex gap-4 md:gap-0 flex-col justify-between items-start md:items-center md:p-5 w-full md:flex-row ">
@@ -53,7 +56,7 @@ const DashboardChart = ({ transaction }: any) => {
             <div className="text-gray-800 text-1xl">Wallet</div>
           </div>
           <div className="flex items-center">
-            <div className="bg-[#00ff00] h-2 w-2 rounded-[100px] mr-2" />
+            <div className="bg-primary h-2 w-2 rounded-[100px] mr-2" />
             <div className="text-gray-800 text-1xl">Paystack</div>
           </div>
         </div>
@@ -92,7 +95,7 @@ const DashboardChart = ({ transaction }: any) => {
           </select>
         </div>
       </div>
-      <ResponsiveContainer height={300} width="100%" className="">
+      <ResponsiveContainer height={300} width="90%" className="">
         <AreaChart
           width={500}
           height={400}
@@ -104,26 +107,25 @@ const DashboardChart = ({ transaction }: any) => {
             bottom: 0,
           }}
         >
-          <CartesianGrid strokeDasharray="0 100" />
+          <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
-            type="number"
             padding={{ left: 40, right: 30 }}
             tick={false}
+            // tickFormatter={number => `₦${numberWithCommas(number)}`}
             label={{ value: month.toUpperCase() }}
           />
           {filterTransactions?.length > 1 ? (
             <YAxis domain={[0, mode]} />
           ) : (
-            <YAxis />
+            <YAxis domain={[0, 2000]} />
           )}
           <Legend />
           <Area
             type="monotone"
             dataKey="wallet"
-            stackId="1"
-            stroke="rgba(107, 93, 211, 0.4)"
-            fill="rgba(107, 93, 211, 0.4)"
+            stroke="rgba(82, 68, 192, 1)"
+            fill="rgba(82, 68, 192, 0.2)"
             activeDot={{ r: 8 }}
             strokeWidth={1.5}
             dot={false}
@@ -131,9 +133,8 @@ const DashboardChart = ({ transaction }: any) => {
           <Area
             type="monotone"
             dataKey="paystack"
-            stackId="1"
-            stroke="rgba(107, 93, 211, 1)"
-            fill="rgba(107, 93, 211, 0.4))"
+            stroke="rgba(255,187,40, 1)"
+            fill="rgba(255,187,40, 0.2)"
             activeDot={{ r: 8 }}
             strokeWidth={1.5}
             style={{ fontFamily: "Steradian !important" }}

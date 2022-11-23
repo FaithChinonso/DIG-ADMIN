@@ -170,7 +170,7 @@ export const tableData = [
     action: "Action",
   },
   {
-    id: 1,
+    id: 3,
     name: "Name",
     number: "08148184543",
     email: "email@email.com",
@@ -178,7 +178,7 @@ export const tableData = [
     action: "Action",
   },
   {
-    id: 2,
+    id: 4,
     name: "Name",
     number: "08148184543",
     email: "email@email.com",
@@ -186,7 +186,7 @@ export const tableData = [
     action: "Action",
   },
   {
-    id: 1,
+    id: 5,
     name: "Name",
     number: "08148184543",
     email: "email@email.com",
@@ -194,7 +194,7 @@ export const tableData = [
     action: "Action",
   },
   {
-    id: 2,
+    id: 6,
     name: "Name",
     number: "08148184543",
     email: "email@email.com",
@@ -238,25 +238,25 @@ export const innerNav = [
       },
 
       {
-        id: 4,
+        id: 2,
         name: "Media & Communications",
         value: "dashboard",
         route: "/dashboard/media",
       },
       {
-        id: 5,
+        id: 3,
         name: "Users",
         value: "dashboard",
         route: "/dashboard/users",
       },
       {
-        id: 6,
+        id: 4,
         name: "Transactions",
         value: "dashboard",
         route: "/dashboard/transactions",
       },
       {
-        id: 6,
+        id: 5,
         name: "Proposals",
         value: "dashboard",
         route: "/dashboard/proposals",
@@ -292,44 +292,44 @@ export const innerNav = [
     route: "/flip",
     navItems: [
       {
-        id: 10,
+        id: 1,
         name: "Orders",
         value: "flip",
         route: "/flip/orders",
       },
 
       {
-        id: 11,
+        id: 2,
         name: "Products",
         value: "flip",
         route: "/flip/products",
       },
       {
-        id: 12,
+        id: 3,
         name: "Services",
         value: "flip",
         route: "/flip/services",
       },
       {
-        id: 24,
+        id: 4,
         name: "Job Posting",
         value: "flip",
         route: "/flip/jobs",
       },
       {
-        id: 13,
+        id: 5,
         name: "Carts",
         value: "flip",
         route: "/flip/carts",
       },
       {
-        id: 14,
+        id: 6,
         name: "Merchants",
         value: "flip",
         route: "/flip/merchants",
       },
       {
-        id: 15,
+        id: 7,
         name: "Payment - Withdrawal",
         value: "flip",
         route: "/flip/withdrawal",
@@ -399,25 +399,25 @@ export const outerNav = [
   },
 
   {
-    id: 4,
+    id: 2,
     name: "Media & Communications",
     value: "dashboard",
     route: "/dashboard/media",
   },
   {
-    id: 5,
+    id: 3,
     name: "Users",
     value: "dashboard",
     route: "/dashboard/users",
   },
   {
-    id: 6,
+    id: 4,
     name: "Transactions",
     value: "dashboard",
     route: "/dashboard/transactions",
   },
   {
-    id: 6,
+    id: 5,
     name: "Proposals",
     value: "dashboard",
     route: "/dashboard/proposals",
@@ -461,7 +461,7 @@ export const outerNav = [
     route: "/flip/services",
   },
   {
-    id: 24,
+    id: 14,
     name: "Job Posting",
     value: "flip",
     route: "/flip/jobs",
@@ -473,13 +473,13 @@ export const outerNav = [
     route: "/flip/carts",
   },
   {
-    id: 14,
+    id: 15,
     name: "Merchants",
     value: "flip",
     route: "/flip/merchants",
   },
   {
-    id: 15,
+    id: 16,
     name: "Payment - Withdrawal",
     value: "flip",
     route: "/flip/withdrawal",
