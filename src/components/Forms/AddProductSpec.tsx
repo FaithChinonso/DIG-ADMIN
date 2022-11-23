@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { RiAddCircleLine } from "react-icons/ri";
 import useHTTPPost from "src/Hooks/use-httppost";
 import DrawerWrapper from "../DrawerWrapper";
 import MultipleInput from "../MultipleInput";
 
-const AddProductSpec = ({ id }: any) => {
+const AddProductSpec = ({ id, title, existingSpec }: any) => {
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
   const send = useHTTPPost();
 
@@ -27,6 +29,14 @@ const AddProductSpec = ({ id }: any) => {
     setItems(newItems);
   };
   console.log(items);
+
+  const getAProductSpec = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    try {
+      const res = await axios.get("");
+    } catch {}
+  };
   const submitFormHandler = (e: any) => {
     const payload = {
       spec: items,
@@ -39,8 +49,14 @@ const AddProductSpec = ({ id }: any) => {
     send({ url, values: payload, accessToken }, dataFunction);
   };
 
+  useEffect(() => {
+    if (title === "Edit Product Specification") {
+      setItems(existingSpec);
+    }
+  }, [title]);
+
   return (
-    <DrawerWrapper title="App Product Spec">
+    <DrawerWrapper title={title}>
       <form onSubmit={submitFormHandler}>
         {items?.map((element, index) => (
           <MultipleInput
@@ -50,11 +66,19 @@ const AddProductSpec = ({ id }: any) => {
             removeFormFields={removeFormFields}
           />
         ))}
+
         <div>
-          <div onClick={addFormFields} className="text-xs text-gray-600">
-            &plus; Add Items
+          <div
+            onClick={addFormFields}
+            className="text-xs flex text-gray-600 mt-1"
+          >
+            <div className="mr-1 text-darkPurple ">
+              <RiAddCircleLine />
+            </div>{" "}
+            <div> Add Items</div>
           </div>
         </div>
+
         <button
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-6"
           type="submit"

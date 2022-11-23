@@ -101,9 +101,7 @@ const Products = () => {
           </Box>
 
           <TabPanel value={value} index={0}>
-            <div className=" p-[10px] md:p-[30px]">
-              <ProductTable data={products} />
-            </div>
+            <ProductTable data={products} />
           </TabPanel>
           <TabPanel value={value} index={1}>
             <ProductCategory />

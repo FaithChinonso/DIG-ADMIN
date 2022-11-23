@@ -12,8 +12,10 @@ import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import AddService from "../Forms/AddService";
+import AddServiceImages from "../Forms/AddServiceImages";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
+import ServiceDetails from "../ServiceDetails";
 
 const ServiceTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
@@ -27,7 +29,7 @@ const ServiceTable = ({ data }: any) => {
         },
         drawerContent: (
           <>
-            <AddService />
+            <AddService title="Create Service" />
           </>
         ),
       })
@@ -62,8 +64,12 @@ const ServiceTable = ({ data }: any) => {
         phoneNumber: client.service.phoneNumber,
         pricing: client.service.pricing,
         isActive: client.service.isActive,
+        description: client.service.description,
+        images: client.service.images,
         yearsOfExperience: client.service.yearsOfExperience,
         categoryName: client.category.name,
+        merchant: client.merchant,
+        otherDetails: client.service.other_details,
         datePosted: moment(client.service.datePosted).format("ll"),
       };
     });
@@ -117,7 +123,35 @@ const ServiceTable = ({ data }: any) => {
                 <ActionMenuItem
                   name="View More"
                   onClickFunction={() => {
-                    router.push(`${location.pathname}/${prop?.id}`);
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <ServiceDetails data={prop} />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                />
+                <ActionMenuItem
+                  name="Update Service"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <AddService title="Update Service" id={prop?.id} />
+                          </>
+                        ),
+                      })
+                    );
                   }}
                 />
 
@@ -180,6 +214,23 @@ const ServiceTable = ({ data }: any) => {
                     }
                   />
                 )}
+                <ActionMenuItem
+                  name="Add Service Images"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerContent: (
+                          <>
+                            <AddServiceImages
+                              id={prop?.id}
+                              title="Add Service Images"
+                            />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                />
 
                 <ActionMenuItem
                   name="Delete Service"

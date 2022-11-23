@@ -40,7 +40,7 @@ export const updateservice = createAsyncThunk(
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceApi}/update-service/${data.serviceID}`,
-        data,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -173,7 +173,7 @@ const serviceSlice = createSlice({
       getMyservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loadingFetchservices = false;
-        state.errorFetchservices = action.payload.message;
+        state.errorFetchservices = action?.payload?.message;
       }
     );
     builder.addCase(updateservice.pending, state => {

@@ -3,10 +3,10 @@ import userPic from "../assets/image/userPic.svg";
 import { FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 
-const Upload = (props: any) => {
+const UploadButton = (props: any) => {
   const wrapperRef = React.useRef(null as any);
 
-  const [newFile, setNewFile] = React.useState([]);
+  const [fileList, setFileList] = React.useState([]);
 
   const onDragEnter = () => wrapperRef.current.classList.add("dragover");
 
@@ -16,9 +16,9 @@ const Upload = (props: any) => {
 
   const onFileDrop = (e: any) => {
     const newFile = e.target.files[0];
-    // if (newFile) {
-    //   const updatedList = [...fileList, newFile];
-    //   setFileList(updatedList as any);
+    if (newFile) {
+      const updatedList = [...fileList, newFile];
+      setFileList(updatedList as any);
     props.onHandleChange(newFile);
   };
 
@@ -87,4 +87,4 @@ const Upload = (props: any) => {
   );
 };
 
-export default Upload;
+export default UploadButton;

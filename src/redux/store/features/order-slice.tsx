@@ -116,6 +116,7 @@ export const deleteOrder = createAsyncThunk(
 );
 interface orderState {
   orders: any;
+  ordersByMerchant: any;
   success: boolean;
   loading: boolean;
   error: string;
@@ -128,6 +129,7 @@ interface orderState {
 
 const initialState: orderState = {
   orders: [],
+  ordersByMerchant: [],
   success: false,
   loading: false,
   error: "",
@@ -197,7 +199,7 @@ const orderSlice = createSlice({
       (state, action: PayloadAction<any>) => {
         state.loadingFetchOrders = false;
         state.successFetchOrders = true;
-        state.orders = action.payload.data;
+        state.ordersByMerchant = action.payload.data;
       }
     );
     builder.addCase(

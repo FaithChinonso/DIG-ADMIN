@@ -99,7 +99,7 @@ const ServiceCategory = () => {
                         },
                         drawerContent: (
                           <>
-                            <AddServiceCategory type="edit" />
+                            <AddServiceCategory type="edit" id={prop?.id} />
                           </>
                         ),
                       })

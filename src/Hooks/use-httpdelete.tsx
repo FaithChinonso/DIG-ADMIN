@@ -8,6 +8,7 @@ const useHTTPDelete = () => {
   const dispatch = useDispatch();
 
   const remove = async ({ url, accessToken }: any, dataFunction: any) => {
+    dispatch(uiActions.openLoader());
     await axios
       .delete(url, {
         headers: {
@@ -16,6 +17,7 @@ const useHTTPDelete = () => {
         },
       })
       .then(res => {
+        dispatch(uiActions.closeLoader());
         dataFunction(res);
         dispatch(
           uiActions.openModalAndSetContent({
@@ -33,7 +35,12 @@ const useHTTPDelete = () => {
           })
         );
       })
-      .catch((error: any) => {});
+      .catch((error: any) => {
+        dispatch(uiActions.closeLoader());
+        dispatch(
+          uiActions.openToastAndSetContent({ toastContent: error.message })
+        );
+      });
   };
 
   return remove;

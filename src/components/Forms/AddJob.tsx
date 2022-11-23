@@ -7,16 +7,19 @@ import { useDispatch } from "react-redux";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { NumericFormat } from "react-number-format";
 import { isNotEmpty } from "src/utils/helperFunctions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { delivery, negotiable, productLevel } from "../../utils/analytics";
 import DrawerWrapper from "../DrawerWrapper";
 import { createjob } from "src/redux/store/features/job-slice";
+import { jobApi } from "../api";
+import useHTTPGet from "src/Hooks/use-httpget";
 
-const AddJob = ({ userId }: any) => {
+const AddJob = ({ id, title }: any) => {
   const dispatch = useDispatch();
+  const request = useHTTPGet();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.job
   );
@@ -24,6 +27,20 @@ const AddJob = ({ userId }: any) => {
   const [amount, setamount] = useState(null);
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
   const send = useHTTPPost();
+
+  const [datas, setData] = useState({
+    headline: "",
+    description: "",
+    duration: "",
+    scope: "",
+    negotiate: "",
+    budget: null,
+    level: "",
+  });
+
+  const inputChange = (e: any) => {
+    setData({ ...datas, [e.target.name]: e.target.value });
+  };
 
   let handleChange = (index: any, e: any) => {
     let newItems = [...items];
@@ -48,51 +65,49 @@ const AddJob = ({ userId }: any) => {
     setPhoneNumber(event);
   };
 
-  const {
-    enteredInput: enteredheadline,
-    updateInputHandler: headlineInputHandler,
-    inputBlurHandler: headlineBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: entereddurationd,
-    updateInputHandler: durationdInputHandler,
-    inputBlurHandler: durationdBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredscope,
-    updateInputHandler: scopeInputHandler,
-    inputBlurHandler: scopeBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: entereddescription,
-    updateInputHandler: descriptionInputHandler,
-    inputBlurHandler: descriptionBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const { enteredInput: enteredlevel, updateInputHandler: levelInputHandler } =
-    useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enterednegotiate,
-    updateInputHandler: negotiateInputHandler,
-    inputBlurHandler: negotiateBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-
   const payload = {
-    headline: enteredheadline,
-    experience_level: enteredlevel,
-    job_scope: enteredscope,
-    budget: amount,
-    job_duration: entereddurationd,
-    is_budget_negotiable: enterednegotiate,
+    headline: datas.headline,
+    experience_level: datas.level,
+    job_scope: datas.scope,
+    budget: datas.budget,
+    job_duration: datas.duration,
+    is_budget_negotiable: datas.negotiate,
     skills_needed: JSON.stringify(items),
-    description: entereddescription,
+    description: datas.description,
   };
-  const data = {
-    payload,
-    userID: userId,
-  };
-  const submitFormHandler = (e: any) => {
-    e.preventDefault();
 
+  const getJobDetail = () => {
+    const url = `${jobApi}/single-job/${id}`;
+    const accessToken = sessionStorage.getItem("accessToken");
+    const dataFunction = (res: any) => {
+      console.log(res);
+      setData({
+        ...datas,
+        headline: res.data.data.headline,
+        description: res.data.data.description,
+        duration: res.data.data.jobDuration,
+        scope: res.data.data.jobScope,
+        negotiate: res.data.data.isBudgetNegotiable === "true" ? "1" : "0",
+        budget: res.data.data.budget,
+        level: res.data.data.experienceLevel,
+      });
+      setItems(res.data.data.skillsNeeded);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
+
+  const updateJobPosting = async () => {
+    const url = `${jobApi}/update-job/${id}`;
+    const accessToken = sessionStorage.getItem("accessToken");
+    const dataFunction = (res: any) => {};
+
+    send({ url, values: payload, accessToken }, dataFunction);
+  };
+  const createJobPosting = async () => {
+    const data = {
+      payload,
+      userID: id,
+    };
     dispatch(createjob(data));
     if (success === true) {
       dispatch(uiActions.closedrawer());
@@ -116,24 +131,27 @@ const AddJob = ({ userId }: any) => {
       dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
     }
   };
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+    if (title === "Update Job Posting") {
+      updateJobPosting();
+    } else {
+      createJobPosting();
+    }
+  };
+
+  useEffect(() => {
+    if (title === "Update Job Posting") {
+      getJobDetail();
+    }
+  }, []);
 
   return (
-    <DrawerWrapper title="Create Job">
+    <DrawerWrapper title={title}>
       <form
         className="w-full h-full flex flex-col"
         onSubmit={submitFormHandler}
       >
-        <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-          <Image src={userPic} alt={""} />
-          <input
-            type="file"
-            name="resume"
-            id="resume"
-            accept="image/png, image/jpg, image/gif, image/jpeg"
-            className="hidden"
-          />{" "}
-        </label>
-
         <div className="mt-[10px]">
           <label
             htmlFor="headline"
@@ -144,10 +162,9 @@ const AddJob = ({ userId }: any) => {
           <input
             type="text"
             name="headline"
-            value={enteredheadline}
+            value={datas.headline || ""}
             id="headline"
-            onBlur={headlineBlurHandler}
-            onChange={headlineInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Headline "
           />
@@ -162,9 +179,9 @@ const AddJob = ({ userId }: any) => {
 
           <select
             name="level"
-            value={enteredlevel}
+            value={datas.level || ""}
             id="level"
-            onChange={levelInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder=" Experience Level"
           >
@@ -189,10 +206,9 @@ const AddJob = ({ userId }: any) => {
           <input
             type="text"
             name="duration"
-            value={entereddurationd}
-            id="durationd"
-            onBlur={durationdBlurHandler}
-            onChange={durationdInputHandler}
+            value={datas.duration || ""}
+            id="duration"
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="duration"
           />
@@ -209,10 +225,9 @@ const AddJob = ({ userId }: any) => {
           <input
             type="text"
             name="scope"
-            value={enteredscope}
+            value={datas.scope}
             id="scope"
-            onBlur={scopeBlurHandler}
-            onChange={scopeInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Job Scope"
           />
@@ -227,10 +242,9 @@ const AddJob = ({ userId }: any) => {
           <input
             type="text"
             name="description"
-            value={entereddescription}
+            value={datas.description || ""}
             id="description"
-            onBlur={descriptionBlurHandler}
-            onChange={descriptionInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Description"
           />
@@ -244,8 +258,8 @@ const AddJob = ({ userId }: any) => {
             Amount
           </label>
           <NumericFormat
-            name="enteredPrice"
-            value={amount || ""}
+            name="budget"
+            value={datas.budget || ""}
             allowNegative={false}
             thousandSeparator={true}
             required
@@ -254,8 +268,8 @@ const AddJob = ({ userId }: any) => {
             onValueChange={(values: any, sourceInfo: any) => {
               const { formattedValue, value } = values;
               const { event, source } = sourceInfo;
-              console.log(event.target.value);
-              setamount(value);
+
+              setData({ ...datas, budget: value });
             }}
           />
         </div>
@@ -270,9 +284,9 @@ const AddJob = ({ userId }: any) => {
 
           <select
             name="negotiate"
-            value={enterednegotiate}
+            value={datas.negotiate}
             id="negotiate"
-            onChange={negotiateInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder=" Negotiatiable"
           >
@@ -287,7 +301,9 @@ const AddJob = ({ userId }: any) => {
             ))}
           </select>
         </div>
-        <div className=" text-base text-[#1D2939] bg-white">Other Details</div>
+        <div className=" text-base text-[#1D2939] bg-white mt-3">
+          Skills Needed
+        </div>
 
         {items?.map((element, index) => (
           <MultipleInput
@@ -304,10 +320,12 @@ const AddJob = ({ userId }: any) => {
         </div>
 
         <button
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-3"
           type="submit"
         >
-          Create Job Posting
+          {title === "Update Job Posting"
+            ? "Update Job Posting"
+            : "Create Job Posting"}
         </button>
       </form>
     </DrawerWrapper>

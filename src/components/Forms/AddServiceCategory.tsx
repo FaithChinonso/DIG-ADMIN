@@ -11,22 +11,35 @@ import useHTTPPost from "src/Hooks/use-httppost";
 import DeleteIcon from "../../assets/image/delete-icon.svg";
 import Image from "next/image";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
-import UploadButton from "../UploadButton";
 import UploadInputButton from "../UploadInputButtons";
 import DrawerWrapper from "../DrawerWrapper";
-import { createserviceCategory } from "src/redux/store/features/service-category-slice";
+import {
+  createserviceCategory,
+  updateserviceCategory,
+} from "src/redux/store/features/service-category-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { serviceCategoryApi } from "../api";
+import useHTTPGet from "src/Hooks/use-httpget";
 
-const AddServiceCategory = ({ type }: any) => {
+const AddServiceCategory = ({ type, id }: any) => {
+  const send = useHTTPPost();
+  const request = useHTTPGet();
   const [name, setName] = React.useState("");
   const [profilePic, setProfilePic] = React.useState<any>("");
   const [profilePict, saveProfilePict] = React.useState<any>("");
   const [selectedFile, setSelectedFile] = useState<any>("");
 
   const dispatch = useAppDispatch();
-  const { success, loading, error, message } = useAppSelector(
-    (state: any) => state.serviceCategory
-  );
+  const {
+    success,
+    loading,
+    error,
+    message,
+    successUpdateserviceCategorys,
+    loadingUpdateserviceCategorys,
+    errorUpdateserviceCategorys,
+    messageUpdateserviceCategorys,
+  } = useAppSelector((state: any) => state.serviceCategory);
 
   const updateProps = (event: any) => {
     const newValue = event?.target?.value;
@@ -47,7 +60,7 @@ const AddServiceCategory = ({ type }: any) => {
       } else {
         saveProfilePict(fileString);
         setSelectedFile(event.target.files[0]);
-        console.log(selectedFile);
+        console.log(profilePict);
       }
     };
     setProfilePic(newValue);
@@ -55,12 +68,13 @@ const AddServiceCategory = ({ type }: any) => {
     console.log(profilePic);
   };
 
-  const createCategory = (e: any) => {
-    e.preventDefault();
+  const formData = new FormData();
+  formData.append("image", selectedFile);
+  formData.append("name", name);
+
+  const createCategory = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    formData.append("name", name);
+
     dispatch(createserviceCategory(formData));
     if (success === true) {
       dispatch(uiActions.closedrawer());
@@ -81,12 +95,95 @@ const AddServiceCategory = ({ type }: any) => {
       dispatch(uiActions.openLoader());
     }
     if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
     }
   };
+  const getMyCategory = async () => {
+    const reader = new FileReader();
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${serviceCategoryApi}/single-service-category/${id}`;
+    const dataFunction = (res: any) => {
+      setName(res.data.data.name);
+      saveProfilePict(res.data.data.image);
+      // reader.readAsBinaryString(res.data.data.image);
+      // console.log(formData);
+
+      // reader.onload = file => {
+      //   let fileString = file?.target?.result;
+      //   console.log(fileString);
+      // };
+      // setSelectedFile((res.data.data.image).);
+      console.log(res);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
+  const updateCategory = async () => {
+    const data = {
+      payload: formData,
+      id,
+    };
+    // const dataFunction = (res: any) => {};
+    // const accessToken = sessionStorage.getItem("accessToken");
+    // const url = `${serviceCategoryApi}/update-service-category/${id}`;
+    // send({ url, values: formData, accessToken }, dataFunction);
+    dispatch(updateserviceCategory(data));
+    if (successUpdateserviceCategorys === true) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalStyles: {
+            padding: 0,
+          },
+          modalContent: (
+            <>
+              <SuccessfulModal
+                title="Successful"
+                message={messageUpdateserviceCategorys}
+              />
+            </>
+          ),
+        })
+      );
+    }
+    if (loadingUpdateserviceCategorys === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (successUpdateserviceCategorys === false) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: errorUpdateserviceCategorys,
+        })
+      );
+    }
+  };
+
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+    if (type === "edit") {
+      updateCategory();
+    } else {
+      createCategory();
+    }
+  };
+  useEffect(() => {
+    if (type === "edit") {
+      getMyCategory();
+    }
+  }, []);
   return (
-    <DrawerWrapper title="Create Service Category">
-      <form className="w-full h-full flex flex-col" onSubmit={createCategory}>
+    <DrawerWrapper
+      title={
+        type === "edit" ? "Edit Service Category" : "Create Service Category"
+      }
+    >
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
+      >
         <label className=" text-[10px] text-[#1D2939] bg-white">
           Category Image{" "}
         </label>
@@ -121,7 +218,7 @@ const AddServiceCategory = ({ type }: any) => {
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-6"
           type="submit"
         >
-          Add Category
+          {type === "edit" ? "Update Category" : " Add Category"}
         </button>
       </form>
     </DrawerWrapper>

@@ -3,20 +3,36 @@ import { Notify, NotifyType } from "../HotToast";
 import axios from "axios";
 import UploadInputButton from "../UploadInputButtons";
 import DrawerWrapper from "../DrawerWrapper";
-import { createproductCategory } from "src/redux/store/features/product-category-slice";
+import {
+  createproductCategory,
+  updateproductCategory,
+} from "src/redux/store/features/product-category-slice";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { uiActions } from "src/redux/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 
-const AddProductCategory = ({ type }: any) => {
+import { productCategoryApi } from "../api";
+import useHTTPGet from "src/Hooks/use-httpget";
+import useHTTPPost from "src/Hooks/use-httppost";
+
+const AddProductCategory = ({ type, id }: any) => {
+  const request = useHTTPGet();
+  const send = useHTTPPost();
   const [name, setName] = React.useState("");
   const [profilePic, setProfilePic] = React.useState<any>("");
   const [profilePict, saveProfilePict] = React.useState<any>("");
   const [selectedFile, setSelectedFile] = useState<any>("");
   const dispatch = useAppDispatch();
-  const { success, loading, error, message } = useAppSelector(
-    (state: any) => state.productCategory
-  );
+  const {
+    success,
+    loading,
+    error,
+    message,
+    successUpdateproductCategorys,
+    errorUpdateproductCategorys,
+    loadingUpdateproductCategorys,
+    messageUpdateproductCategorys,
+  } = useAppSelector((state: any) => state.productCategory);
 
   const updateProps = (event: any) => {
     const newValue = event?.target?.value;
@@ -44,13 +60,58 @@ const AddProductCategory = ({ type }: any) => {
     console.log(profilePict);
     console.log(profilePic);
   };
+  const formData = new FormData();
+  formData.append("image", selectedFile);
+  formData.append("name", name);
 
-  const createCategory = async (e: any) => {
-    e.preventDefault();
+  const getMyCategory = async () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    formData.append("name", name);
+    const url = `${productCategoryApi}/single-product-category/${id}`;
+    const dataFunction = (res: any) => {
+      setName(res.data.data.name);
+      saveProfilePict(res.data.data.image);
+      console.log(res);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
+  const updateCategory = async () => {
+    const data = {
+      payload: formData,
+      id,
+    };
+
+    dispatch(updateproductCategory(data));
+    if (successUpdateproductCategorys === true) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalStyles: {
+            padding: 0,
+          },
+          modalContent: (
+            <>
+              <SuccessfulModal
+                title="Successful"
+                message={messageUpdateproductCategorys}
+              />
+            </>
+          ),
+        })
+      );
+    }
+    if (loadingUpdateproductCategorys === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (successUpdateproductCategorys === false) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: errorUpdateproductCategorys,
+        })
+      );
+    }
+  };
+  const createCategory = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
 
     dispatch(createproductCategory(formData));
     if (success === true) {
@@ -75,9 +136,30 @@ const AddProductCategory = ({ type }: any) => {
       dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
     }
   };
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+    if (type === "edit") {
+      updateCategory();
+    } else {
+      createCategory();
+    }
+  };
+  useEffect(() => {
+    if (type === "edit") {
+      getMyCategory();
+    }
+  }, []);
+
   return (
-    <DrawerWrapper title="Create Service Category">
-      <form className="w-full h-full flex flex-col" onSubmit={createCategory}>
+    <DrawerWrapper
+      title={
+        type === "edit" ? "Edit Product Category" : "Create Product Category"
+      }
+    >
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
+      >
         <label className=" text-[10px] text-[#1D2939] bg-white">
           Category Image{" "}
         </label>
@@ -112,7 +194,7 @@ const AddProductCategory = ({ type }: any) => {
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-6"
           type="submit"
         >
-          Add Category
+          {type === "edit" ? "Update Category" : " Add Category"}
         </button>
       </form>
     </DrawerWrapper>

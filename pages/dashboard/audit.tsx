@@ -1,33 +1,31 @@
 import ParentContainer from "src/components/ParentContainer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { getMylogs } from "src/redux/store/features/log-slice";
-import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
-import FilterTable from "../../src/components/filter-table";
-import MultipleSelectTable from "../../src/components/multiple-select-table";
+import { getAdminlogs, getMylogs } from "src/redux/store/features/log-slice";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Box from "@mui/material/Box";
 
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-} from "../../src/utils/analytics";
 import LogTable from "src/components/tables/LogTable";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import { MyLogsValue } from "src/utils/boxValues";
 
 const Audit = () => {
-  const { logs } = useAppSelector(state => state.log);
+  const { logs, adminLogs } = useAppSelector(state => state.log);
   const { token } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getMylogs(token));
+    dispatch(getAdminlogs(token));
   }, [dispatch]);
 
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">
-        <LogTable data={logs} />
+        <LogTable data={adminLogs} />
       </div>
     </ParentContainer>
   );

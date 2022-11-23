@@ -3,10 +3,13 @@ import React from "react";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteproduct } from "src/redux/store/features/product-slice";
 import { uiActions } from "src/redux/store/ui-slice";
+import { product } from "src/utils/analytics";
 import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
+import AddProductFeature from "../Forms/AddProductFeature";
+import AddProductImages from "../Forms/AddProductImages";
 import AddProductSpec from "../Forms/AddProductSpec";
 import CreateProduct from "../Forms/CreateProduct";
 import ModalAction from "../ModalContent/ModalAction";
@@ -24,7 +27,7 @@ const ProductTable = ({ data }: any) => {
         },
         drawerContent: (
           <>
-            <CreateProduct />
+            <CreateProduct title="Create Product" />
           </>
         ),
       })
@@ -41,6 +44,7 @@ const ProductTable = ({ data }: any) => {
       brand: string;
       specifications: any[];
       features: any[];
+      images: any[];
       productWarranty: string;
       quantity: number;
       numberOfOrders: number;
@@ -75,7 +79,7 @@ const ProductTable = ({ data }: any) => {
         quantity: client.product.quantity,
         productWarranty: client.product.productWarranty,
         price: client.product.price,
-        categoryName: client.category.name,
+        categoryName: client?.category?.name,
         productCreationDate: moment(client.productCreationDate).format("ll"),
         isActive: client.product.isActive,
         numberOfOrders: client.product.numberOfOrders,
@@ -84,6 +88,7 @@ const ProductTable = ({ data }: any) => {
         description: client.product.description,
         specifications: client.product.specifications,
         features: client.product.features,
+        images: client.product.images,
       };
     });
   console.log(formatData);
@@ -161,7 +166,7 @@ const ProductTable = ({ data }: any) => {
                   }}
                 />
                 <ActionMenuItem
-                  name="Add Product Specification"
+                  name="Update Product"
                   onClickFunction={() => {
                     dispatch(
                       uiActions.openDrawerAndSetContent({
@@ -170,13 +175,100 @@ const ProductTable = ({ data }: any) => {
                         },
                         drawerContent: (
                           <>
-                            <AddProductSpec id={prop?.id} />
+                            <CreateProduct
+                              title="Update Product"
+                              id={prop?.id}
+                            />
                           </>
                         ),
                       })
                     );
                   }}
                 />
+
+                {prop.specifications.length > 0 ? (
+                  <ActionMenuItem
+                    name="Edit Product Specification"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerStyles: {
+                            padding: 0,
+                          },
+                          drawerContent: (
+                            <>
+                              <AddProductSpec
+                                id={prop?.id}
+                                title="Edit Product Specification"
+                                existingSpec={prop.specifications}
+                              />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Add Product Specification"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerStyles: {
+                            padding: 0,
+                          },
+                          drawerContent: (
+                            <>
+                              <AddProductSpec
+                                id={prop?.id}
+                                title="Add Product Specification"
+                              />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                )}
+
+                {prop.features.length > 0 ? (
+                  <ActionMenuItem
+                    name="Edit Product Feature"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerContent: (
+                            <>
+                              <AddProductFeature
+                                id={prop?.id}
+                                title="Edit Product Feature"
+                                existingFeature={prop.features}
+                              />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Add Product Feature"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerContent: (
+                            <>
+                              <AddProductFeature
+                                id={prop?.id}
+                                title="Add Product Feature"
+                              />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                )}
 
                 {prop?.isActive === true ? (
                   <ActionMenuItem
@@ -237,6 +329,24 @@ const ProductTable = ({ data }: any) => {
                     }
                   />
                 )}
+
+                <ActionMenuItem
+                  name="Add Product Images"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerContent: (
+                          <>
+                            <AddProductImages
+                              id={prop?.id}
+                              title="Add Product Images"
+                            />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                />
 
                 <ActionMenuItem
                   name="Delete Product"

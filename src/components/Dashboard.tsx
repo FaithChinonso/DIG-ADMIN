@@ -8,58 +8,9 @@ import DashboardPieChart from "./DashboardPieChart";
 import FilterTable from "./filter-table";
 import ParentContainer from "./ParentContainer";
 import SmallTable from "./SmallTable";
+import UserTable from "./tables/UserTable";
 
-const Dashboard = ({ recentUsers }: any) => {
-  const columnDasboard = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "Business Name",
-      accessor: "businessName",
-    },
-    {
-      Header: "Contact Person",
-      accessor: "contactPerson",
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "number",
-    },
-
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem name="View Details" />
-
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
+const Dashboard = ({ recentUsers, transactions, orders }: any) => {
   return (
     <ParentContainer>
       <div className="w-full overflow-x-hidden bg-lightGray ">
@@ -70,13 +21,13 @@ const Dashboard = ({ recentUsers }: any) => {
             {" "}
             <DashboardChart transaction={transactions} />
           </div>
-          <DashboardPieChart />
+          <DashboardPieChart data={orders} />
         </div>
         <div className="w-full flex flex-col md:flex-row gap-5 items-start p-[10px] md:p-[30px]">
           <div className=" bg-white p-8 rounded-sm shadow-2xl w-full md:w-[65%] max-h-[400px] overflow-hidden ">
             <div className="text-gray-800 text-3xl"> Recent Users</div>
             <div className=" overflow-auto max-h-[calc(400px-65px)]">
-              <FilterTable columns={columnDasboard} data={[]} />{" "}
+              <UserTable data={recentUsers} />{" "}
             </div>
           </div>
           <div className="w-full md:w-[35%] h-[400px] bg-white rounded-md shadow-md p-8 max-h-[400px] overflow-auto">

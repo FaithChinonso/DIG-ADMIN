@@ -14,10 +14,11 @@ import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import DrawerCard from "../Drawer";
 import AddJob from "../Forms/AddJob";
+import JobDetails from "../JobDetails";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
 
-const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
+const JobsDisplay = ({ jobs }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -40,11 +41,13 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
         headline: client.headline,
         jobDuration: client.jobDuration,
         experienceLevel: client.experienceLevel,
+        description: client.description,
         budget: client.budget,
         jobScope: client.jobScope,
         isActive: client.isActive,
         isBudgetNegotiable: client.isBudgetNegotiable,
         datePosted: moment(client.datePosted).format("ll"),
+        skillsNeeded: client.skillsNeeded,
       };
     });
   const columnDasboard = [
@@ -68,7 +71,7 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
       name: "Budget",
       selector: "budget",
       cell: (prop: any) => (
-        <div> &#8358; {numberWithCommas(Number(prop.value || 0))}</div>
+        <div> &#8358; {numberWithCommas(Number(prop.budget || 0))}</div>
       ),
     },
 
@@ -79,6 +82,12 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
     {
       name: "Negotiable",
       selector: "isBudgetNegotiable",
+      cell: (prop: any) => (
+        <div>
+          {" "}
+          {prop.isBudgetNegotiable === true ? "Negotiable" : "Non-Negotiable"}
+        </div>
+      ),
     },
     {
       name: "Date Posted",
@@ -97,7 +106,29 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
                 <ActionMenuItem
                   name="View More"
                   onClickFunction={() => {
-                    router.push(`${location.pathname}/${prop?.id}`);
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerContent: (
+                          <>
+                            <JobDetails data={prop} />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                />
+                <ActionMenuItem
+                  name="Update Job"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerContent: (
+                          <>
+                            <AddJob id={prop?.id} title="Update Job Posting" />
+                          </>
+                        ),
+                      })
+                    );
                   }}
                 />
 
@@ -194,7 +225,7 @@ const JobsDisplay = ({ jobs, fetchAll, type = "", userId }: any) => {
 
   return (
     <div>
-      <DataFilterTable columns={columnDasboard} data={formatData} />
+      <JobsDisplay data={jobs} />
     </div>
   );
 };

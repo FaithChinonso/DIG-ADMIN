@@ -32,19 +32,26 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { getAUser } from "src/redux/store/features/user-slice";
+import { userApi } from "src/components/api";
 
 const OneUser = () => {
   const router = useRouter();
   const request = useHTTPGet();
   const dispatch = useDispatch();
-  const { user } = useSelector((state: any) => state.user);
+  const [user, setUser] = useState<any>({});
   const [job, setJob] = useState<any>();
 
   const id = router.query.usersId;
   console.log(router.query.usersId);
 
   const fetchAUser = async (id: any) => {
-    dispatch(getAUser(id));
+    const url = `${userApi}/single-user/${id}`;
+    const accessToken = sessionStorage.getItem("accessToken");
+    const dataFunction = (res: any) => {
+      console.log(res);
+      setUser(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
   };
   const fetchAllJobs = (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -108,7 +115,7 @@ const OneUser = () => {
                     {" "}
                     <Image src={birth} alt={""} />
                   </span>
-                  {user?.dateOfBirth}
+                  {user?.phone}
                 </div>
               </div>
               <div>
@@ -116,20 +123,44 @@ const OneUser = () => {
               </div>
               <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px]">Lifetime Earning</div>
-                  <div className="text-xs font-[500]">₦ 500,000</div>
+                  <div className="text-[8px]">Escrow Balance</div>
+                  <div className="text-xs font-[500]">
+                    ₦ {user?.wallet?.escrowBalance}
+                  </div>
                 </div>
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px] ">Lifetime Transactions</div>
-                  <div className="text-xs font-[500]">100</div>
+                  <div className="text-[8px] ">Withdrawable Balance</div>
+                  <div className="text-xs font-[500]">
+                    {" "}
+                    ₦ {user?.wallet?.withdrawableBalance}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="text-white flex flex-col w-[404px]">
-            <h3 className="text-[13px] mt-[28px]">About</h3>
-            <p className="text-[10px]">{user?.profile?.bio}</p>
-          </div>
+
+          {user?.role === "merchant" && (
+            <div className="flex flex-col items-center justify-around text-white">
+              <div className="flex flex-row gap-3 text-white">
+                <div className="text-white flex flex-col">
+                  <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
+                  <p className="text-[10px]">{user?.profile?.merchantType}</p>
+                </div>
+                <div className="text-white flex flex-col">
+                  <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
+                  <p className="text-[10px]">
+                    {user?.profile?.merchantCategory}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-white flex flex-col ">
+                <h3 className="text-[13px] mt-[28px]">About</h3>
+                <p className="text-[10px]">{user?.profile?.bio}</p>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col items-center justify-around text-white">
             <div className="text-white text-[13px]">Total Orders</div>
             <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
@@ -188,22 +219,17 @@ const OneUser = () => {
               <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <OrderHistory />
+              <OrderHistory id={user.userID} />
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              <TransactionHistory />
+              <TransactionHistory id={user.userID} />
             </TabPanel>
             <TabPanel value={value} index={4}>
-              <OrderHistory id={id} />
+              <div></div>
             </TabPanel>
             <TabPanel value={value} index={5}>
-              <JobsDisplay
-                jobs={job}
-                fetchAll={fetchAllJobs}
-                type="user"
-                userId={id}
-              />
+              <JobsDisplay jobs={job} />
             </TabPanel>
           </Box>
         </div>

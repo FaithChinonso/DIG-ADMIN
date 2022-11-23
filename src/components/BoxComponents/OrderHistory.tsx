@@ -29,7 +29,7 @@ const OrderHistory = ({ id }: any) => {
   const request = useHTTPGet();
   const remove = useHTTPDelete();
   const send = useHTTPPost();
-  const { orders } = useAppSelector((state: any) => state.data);
+  const { ordersByMerchant } = useAppSelector((state: any) => state.order);
 
   const fetchAllOrder = async () => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -42,7 +42,7 @@ const OrderHistory = ({ id }: any) => {
 
   return (
     <div className=" p-[10px] md:p-[30px]">
-      <OrderTable data={orders} fetchAllOrders={fetchAllOrder} type="history" />
+      <OrderTable data={ordersByMerchant} type="history" />
     </div>
   );
 };

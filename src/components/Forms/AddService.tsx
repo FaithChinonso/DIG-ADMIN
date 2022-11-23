@@ -7,24 +7,52 @@ import { useDispatch } from "react-redux";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { NumericFormat } from "react-number-format";
 import { isNotEmpty } from "src/utils/helperFunctions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import DrawerWrapper from "../DrawerWrapper";
-import { createservice } from "src/redux/store/features/service-slice";
+import {
+  createservice,
+  updateservice,
+} from "src/redux/store/features/service-slice";
+import { serviceApi } from "../api";
+import useHTTPGet from "src/Hooks/use-httpget";
+import {
+  getMyserviceCategories,
+  updateserviceCategory,
+} from "src/redux/store/features/service-category-slice";
 
-const AddService = ({ merchantId, fetchAllMerchants }: any) => {
+const AddService = ({ id, fetchAllMerchants, title }: any) => {
   const dispatch = useAppDispatch();
+  const request = useHTTPGet();
+  const send = useHTTPPost();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.service
   );
-  const { productCategory } = useAppSelector(
-    (state: any) => state.productCategory
-  );
-  const [phoneNumber, setPhoneNumber] = useState(0);
-  const [amount, setamount] = useState(null);
+  const {
+    serviceCategories,
+    success: scsuccess,
+    loading: scloading,
+    error: scerror,
+    message: scmessage,
+  } = useAppSelector((state: any) => state.serviceCategory);
+
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
+
+  const [data, setData] = useState({
+    service: "",
+    description: "",
+    experience: "",
+    amount: null,
+    location: "",
+    phone: 0,
+    category: "",
+  });
+
+  const inputChange = (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
 
   let handleChange = (index: any, e: any) => {
     let newItems = [...items];
@@ -45,70 +73,112 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
     newItems.splice(i, 1);
     setItems(newItems);
   };
-  const onChangeNumber = (event: any) => {
-    setPhoneNumber(event);
+
+  const getAService = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${serviceApi}/single-service/${id}`;
+    const dataFunction = (res: any) => {
+      setData({
+        ...data,
+        service: res.data.data.service.serviceName,
+        description: res.data.data.service.description,
+        experience: res.data.data.service.yearsOfExperience,
+        amount: res.data.data.service.pricing,
+        location: res.data.data.service.location,
+        phone: res.data.data.service.phoneNumber,
+        category: res.data.data.category.categoryID,
+      });
+      setItems(res.data.data.service.other_details);
+    };
+    console.log(data);
+    request({ url, accessToken }, dataFunction);
   };
 
-  const {
-    enteredInput: enteredserviceName,
-    updateInputHandler: serviceNameInputHandler,
-    inputBlurHandler: serviceNameBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredlocationd,
-    updateInputHandler: locationdInputHandler,
-    inputBlurHandler: locationdBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredexperience,
-    updateInputHandler: experienceInputHandler,
-    inputBlurHandler: experienceBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: entereddescription,
-    updateInputHandler: descriptionInputHandler,
-    inputBlurHandler: descriptionBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredCategory,
-    updateInputHandler: categoryInputHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-
   const payload = {
-    service_name: enteredserviceName,
-    category_id: enteredCategory,
-    years_of_exp: enteredexperience,
-    amount,
-    location: enteredlocationd,
-    phone_number: phoneNumber,
+    service_name: data.service,
+    category_id: data.category,
+    years_of_exp: data.experience,
+    amount: data.amount,
+    location: data.location,
+    phone_number: data.phone,
     other_details: JSON.stringify(items),
-    description: entereddescription,
+    description: data.description,
+  };
+
+  const sendData = {
+    serviceID: id,
+    payload,
+  };
+  const createService = () => {
+    try {
+      dispatch(createservice(payload));
+      if (success === true) {
+        dispatch(uiActions.closedrawer());
+        dispatch(
+          uiActions.openModalAndSetContent({
+            modalStyles: {
+              padding: 0,
+            },
+            modalContent: (
+              <>
+                <SuccessfulModal title="Successful" message={message} />
+              </>
+            ),
+          })
+        );
+      }
+      if (loading === true) {
+        dispatch(uiActions.openLoader());
+      }
+      if (success === false) {
+        dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+      }
+    } catch {}
+  };
+  const updateService = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    // dispatch(updateservice(sendData));
+    // if (scsuccess === true) {
+    //   dispatch(uiActions.closedrawer());
+    //   dispatch(
+    //     uiActions.openModalAndSetContent({
+    //       modalStyles: {
+    //         padding: 0,
+    //       },
+    //       modalContent: (
+    //         <>
+    //           <SuccessfulModal title="Successful" message={scmessage} />
+    //         </>
+    //       ),
+    //     })
+    //   );
+    // }
+    // if (scloading === true) {
+    //   dispatch(uiActions.openLoader());
+    // }
+    // if (scsuccess === false) {
+    //   dispatch(uiActions.openToastAndSetContent({ toastContent: scerror }));
+    // }
+    const url = `${serviceApi}/update-service/${id}`;
+    const dataFunction = (res: any) => {};
+    send({ url, values: payload, accessToken }, dataFunction);
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
-    dispatch(createservice(payload));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
-        })
-      );
-    }
-    if (loading === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+    if (title === "Update Service") {
+      updateService();
+    } else {
+      createService();
     }
   };
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (title === "Update Service") {
+      getAService();
+    }
+    dispatch(getMyserviceCategories(accessToken));
+  }, [title]);
 
   return (
     <DrawerWrapper title="Create Service">
@@ -116,7 +186,7 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
         className="w-full h-full flex flex-col"
         onSubmit={submitFormHandler}
       >
-        <label htmlFor="resume" className=" text-sm font-medium mx-auto">
+        {/* <label htmlFor="resume" className=" text-sm font-medium mx-auto">
           <Image src={userPic} alt={""} />
           <input
             type="file"
@@ -125,22 +195,21 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
             accept="image/png, image/jpg, image/gif, image/jpeg"
             className="hidden"
           />{" "}
-        </label>
+        </label> */}
 
         <div className="mt-[10px]">
           <label
             htmlFor="serviceName"
             className=" text-[10px] text-[#1D2939] bg-white"
           >
-            service Name
+            Service Name
           </label>
           <input
             type="text"
-            name="serviceName"
-            value={enteredserviceName}
+            name="service"
+            value={data.service}
             id="serviceName"
-            onBlur={serviceNameBlurHandler}
-            onChange={serviceNameInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="service Name "
           />
@@ -155,13 +224,13 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
 
           <select
             name="category"
-            value={enteredCategory}
+            value={data.category}
             id="category"
-            onChange={categoryInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Category"
           >
-            {productCategory?.map((item: any) => (
+            {serviceCategories?.map((item: any) => (
               <option
                 value={item.categoryID}
                 key={item.categoryID}
@@ -181,11 +250,10 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
           </label>
           <input
             type="text"
-            name="loaction"
-            value={enteredlocationd}
+            name="location"
+            value={data.location}
             id="locationd"
-            onBlur={locationdBlurHandler}
-            onChange={locationdInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Location"
           />
@@ -199,14 +267,14 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
           </label>
           <MuiPhoneNumber
             defaultCountry={"ng"}
-            name="businessPhoneNumber"
+            name="phone"
             sx={{
               svg: {
                 height: "20px",
               },
             }}
-            value={phoneNumber}
-            onChange={onChangeNumber}
+            value={data.phone}
+            onChange={inputChange}
             autoComplete="off"
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
             required
@@ -222,11 +290,10 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
 
           <input
             type="number"
-            name="lastName"
-            value={enteredexperience}
+            name="experience"
+            value={data.experience}
             id="experience"
-            onBlur={experienceBlurHandler}
-            onChange={experienceInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Years Of Experience"
           />
@@ -241,10 +308,9 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
           <input
             type="text"
             name="description"
-            value={entereddescription}
+            value={data.description}
             id="description"
-            onBlur={descriptionBlurHandler}
-            onChange={descriptionInputHandler}
+            onChange={inputChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Description"
           />
@@ -258,8 +324,8 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
             Amount
           </label>
           <NumericFormat
-            name="enteredPrice"
-            value={amount || ""}
+            name="amount"
+            value={data.amount || ""}
             allowNegative={false}
             thousandSeparator={true}
             required
@@ -268,8 +334,7 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
             onValueChange={(values: any, sourceInfo: any) => {
               const { formattedValue, value } = values;
               const { event, source } = sourceInfo;
-              console.log(event.target.value);
-              setamount(value);
+              setData({ ...data, amount: value });
             }}
           />
         </div>
@@ -285,7 +350,7 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
         ))}
         <div>
           <div onClick={addFormFields} className="text-xs text-gray-600">
-            &plus; Add Items
+            Add Items
           </div>
         </div>
 
@@ -293,7 +358,7 @@ const AddService = ({ merchantId, fetchAllMerchants }: any) => {
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
           type="submit"
         >
-          Create Service
+          {title === "Update Service" ? "Update Service" : "Create Service"}
         </button>
       </form>
     </DrawerWrapper>

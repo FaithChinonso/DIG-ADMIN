@@ -15,7 +15,7 @@ const SideNav = () => {
   const dispatch = useDispatch();
   const [array, setArray] = useState<string[]>([]);
   const [path, setPath] = useState<string>("");
-  const [value, setValue] = useState(path);
+  const [value, setValue] = useState("dashboard");
   const [selected, setSelected] = useState("");
 
   useEffect(() => {

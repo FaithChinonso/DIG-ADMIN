@@ -5,7 +5,7 @@ import OutlineTextInput from "./OutlinedTextInput";
 import deleteIcon from "../assets/image/delete-icon.svg";
 import userPic from "../assets/image/userPic.svg";
 
-const UploadInputButton = ({
+const MultipleImageUpload = ({
   classes,
   handleChange,
   inputValue,
@@ -48,20 +48,13 @@ const UploadInputButton = ({
       </Button>
 
       {data ? (
-        <div className="flex justify-center w-[120px] h-[120px]">
-          {/* <object
+        <div className="flex w-full justify-center ">
+          <object
             data={data}
             width="200"
             height="200"
             style={{ marginTop: "10px", objectFit: "cover" }}
-          ></object> */}
-          <Image
-            src={data}
-            width="200"
-            height="200"
-            style={{ marginTop: "10px", objectFit: "cover" }}
-            alt=""
-          />
+          ></object>
           {data ? (
             <div onClick={onDelete}>
               <Image src={deleteIcon} alt="" />
@@ -73,4 +66,4 @@ const UploadInputButton = ({
   );
 };
 
-export default UploadInputButton;
+export default MultipleImageUpload;

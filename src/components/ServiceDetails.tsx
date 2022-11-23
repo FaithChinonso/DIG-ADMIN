@@ -7,13 +7,14 @@ import { useDispatch } from "react-redux";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { getMyproduct } from "src/redux/store/features/product-slice";
+import { getMyservice } from "src/redux/store/features/service-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import productPic from "../assets/image/productpic.svg";
-import { productApi } from "./api";
+import { productApi, serviceApi } from "./api";
 import DrawerWrapper from "./DrawerWrapper";
 import ModalAction from "./ModalContent/ModalAction";
 
-const ProductDetails = ({ data }: any) => {
+const ServiceDetails = ({ data }: any) => {
   const send = useHTTPPost();
   const remove = useHTTPDelete();
   const dispatch = useDispatch();
@@ -37,21 +38,21 @@ const ProductDetails = ({ data }: any) => {
 
   const setImageAsPrimary = (imageID: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${productApi}/set-primary-image/${data.id}/${imageID}`;
+    const url = `${serviceApi}/set-primary-image/${data.id}/${imageID}`;
     const dataFunction = () => {
       dispatch(uiActions.closedrawer());
-      dispatch(getMyproduct(accessToken));
+      dispatch(getMyservice(accessToken));
     };
     send({ url, accessToken }, dataFunction);
   };
 
   const deleteImage = (imageID: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${productApi}/remove-product-image/${imageID}`;
+    const url = `${serviceApi}/remove-service-image/${imageID}`;
 
     const dataFunction = () => {
       dispatch(uiActions.closedrawer());
-      dispatch(getMyproduct(accessToken));
+      dispatch(getMyservice(accessToken));
     };
     dispatch(
       uiActions.openModalAndSetContent({
@@ -71,7 +72,7 @@ const ProductDetails = ({ data }: any) => {
     );
   };
   return (
-    <DrawerWrapper title="Product Detail">
+    <DrawerWrapper title="Service Details">
       <div className="flex flex-col items-center">
         <div className="mx-auto mb-4 rounded-[50%] w-[100px] h-[100px]">
           <Image
@@ -120,78 +121,88 @@ const ProductDetails = ({ data }: any) => {
 
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product Name</div>
-            <div className="text-base text-[#090F47]">{data.name}</div>
+            <div className="text-xs text-[#8487A3]">Service Name</div>
+            <div className="text-sm text-[#090F47]">{data?.serviceName}</div>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product ID</div>
-            <div className="text-base text-[#090F47]">{data.seriel}</div>
+            <div className="text-xs text-[#8487A3]">Service ID</div>
+            <div className="text-sm text-[#090F47]">{data?.id}</div>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product Quantity</div>
-            <div className="text-base text-[#090F47]">{`${data.quantity} ${data.name}`}</div>
-          </div>
-        </div>
-        <div className="flex justify-between mt-5 w-full">
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text"> Product Weight</div>
-            <div className="text-base text-[#090F47]">{data.weight}kg</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Delivery Tag</div>
-            <div className="text-base text-[#090F47]">{data.freeDelivery}</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Price (per unit)</div>
-            <div className="text-base text-[#090F47]">₦ {data.price}</div>
+            <div className="text-xs text-[#8487A3]">Location</div>
+            <div className="text-sm text-[#090F47]">{data?.location}</div>
           </div>
         </div>
         <div className="flex justify-between mt-5 w-full">
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Warranty</div>
-            <div className="text-base text-[#090F47]">
-              {data.producWarranty}
-            </div>
+            <div className="text-xs text-text"> Phone Number</div>
+            <div className="text-sm text-[#090F47]">{data?.phoneNumber}</div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text">Category Name</div>
+            <div className="text-sm text-[#090F47]">{data?.categoryName}</div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text">Price </div>
+            <div className="text-sm text-[#090F47]">₦ {data?.pricing}</div>
+          </div>
+        </div>
+        <div className="flex justify-between mt-5 w-full">
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text">Date Posted</div>
+            <div className="text-sm text-[#090F47]">{data?.datePosted}</div>
           </div>
         </div>
         <div className="w-full flex flex-col justify-center gap-3">
           <div className="text-xs text-text">Description</div>
-          <div className="text-base text-[#090F47]">{data.description}</div>
+          <div className="text-sm text-[#090F47]">{data.description}</div>
         </div>
-        {data?.specifications?.length !== 0 ? (
+        {data?.otherDetails?.length !== 0 ? (
           <div className=" mt-5 w-full">
             <div className="text-darkPurple text-lg text-center">
-              Product Specification
+              Other Details
             </div>
-            <div className="flex justify-between mt-5 w-full">
-              {data?.specifications?.map((item: any) => (
+            <div className="flex justify-around mt-5 w-full">
+              {data?.otherDetails?.map((item: any) => (
                 <div className="mt-5">
                   <div className="text-xs text-text mb-5">{item?.title}</div>
-                  <div className="text-base text-[#090F47]">{item?.value}</div>
+                  <div className="text-sm text-[#090F47]">{item?.value}</div>
                 </div>
               ))}
             </div>
           </div>
         ) : null}
-        {data?.features?.length === 0 ? (
-          ""
-        ) : (
-          <div className=" mt-5 w-full">
-            <div className="text-darkPurple text-lg text-center">Features</div>
-            <div className="flex justify-between mt-5 w-full">
-              {data?.features?.map((item: any) => (
-                <div
-                  className="text-sm text-text mb-5 mt-5"
-                  key={item.featureID}
-                >
-                  {item?.featureName}
-                </div>
-              ))}{" "}
+        <div className="w-full mt-6">
+          <div className="text-darkPurple text-lg text-center mb-3">
+            Merchant Details
+          </div>
+          <div className="flex justify-between gap-4 w-full">
+            <div className="flex flex-col gap-3">
+              <div className="text-xs text-[#8487A3]">Merchant Name</div>
+              <div className="text-sm text-[#090F47]">
+                {data?.merchant?.fullName}
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs text-[#8487A3]">
+                Merchant Phone Number
+              </div>
+              <div className="text-sm text-[#090F47]">
+                {data?.merchant?.phone}
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs text-[#8487A3]">
+                Merchant Email Address
+              </div>
+              <div className="text-sm text-[#090F47]">
+                {data?.merchant?.email}
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </DrawerWrapper>
   );
 };
-export default ProductDetails;
+export default ServiceDetails;

@@ -43,10 +43,13 @@ export const updateserviceCategory = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${serviceCategoryApi}/update-service-category/${data.serviceCategoryID}`,
-        data,
+        `${serviceCategoryApi}/update-service-category/${data.id}`,
+        data.payload,
         {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       return response.data;
@@ -118,6 +121,11 @@ interface serviceCategoryState {
   errorFetchserviceCategorys: string;
   successFetchserviceCategorys: boolean;
   loadingFetchserviceCategorys: boolean;
+
+  errorUpdateserviceCategorys: string;
+  messageUpdateserviceCategorys: string;
+  successUpdateserviceCategorys: boolean;
+  loadingUpdateserviceCategorys: boolean;
 }
 
 const initialState: serviceCategoryState = {
@@ -130,6 +138,11 @@ const initialState: serviceCategoryState = {
   errorFetchserviceCategorys: "",
   successFetchserviceCategorys: false,
   loadingFetchserviceCategorys: false,
+
+  errorUpdateserviceCategorys: "",
+  messageUpdateserviceCategorys: "",
+  successUpdateserviceCategorys: false,
+  loadingUpdateserviceCategorys: false,
 };
 
 const serviceCategorySlice = createSlice({
@@ -180,25 +193,25 @@ const serviceCategorySlice = createSlice({
       getMyserviceCategories.rejected,
       (state, action: PayloadAction<any>) => {
         state.loadingFetchserviceCategorys = false;
-        state.errorFetchserviceCategorys = action.payload.message;
+        state.errorFetchserviceCategorys = action?.payload?.message;
       }
     );
     builder.addCase(updateserviceCategory.pending, state => {
-      state.loading = true;
+      state.loadingUpdateserviceCategorys = true;
     });
     builder.addCase(
       updateserviceCategory.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.success = true;
-        state.message = action.payload.message;
+        state.loadingUpdateserviceCategorys = false;
+        state.successUpdateserviceCategorys = true;
+        state.messageUpdateserviceCategorys = action.payload.message;
       }
     );
     builder.addCase(
       updateserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload.message;
+        state.loadingUpdateserviceCategorys = false;
+        state.errorUpdateserviceCategorys = action.payload.message;
       }
     );
     builder.addCase(

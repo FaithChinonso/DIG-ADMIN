@@ -84,7 +84,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-const DashboardPieChart = () => {
+const DashboardPieChart = ({ orders }: any) => {
   const [month, setMonth] = useState<any>("");
   useEffect(() => {
     setMonth(moment().format("MMM"));

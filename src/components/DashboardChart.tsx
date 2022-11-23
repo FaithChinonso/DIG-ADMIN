@@ -13,26 +13,27 @@ import { ChartType, Transaction, TransactionData } from "../@types/chart";
 import { useEffect, useState } from "react";
 import { Months } from "src/utils/months";
 
-const DashboardChart = ({ transaction }: ChartType) => {
+const DashboardChart = ({ transaction }: any) => {
   const [month, setMonth] = useState<any>("");
   useEffect(() => {
     setMonth(moment().format("MMM"));
   }, []);
-  const filterTransactions = transaction?.filter((tr: Transaction) => {
-    const formDate = moment(tr?.createdAt).format("MMM");
+  const filterTransactions = transaction?.filter((tr: any) => {
+    const formDate = moment(tr?.transDate).format("MMM");
+    console.log(formDate);
     return formDate === month;
   });
-  const data: TransactionData[] = filterTransactions?.map((pc: Transaction) => {
-    const outflow = pc.transactionType === "debit" ? pc?.amount : 0;
-    const inflow = pc.transactionType === "credit" ? pc?.amount : 0;
+  const data = filterTransactions?.map((pc: any) => {
+    const wallet = pc.paymentMethod === "wallet" ? pc?.amount : 0;
+    const paystack = pc.paymentMethod === "paystack" ? pc?.amount : 0;
     return {
-      date: moment(pc?.createdAt).format("dddd, h:mm a"),
-      outflow,
-      inflow,
+      date: moment(pc?.transDate).format("dddd, h:mm a"),
+      wallet,
+      paystack,
     };
   });
   const transactionFlow: number[] = data?.map((pc: any) => {
-    return pc?.outflow || pc?.inflow;
+    return pc?.wallet || pc?.paystack;
   });
   const mode = Math.max(...(transactionFlow || []));
   return (
@@ -49,11 +50,11 @@ const DashboardChart = ({ transaction }: ChartType) => {
         >
           <div className="flex items-center">
             <div className="bg-lightPurple h-2 w-2 rounded-[100px] mr-2" />
-            <div className="text-gray-800 text-1xl">OUTFLOW</div>
+            <div className="text-gray-800 text-1xl">Wallet</div>
           </div>
           <div className="flex items-center">
             <div className="bg-[#00ff00] h-2 w-2 rounded-[100px] mr-2" />
-            <div className="text-gray-800 text-1xl">INFLOW</div>
+            <div className="text-gray-800 text-1xl">Paystack</div>
           </div>
         </div>
 
@@ -119,7 +120,7 @@ const DashboardChart = ({ transaction }: ChartType) => {
           <Legend />
           <Area
             type="monotone"
-            dataKey="outflow"
+            dataKey="wallet"
             stackId="1"
             stroke="rgba(107, 93, 211, 0.4)"
             fill="rgba(107, 93, 211, 0.4)"
@@ -129,7 +130,7 @@ const DashboardChart = ({ transaction }: ChartType) => {
           />
           <Area
             type="monotone"
-            dataKey="inflow"
+            dataKey="paystack"
             stackId="1"
             stroke="rgba(107, 93, 211, 1)"
             fill="rgba(107, 93, 211, 0.4))"

@@ -44,7 +44,7 @@ export const updatejob = createAsyncThunk(
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${jobApi}/update-job/${data.jobID}`,
-        data,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -60,7 +60,7 @@ export const editjob = createAsyncThunk(
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.get(
+      const response = await axios.post(
         `${jobApi}/${data.endpoint}/${data.jobID}`,
 
         {

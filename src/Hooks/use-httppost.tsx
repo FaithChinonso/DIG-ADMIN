@@ -38,13 +38,10 @@ const useHTTPPost = () => {
       })
       .catch((error: any) => {
         dispatch(uiActions.closeLoader());
-        if (error.response) {
-          Notify({ message: "" });
-        } else if (error.request) {
-          Notify({ message: "A Error occured on our end" });
-        } else {
-          Notify({ message: "A Error occured" });
-        }
+        console.log(error.message);
+        dispatch(
+          uiActions.openToastAndSetContent({ toastContent: error.message })
+        );
       });
   };
 

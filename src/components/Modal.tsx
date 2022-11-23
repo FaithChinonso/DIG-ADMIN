@@ -8,7 +8,7 @@ import { useAppDispatch } from "src/Hooks/use-redux";
 const styles = {
   main: {
     backgroundColor: "rgba(137, 146, 163, 0.5)",
-    zIndex: 16000,
+    zIndex: 16000000,
     position: "fixed",
     top: 0,
     left: 0,
@@ -56,7 +56,7 @@ export default function Modal() {
           style={{
             ...styles.main,
             left: 0,
-            zIndex: 1600000,
+            zIndex: 160000000,
           }}
           onClick={e => Close(e)}
         >

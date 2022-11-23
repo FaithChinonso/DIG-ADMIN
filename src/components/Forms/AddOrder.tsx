@@ -8,7 +8,7 @@ import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { NumericFormat } from "react-number-format";
 import { isNotEmpty } from "src/utils/helperFunctions";
 import { useState } from "react";
-import MultipleInput from "../MultipleInput";
+import MultipleInput from "../MultipleInputFeature";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppSelector } from "src/Hooks/use-redux";
 import DrawerWrapper from "../DrawerWrapper";

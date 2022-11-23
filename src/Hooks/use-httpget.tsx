@@ -21,6 +21,7 @@ const useHTTPGet = () => {
         },
       })
       .then(res => {
+        console.log(res);
         dataFunction(res);
         if (alert === "send") {
           dispatch(
@@ -40,7 +41,11 @@ const useHTTPGet = () => {
           );
         }
       })
-      .catch((error: any) => {});
+      .catch((error: any) => {
+        dispatch(
+          uiActions.openToastAndSetContent({ toastContent: error.message })
+        );
+      });
   };
 
   return request;

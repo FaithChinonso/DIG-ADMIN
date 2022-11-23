@@ -1,10 +1,8 @@
 import useInput from "../../Hooks/use-input";
-
 import userPic from "../../assets/image/userPic.svg";
 import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
 import { useDispatch, useSelector } from "react-redux";
-
 import { NumericFormat } from "react-number-format";
 import { useEffect, useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
@@ -17,150 +15,80 @@ import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { createproduct } from "src/redux/store/features/product-slice";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
+import { productApi } from "../api";
+import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 
-const CreateProduct = ({ merchantId }: any) => {
+const CreateProduct = ({ title, id }: any) => {
   const dispatch = useAppDispatch();
+  const request = useHTTPGet();
+  const send = useHTTPPost();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.product
   );
-  const [price, setPrice] = useState(null);
-  const [devFee, setDevFee] = useState(null);
+
+  const [data, setData] = useState({
+    name: "",
+    description: "",
+    discountAvailable: "",
+    discountPercentage: null,
+    quantity: null,
+    brand: "",
+    price: null,
+    deliveryTag: "",
+    deliveryFee: "",
+    weight: null,
+    warranty: "",
+    category: "",
+  });
+
+  const handleChange = (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
   const { productCategory } = useSelector(
     (state: any) => state.productCategory
   );
-  const [formisValid, setFormIsValid] = useState(false);
-  const [formisTouched, setFormIsTouched] = useState(false);
 
-  const send = useHTTPPost();
-
-  const {
-    enteredInput: enteredProductName,
-    hasError: productNameHasError,
-    reset: productNameReset,
-    errorMessage: productNameError,
-    inputIsValid: productNameIsValid,
-    updateInputHandler: productNameInputHandler,
-    inputBlurHandler: productNameBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredbrand,
-    hasError: brandHasError,
-    reset: brandReset,
-    errorMessage: brandError,
-    inputIsValid: brandIsValid,
-    updateInputHandler: brandInputHandler,
-    inputBlurHandler: brandBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductQuantity,
-    hasError: productQuantityHasError,
-    reset: productQuantityReset,
-    errorMessage: productQuantityError,
-    inputIsValid: productQuantityIsValid,
-    updateInputHandler: productQuantityInputHandler,
-    inputBlurHandler: productQuantityBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredCategory,
-    hasError: categoryHasError,
-    reset: categoryReset,
-    errorMessage: categoryError,
-    inputIsValid: categoryIsValid,
-    updateInputHandler: categoryInputHandler,
-    inputBlurHandler: categoryBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductWarranty,
-    hasError: productWarrantyHasError,
-    reset: productWarrantyReset,
-    errorMessage: productWarrantyError,
-    inputIsValid: productWarrantyIsValid,
-    updateInputHandler: productWarrantyInputHandler,
-    inputBlurHandler: productWarrantyBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductWeight,
-    hasError: productWeightHasError,
-    reset: productWeightReset,
-    errorMessage: productWeightError,
-    inputIsValid: productWeightIsValid,
-    updateInputHandler: productWeightInputHandler,
-    inputBlurHandler: productWeightBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredDeliveryTag,
-    hasError: deliveryTagHasError,
-    reset: deliveryTagReset,
-    errorMessage: deliveryTagError,
-    inputIsValid: deliveryTagIsValid,
-    updateInputHandler: deliveryTagInputHandler,
-    inputBlurHandler: deliveryTagBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredDiscountPercentage,
-    hasError: discountPercentageHasError,
-    reset: discountPercentageReset,
-    errorMessage: discountPercentageError,
-    inputIsValid: discountPercentageIsValid,
-    updateInputHandler: discountPercentageInputHandler,
-    inputBlurHandler: discountPercentageBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredDiscount,
-    hasError: discountHasError,
-    reset: discountReset,
-    errorMessage: discountError,
-    inputIsValid: discountIsValid,
-    updateInputHandler: discountInputHandler,
-    inputBlurHandler: discountBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredPrice,
-    hasError: priceHasError,
-    reset: priceReset,
-    errorMessage: priceError,
-    inputIsValid: priceIsValid,
-    updateInputHandler: priceInputHandler,
-    inputBlurHandler: priceBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredDeliveryFee,
-    hasError: deliveryFeeHasError,
-    reset: deliveryFeeReset,
-    errorMessage: deliveryFeeError,
-    inputIsValid: deliveryFeeIsValid,
-    updateInputHandler: deliveryFeeInputHandler,
-    inputBlurHandler: deliveryFeeBlurHandler,
-  } = useInput(isNotEmptyNumber, "This field cannot be empty");
-  const {
-    enteredInput: enteredDescription,
-    hasError: descriptionHasError,
-    reset: descriptionReset,
-    errorMessage: descriptionError,
-    inputIsValid: descriptionIsValid,
-    updateInputHandler: descriptionInputHandler,
-    inputBlurHandler: descriptionBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-
-  const submitFormHandler = (e: any) => {
-    e.preventDefault();
-    setFormIsTouched(true);
-
-    const payload = {
-      name: enteredProductName,
-      brand: enteredbrand,
-      price: price,
-      description: enteredDescription,
-      quantity: enteredProductQuantity,
-      free_delivery: enteredDeliveryTag,
-      shipping_fee: devFee,
-      category_id: enteredCategory,
-      product_waranty: enteredProductWarranty,
-      discount_available: enteredDiscount,
-      discount_percentage: enteredDiscountPercentage,
-      weight: enteredProductWeight,
+  const getAProduct = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${productApi}/single-product/${id}`;
+    const dataFunction = (res: any) => {
+      setData({
+        ...data,
+        name: res.data.data.product.name,
+        description: res.data.data.product.description,
+        discountAvailable: res.data.data.product.discount.name,
+        discountPercentage: res.data.data.product.discount.discountPercentage,
+        quantity: res.data.data.product.quantity,
+        brand: res.data.data.product.brand,
+        price: res.data.data.product.price,
+        deliveryTag: res.data.data.product.delivery.freeDelivery,
+        deliveryFee: res.data.data.product.delivery.shippingFee,
+        weight: res.data.data.product.weight,
+        warranty: res.data.data.product.productWarranty,
+        category: res.data.data.category.categoryID,
+      });
     };
-    console.log(payload);
+    console.log(data);
+    request({ url, accessToken }, dataFunction);
+  };
+
+  const payload = {
+    name: data.name,
+    brand: data.brand,
+    price: data.price,
+    description: data.description,
+    quantity: data.quantity,
+    free_delivery: data.deliveryTag,
+    shipping_fee: data.deliveryFee,
+    category_id: data.category,
+    product_waranty: data.warranty,
+    discount_available: data.discountAvailable,
+    discount_percentage: data.discountPercentage,
+    weight: data.weight,
+  };
+
+  const createProduct = async () => {
     dispatch(createproduct(payload));
     if (success === true) {
       dispatch(uiActions.closedrawer());
@@ -184,8 +112,31 @@ const CreateProduct = ({ merchantId }: any) => {
       dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
     }
   };
+  const updateProduct = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${productApi}/update-product/${id}`;
+    const dataFunction = (res: any) => {};
+    send({ url, values: payload, accessToken }, dataFunction);
+  };
+
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+
+    if (title === "Update Product") {
+      updateProduct();
+    } else {
+      createProduct();
+    }
+  };
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (title === "Update Product") {
+      getAProduct();
+    }
+    dispatch(getMyproductCategories(accessToken));
+  }, [title]);
   return (
-    <DrawerWrapper title="Create Product">
+    <DrawerWrapper title={title}>
       <form
         className="w-full h-full flex flex-col"
         onSubmit={submitFormHandler}
@@ -210,16 +161,15 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
           <input
             type="text"
-            name="productName"
-            value={enteredProductName}
+            name="name"
+            value={data.name}
             id="productName"
-            onBlur={productNameBlurHandler}
-            onChange={productNameInputHandler}
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Product Name "
           />
         </div>
-        <div className="text-red-400 text-[10px]">{productNameError}</div>
+
         <div className="mt-[10px]">
           <label
             htmlFor="brand"
@@ -230,15 +180,13 @@ const CreateProduct = ({ merchantId }: any) => {
           <input
             type="text"
             name="brand"
-            value={enteredbrand}
+            value={data.brand}
             id="brand"
-            onBlur={brandBlurHandler}
-            onChange={brandInputHandler}
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Brand"
           />
         </div>
-        <div className="text-red-400 text-[10px]">{brandError}</div>
         <div className=" mt-[10px]">
           <label
             htmlFor="productQuantity"
@@ -250,15 +198,13 @@ const CreateProduct = ({ merchantId }: any) => {
           <input
             type="number"
             name="quantity"
-            value={enteredProductQuantity}
+            value={data.quantity}
             id="productQuantity"
-            onBlur={productQuantityBlurHandler}
-            onChange={productQuantityInputHandler}
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-            placeholder="Product Quatity"
+            placeholder="Product Quantity"
           />
         </div>
-        <div className="text-red-400 text-[10px]">{productQuantityError}</div>
         <div className=" mt-[30px]">
           <label
             htmlFor="productWarranty"
@@ -268,16 +214,14 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
           <input
             type="text"
-            name="productWarranty"
-            value={enteredProductWarranty}
+            name="warranty"
+            value={data.warranty}
             id="productWarranty"
-            onBlur={productWarrantyBlurHandler}
-            onChange={productWarrantyInputHandler}
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Product Warranty"
           />
         </div>
-        <div className="text-red-400 text-[10px] ">{productWarrantyError}</div>
         <div className=" mt-[30px]">
           <label
             htmlFor="productWeight"
@@ -287,16 +231,14 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
           <input
             type="number"
-            name="productweight"
-            value={enteredProductWeight}
+            name="weight"
+            value={data.weight}
             id="productweight"
-            onBlur={productWeightBlurHandler}
-            onChange={productWeightInputHandler}
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Product weight"
           />
         </div>
-        <div className="text-red-400 text-[10px] ">{productWeightError}</div>
         <div className=" mt-[30px]">
           <label
             htmlFor="category"
@@ -307,9 +249,14 @@ const CreateProduct = ({ merchantId }: any) => {
 
           <select
             name="category"
-            value={enteredCategory}
+            value={data.category}
             id="category"
-            onChange={categoryInputHandler}
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+              });
+            }}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Category"
           >
@@ -324,8 +271,6 @@ const CreateProduct = ({ merchantId }: any) => {
             ))}
           </select>
         </div>
-
-        <div className="text-red-400 text-[10px] ">{categoryError}</div>
         <div className=" mt-[30px]">
           <label
             htmlFor="discount"
@@ -335,10 +280,16 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
 
           <select
-            name="discount"
-            value={enteredDiscount}
+            name="discountAvailable"
+            value={data.discountAvailable}
             id="discount"
-            onChange={discountInputHandler}
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+                discountPercentage: "0",
+              });
+            }}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="discount"
           >
@@ -353,8 +304,7 @@ const CreateProduct = ({ merchantId }: any) => {
             ))}
           </select>
         </div>
-        <div className="text-red-400 text-[10px] ">{discountError}</div>
-        {enteredDiscount === "Yes" && (
+        {data.discountAvailable === "Yes" && (
           <div className=" mt-[30px]">
             <label
               htmlFor="discountPercentage"
@@ -364,20 +314,15 @@ const CreateProduct = ({ merchantId }: any) => {
             </label>
             <input
               type="number"
-              name="deliveryPercentage"
-              value={enteredDiscountPercentage}
+              name="discountPercentage"
+              value={data.discountPercentage}
               id="discountPercentage"
-              onBlur={discountPercentageBlurHandler}
-              onChange={discountPercentageInputHandler}
+              onChange={handleChange}
               className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
               placeholder="Discount Percentege"
             />
           </div>
         )}
-
-        <div className="text-red-400 text-[10px] ">
-          {discountPercentageError}
-        </div>
 
         <div className=" mt-[30px]">
           <label
@@ -388,7 +333,7 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
           <NumericFormat
             name="enteredPrice"
-            value={price || ""}
+            value={data.price || ""}
             allowNegative={false}
             thousandSeparator={true}
             required
@@ -398,11 +343,10 @@ const CreateProduct = ({ merchantId }: any) => {
               const { formattedValue, value } = values;
               const { event, source } = sourceInfo;
               console.log(event.target.value);
-              setPrice(value);
+              setData({ ...data, price: value });
             }}
           />
         </div>
-        <div className="text-red-400 text-[10px] ">{priceError}</div>
 
         <div className=" mt-[30px]">
           <label
@@ -414,9 +358,15 @@ const CreateProduct = ({ merchantId }: any) => {
 
           <select
             name="delivery"
-            value={enteredDeliveryTag}
+            value={data.deliveryTag}
             id="delivery"
-            onChange={deliveryTagInputHandler}
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+                deliveryFee: "0",
+              });
+            }}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Delivery Tag"
           >
@@ -431,9 +381,8 @@ const CreateProduct = ({ merchantId }: any) => {
             ))}
           </select>
         </div>
-        <div className="text-red-400 text-[10px]">{deliveryTagError}</div>
 
-        {enteredDeliveryTag === "No" && (
+        {data.deliveryTag === "No" && (
           <div className=" mt-[30px]">
             <label
               htmlFor="deliveryFee"
@@ -442,8 +391,8 @@ const CreateProduct = ({ merchantId }: any) => {
               Delivery Fee
             </label>
             <NumericFormat
-              name="enteredDeliveryFee"
-              value={devFee || ""}
+              name="deliveryFee"
+              value={data.deliveryFee || ""}
               allowNegative={false}
               thousandSeparator={true}
               required
@@ -454,13 +403,11 @@ const CreateProduct = ({ merchantId }: any) => {
 
                 const { event, source } = sourceInfo;
 
-                setDevFee(value);
+                setData({ ...data, deliveryFee: value });
               }}
             />
           </div>
         )}
-
-        <div className="text-red-400 text-[10px]">{deliveryFeeError}</div>
 
         <div className=" mt-[30px]">
           <label
@@ -471,22 +418,20 @@ const CreateProduct = ({ merchantId }: any) => {
           </label>
           <input
             type="text"
-            name="status"
-            value={enteredDescription}
-            id="status"
-            onBlur={descriptionBlurHandler}
-            onChange={descriptionInputHandler}
+            name="description"
+            value={data.description}
+            id="description"
+            onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Description"
           />
         </div>
-        <div className="text-red-400 text-[10px]">{descriptionError}</div>
 
         <button
           type="submit"
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4"
         >
-          Create Product
+          {title === "Update Product" ? "Update Product" : "Create Product"}
         </button>
       </form>
     </DrawerWrapper>

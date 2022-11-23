@@ -117,7 +117,6 @@ const UserTable = ({ data }: any) => {
       selector: (row: { action: any }) => `${row.action}`,
 
       cell: (prop: any) => {
-        console.log(prop);
         return (
           <ActionMenuBase
             items={
@@ -198,7 +197,7 @@ const UserTable = ({ data }: any) => {
                         },
                         drawerContent: (
                           <>
-                            <AddJob userId={prop.id} />
+                            <AddJob id={prop.id} />
                           </>
                         ),
                       })

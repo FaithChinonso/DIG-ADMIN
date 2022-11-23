@@ -118,6 +118,11 @@ interface productCategoryState {
   errorFetchproductCategorys: string;
   successFetchproductCategorys: boolean;
   loadingFetchproductCategorys: boolean;
+
+  errorUpdateproductCategorys: string;
+  messageUpdateproductCategorys: string;
+  successUpdateproductCategorys: boolean;
+  loadingUpdateproductCategorys: boolean;
 }
 
 const initialState: productCategoryState = {
@@ -130,6 +135,11 @@ const initialState: productCategoryState = {
   errorFetchproductCategorys: "",
   successFetchproductCategorys: false,
   loadingFetchproductCategorys: false,
+
+  errorUpdateproductCategorys: "",
+  messageUpdateproductCategorys: "",
+  successUpdateproductCategorys: false,
+  loadingUpdateproductCategorys: false,
 };
 
 const productCategorySlice = createSlice({
@@ -184,21 +194,21 @@ const productCategorySlice = createSlice({
       }
     );
     builder.addCase(updateproductCategory.pending, state => {
-      state.loading = true;
+      state.loadingUpdateproductCategorys = true;
     });
     builder.addCase(
       updateproductCategory.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.success = true;
-        state.message = action.payload.message;
+        state.loadingUpdateproductCategorys = false;
+        state.successUpdateproductCategorys = true;
+        state.messageUpdateproductCategorys = action.payload.message;
       }
     );
     builder.addCase(
       updateproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload.message;
+        state.loadingUpdateproductCategorys = false;
+        state.errorUpdateproductCategorys = action.payload.message;
       }
     );
     builder.addCase(

@@ -17,7 +17,7 @@ import AddJob from "../Forms/AddJob";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
 
-const LogTable = ({ logs, fetchAll, type = "", userId }: any) => {
+const LogTable = ({ data, fetchAll, type = "", userId }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -31,164 +31,33 @@ const LogTable = ({ logs, fetchAll, type = "", userId }: any) => {
     isBudgetNegotiable: string;
     datePosted: string;
   };
-  const formatData = logs
+  const formatData = data
     ?.slice(0)
     .reverse()
     .map((client: any) => {
       return {
-        id: client.jobID,
-        headline: client.headline,
-        jobDuration: client.jobDuration,
-        experienceLevel: client.experienceLevel,
-        budget: client.budget,
-        jobScope: client.jobScope,
-        isActive: client.isActive,
-        isBudgetNegotiable: client.isBudgetNegotiable,
-        datePosted: moment(client.datePosted).format("ll"),
+        id: client.logsID,
+        action: client.action,
+        modelAffected: client.modelAffected,
+        date: moment(client.date).format("ll"),
       };
     });
   const columnDasboard = [
     {
-      name: "#",
-      selector: "jobID",
+      name: "Log ID",
+      selector: "id",
     },
-    {
-      name: "Headline",
-      selector: "headline",
-    },
-    {
-      name: "Experience Level",
-      selector: "experienceLevel",
-    },
-    {
-      name: "Job Duration",
-      selector: "jobDuration",
-    },
-    {
-      name: "Budget",
-      selector: "budget",
-      cell: (prop: any) => (
-        <div> &#8358; {numberWithCommas(Number(prop.value || 0))}</div>
-      ),
-    },
-
-    {
-      name: "Job Scope",
-      selector: "jobScope",
-    },
-    {
-      name: "Negotiable",
-      selector: "isBudgetNegotiable",
-    },
-    {
-      name: "Date Posted",
-      selector: "datePosted",
-    },
-    ,
     {
       name: "Action",
       selector: "action",
-      Filter: false,
-      cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    router.push(`${location.pathname}/${prop?.id}`);
-                  }}
-                />
-
-                {prop?.isActive === true ? (
-                  <ActionMenuItem
-                    name="Deactivate"
-                    onClickFunction={() =>
-                      dispatch(
-                        uiActions.openModalAndSetContent({
-                          modalStyles: {
-                            padding: 0,
-                          },
-                          modalContent: (
-                            <>
-                              <ModalAction
-                                action="deactivate"
-                                item="job post"
-                                actionFunction={() =>
-                                  dispatch(
-                                    editjob({
-                                      endpoint: "deactivate-job-post",
-                                      jobID: prop?.id,
-                                    })
-                                  )
-                                }
-                              />
-                            </>
-                          ),
-                        })
-                      )
-                    }
-                  />
-                ) : (
-                  <ActionMenuItem
-                    name="Activate"
-                    onClickFunction={() =>
-                      dispatch(
-                        uiActions.openModalAndSetContent({
-                          modalStyles: {
-                            padding: 0,
-                          },
-                          modalContent: (
-                            <>
-                              <ModalAction
-                                action="activate"
-                                item="job post"
-                                actionFunction={() =>
-                                  dispatch(
-                                    editjob({
-                                      endpoint: "activate-job-post",
-                                      jobID: prop?.id,
-                                    })
-                                  )
-                                }
-                              />
-                            </>
-                          ),
-                        })
-                      )
-                    }
-                  />
-                )}
-
-                <ActionMenuItem
-                  name="Delete Job Post"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction
-                              action="delete"
-                              item="job post"
-                              actionFunction={() =>
-                                dispatch(deletejob(prop?.id))
-                              }
-                            />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-              </>
-            }
-          />
-        );
-      },
+    },
+    {
+      name: "Model Affected",
+      selector: "modelAffected",
+    },
+    {
+      name: "Date",
+      selector: "date",
     },
   ];
 

@@ -6,10 +6,6 @@ const TransactionDetails = ({ data }: any) => {
   return (
     <DrawerWrapper title="Product Detail">
       <div className="flex flex-col items-center">
-        <div className="mx-auto mb-4">
-          <Image src={productPic} alt={""} />
-        </div>
-
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-3">
             <div className="text-xs text-[#8487A3]">Purpose of transaction</div>

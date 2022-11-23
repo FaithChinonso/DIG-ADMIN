@@ -28,16 +28,18 @@ const ProductCategory = () => {
   );
   const { token } = useSelector((state: any) => state.auth);
   const toggleDrawer = () => {
-    uiActions.openDrawerAndSetContent({
-      drawerStyles: {
-        padding: 0,
-      },
-      drawerContent: (
-        <>
-          <AddProductCategory />
-        </>
-      ),
-    });
+    dispatch(
+      uiActions.openDrawerAndSetContent({
+        drawerStyles: {
+          padding: 0,
+        },
+        drawerContent: (
+          <>
+            <AddProductCategory />
+          </>
+        ),
+      })
+    );
   };
 
   useEffect(() => {
@@ -96,7 +98,7 @@ const ProductCategory = () => {
                         },
                         drawerContent: (
                           <>
-                            <AddProductCategory type="edit" />
+                            <AddProductCategory type="edit" id={prop?.id} />
                           </>
                         ),
                       })
