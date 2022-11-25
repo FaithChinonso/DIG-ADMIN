@@ -20,8 +20,11 @@ const TopNav = () => {
   return (
     <div className="fixed top-0 left-[60px] md:left-[265px] w-[calc(100vw-60px)] md:w-[calc(100%-265px)] p-[10px] md:p-[30px] flex flex-col-reverse gap-2 justify-center items-center md:flex-row md:justify-between mb-8 bg-white z-20">
       <div className="flex flex-col md:w-auto w-full  items-center justify-around">
-        <div className="text-sm text-grey">
-          {array[1]}/ <span className="text-softGray">{array[2]}</span>
+        <div className="text-sm text-grey capitalize">
+          {array[1]}
+          <span className="text-softGray uppercase font-extrabold ml-2">
+            {array[2]}
+          </span>
         </div>
         <div className="text-lg text-grey">{array[2]}</div>
       </div>

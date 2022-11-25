@@ -32,3 +32,8 @@ export const MyLogsValue = [
   { id: 1, label: "User's Logs" },
   { id: 2, label: "Admin Logs" },
 ];
+export const MyOrderValue = [
+  { id: 1, label: "Buyer" },
+  { id: 2, label: "Product" },
+  { id: 2, label: "Merchant" },
+];

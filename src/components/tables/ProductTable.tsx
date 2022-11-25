@@ -1,7 +1,10 @@
 import moment from "moment";
 import React from "react";
 import { useAppDispatch } from "src/Hooks/use-redux";
-import { deleteproduct } from "src/redux/store/features/product-slice";
+import {
+  deleteproduct,
+  editproduct,
+} from "src/redux/store/features/product-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import { product } from "src/utils/analytics";
 import { numberWithCommas } from "src/utils/formatNumber";

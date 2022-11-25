@@ -62,7 +62,7 @@ const SignInForm = ({ login }: any) => {
       const loginHandler = async () => {
         try {
           const res = await axios.post(
-            "https://backendapi.flip.onl/api/auth/login",
+            "https://backendapi.flip.onl/api/auth/login/admin",
             payload,
             {
               headers: {
@@ -70,10 +70,11 @@ const SignInForm = ({ login }: any) => {
               },
             }
           );
-          console.log(res.data, "inside siginpageres");
+
           dispatch(authActions.loginHandler(res.data));
         } catch (err: any) {
-          console.log(err, "inside siginpageerr");
+          console.log(err.response.data.message);
+          dispatch(authActions.errorHandler(err));
         }
       };
       loginHandler();
@@ -110,7 +111,7 @@ const SignInForm = ({ login }: any) => {
           />
         </div>
         <div className="text-red-400 text-[10px]">{emailError}</div>
-        <div className="border-[0.5px] border-lightGrey relative  rounded-[10px] mt-[30px] flex justify-between">
+        <div className="border-[0.5px] border-lightGrey relative bg-white  rounded-[10px] mt-[30px] flex justify-between">
           <label
             htmlFor="password"
             className="absolute top-[-6px] left-3 text-[10px] text-[#1D2939] bg-white"
@@ -129,7 +130,7 @@ const SignInForm = ({ login }: any) => {
             className="bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
           />
 
-          <span className="w-[11px]">
+          <span className="w-[11px] absolute right-1 top-[50%] -translate-y-[50%]">
             {!passwordShown ? (
               <Image src={ShowPassword} onClick={togglePassword} alt={""} />
             ) : (
@@ -155,13 +156,13 @@ const SignInForm = ({ login }: any) => {
           </div>
 
           <div className="flex justify-center items-center gap-[30px] mt-[30px]">
-            <div className="h-10 w-10 border border-primary flex justify-center items-center rounded-[10px]">
+            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
               <Image src={Google} alt={""} />
             </div>
-            <div className="h-10 w-10 border border-primary flex justify-center items-center rounded-[10px]">
+            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
               <Image src={Apple} alt={""} />
             </div>
-            <div className="h-10 w-10 border border-primary flex justify-center items-center rounded-[10px]">
+            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
               <Image src={Facebook} alt={""} />
             </div>
           </div>

@@ -186,6 +186,66 @@ const UserTable = ({ data }: any) => {
                     }
                   />
                 )}
+                {prop?.emailVerifiedStatus === "verified" ? (
+                  <ActionMenuItem
+                    name="Unverify Email"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="unverify"
+                                item="user"
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "unverify-email",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Verify Email"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="verify"
+                                item="user"
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "verify-email",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                )}
+
                 <ActionMenuItem
                   name="Create Job posting"
                   onClickFunction={() => {
@@ -221,7 +281,7 @@ const UserTable = ({ data }: any) => {
                               actionFunction={() =>
                                 dispatch(
                                   deleteuser({
-                                    userID: prop?.id,
+                                    id: prop?.id,
                                   })
                                 )
                               }

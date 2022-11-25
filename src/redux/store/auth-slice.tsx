@@ -40,6 +40,10 @@ const authSlice = createSlice({
       state.adminDetails = action.payload.data;
       window.location.href = "/dashboard";
     },
+    errorHandler(state, action) {
+      state.error = action.payload.response.data.message;
+      console.log(action.payload.response.data.message);
+    },
     logoutHandler(state) {
       sessionStorage.removeItem("accessToken");
       sessionStorage.removeItem("adminDetails");

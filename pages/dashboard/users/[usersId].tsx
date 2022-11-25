@@ -70,7 +70,6 @@ const OneUser = () => {
     setValue(newValue);
   };
   useEffect(() => {
-    const id = router.query.usersId;
     fetchAUser(id);
     fetchAllJobs(id);
   }, [id]);

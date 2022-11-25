@@ -29,19 +29,15 @@ const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {
 
           <PieChartDashboard orders={orders} />
         </div>
-        <div className="w-full flex flex-col md:flex-row gap-5 items-start p-[10px] md:p-[30px]">
-          <div className=" bg-white p-8 rounded-sm shadow-2xl w-full md:w-[65%] max-h-[400px] overflow-hidden ">
-            <div className="text-gray-800 text-3xl"> Recent Users</div>
-            <div className=" overflow-auto max-h-[calc(400px-65px)]">
-              <UserTable data={recentUsers} />{" "}
-            </div>
-          </div>
-          <div className="w-full md:w-[35%] h-[400px] bg-white rounded-md shadow-md p-8 max-h-[400px] overflow-auto">
-            {" "}
-            {/* <SmallTable /> */}
+        {/* <div className="w-full flex flex-col md:flex-row gap-5 items-start p-[10px] md:p-[30px]"> */}
+        <div className=" bg-white p-8 rounded-sm shadow-2xl w-full  max-h-[400px] overflow-hidden ">
+          <div className="text-gray-800 text-3xl"> Recent Users</div>
+          <div className=" overflow-auto max-h-[calc(400px-65px)]">
+            <UserTable data={recentUsers} />{" "}
           </div>
         </div>
       </div>
+      {/* </div> */}
     </ParentContainer>
   );
 };

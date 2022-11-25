@@ -53,9 +53,7 @@ export default function Toast() {
     e.preventDefault();
     dispatch(uiActions.closeToast());
   };
-  {
-    toastContent;
-  }
+
   return (
     <>
       {toastOpened ? (

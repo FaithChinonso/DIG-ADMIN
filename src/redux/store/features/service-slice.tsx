@@ -107,10 +107,6 @@ interface serviceState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchservices: string;
-  successFetchservices: boolean;
-  loadingFetchservices: boolean;
 }
 
 const initialState: serviceState = {
@@ -119,10 +115,6 @@ const initialState: serviceState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchservices: "",
-  successFetchservices: false,
-  loadingFetchservices: false,
 };
 
 const serviceSlice = createSlice({
@@ -159,21 +151,21 @@ const serviceSlice = createSlice({
       }
     );
     builder.addCase(getMyservice.pending, state => {
-      state.loadingFetchservices = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyservice.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchservices = false;
-        state.successFetchservices = true;
+        state.loading = false;
+
         state.services = action.payload.data;
       }
     );
     builder.addCase(
       getMyservice.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchservices = false;
-        state.errorFetchservices = action?.payload?.message;
+        state.loading = false;
+        state.error = action?.payload?.message;
       }
     );
     builder.addCase(updateservice.pending, state => {

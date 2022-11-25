@@ -22,16 +22,6 @@ const JobsDisplay = ({ jobs }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  type Data = {
-    jobID: number;
-    headline: string;
-    jobDuration: string;
-    experienceLevel: string;
-    budget: string;
-    jobScope: string;
-    isBudgetNegotiable: string;
-    datePosted: string;
-  };
   const formatData = jobs
     ?.slice(0)
     .reverse()
@@ -225,7 +215,7 @@ const JobsDisplay = ({ jobs }: any) => {
 
   return (
     <div>
-      <JobsDisplay data={jobs} />
+      <DataFilterTable data={formatData} columns={columnDasboard} />
     </div>
   );
 };

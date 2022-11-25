@@ -1,7 +1,7 @@
 import ParentContainer from "src/components/ParentContainer";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { getAdminlogs, getMylogs } from "src/redux/store/features/log-slice";
+import { clearError, getAdminlogs } from "src/redux/store/features/log-slice";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
@@ -11,14 +11,33 @@ import Box from "@mui/material/Box";
 import LogTable from "src/components/tables/LogTable";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { MyLogsValue } from "src/utils/boxValues";
+import { uiActions } from "src/redux/store/ui-slice";
 
 const Audit = () => {
-  const { logs, adminLogs } = useAppSelector(state => state.log);
+  const { adminLogs, loading, error } = useAppSelector(state => state.log);
   const { token } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getMylogs(token));
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+  }, [loading, error, dispatch]);
+
+  useEffect(() => {
     dispatch(getAdminlogs(token));
   }, [dispatch]);
 

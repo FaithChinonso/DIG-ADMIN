@@ -11,7 +11,7 @@ createTheme("solarized", {
 });
 export const DataFilterTable = (props: any) => {
   return (
-    <div className="min-h-[600px]">
+    <div className="min-h-[600px] mt-3">
       <DataTable
         columns={props.columns}
         data={props.data}

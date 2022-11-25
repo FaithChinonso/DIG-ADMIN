@@ -3,6 +3,8 @@ import ParentContainer from "src/components/ParentContainer";
 import TransactionTable from "src/components/tables/TransactionTable";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
+  clearError,
+  clearMessage,
   getMyTransactions,
   getPaystackTransactions,
   getWalletTransactions,
@@ -14,11 +16,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { MyTransactionValue } from "src/utils/boxValues";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
+import { uiActions } from "src/redux/store/ui-slice";
 
 const Transaction = () => {
-  const { walletTransactions, paystackTransactions } = useAppSelector(
-    state => state.transaction
-  );
+  const {
+    walletTransactions,
+    paystackTransactions,
+    success,
+    message,
+    loading,
+    error,
+  } = useAppSelector(state => state.transaction);
   const { token } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
@@ -29,6 +38,39 @@ const Transaction = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
   useEffect(() => {
     dispatch(getWalletTransactions(token));

@@ -1,51 +1,29 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
-import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../src/components/Drawer";
-import FilterTable from "../../src/components/filter-table";
-import CreateProduct from "../../src/components/Forms/CreateProduct";
-import ModalAction from "../../src/components/ModalContent/ModalAction";
-import MultipleSelectTable from "../../src/components/multiple-select-table";
-import ProductDetails from "../../src/components/ProductDetails";
 import { uiActions } from "../../src/redux/store/ui-slice";
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  product,
-} from "../../src/utils/analytics";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import { MyProductValue } from "../../src/utils/boxValues";
-import AddProductCategory from "src/components/Forms/AddProductCategory";
 import ProductCategory from "src/components/ProductCategory";
-import useHTTPGet from "src/Hooks/use-httpget";
-import { addProductCategory, addProducts } from "src/redux/store/data-slice";
 import { useAppSelector } from "src/Hooks/use-redux";
-import moment from "moment";
-import { numberWithCommas } from "src/utils/formatNumber";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import AddProductSpec from "src/components/Forms/AddProductSpec";
-import { getMyservice } from "src/redux/store/features/service-slice";
 import {
-  deleteproduct,
-  editproduct,
+  clearError,
+  clearMessage,
   getMyproduct,
 } from "src/redux/store/features/product-slice";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 import ProductTable from "src/components/tables/ProductTable";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Products = () => {
   const dispatch = useDispatch();
 
-  const { products } = useAppSelector((state: any) => state.product);
+  const { products, loading, error, message, success } = useAppSelector(
+    (state: any) => state.product
+  );
   const { token } = useAppSelector((state: any) => state.auth);
 
   const [selected, setSelected] = useState(1);
@@ -55,7 +33,38 @@ const Products = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   useEffect(() => {
     dispatch(getMyproductCategories(token));
     dispatch(getMyproduct(token));

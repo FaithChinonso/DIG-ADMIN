@@ -33,32 +33,14 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-export const updateOrder = createAsyncThunk(
-  "order/updateOrder",
-  async (data: any, thunkAPI: any) => {
-    try {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.post(
-        `${orderApi}/update-order/${data.orderID}`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      return response.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
 export const editorder = createAsyncThunk(
   "order/editorder",
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.get(
+      const response = await axios.post(
         `${orderApi}/${data.endpoint}/${data.orderID}`,
-
+        {},
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -121,10 +103,6 @@ interface orderState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchOrders: string;
-  successFetchOrders: boolean;
-  loadingFetchOrders: boolean;
 }
 
 const initialState: orderState = {
@@ -134,10 +112,6 @@ const initialState: orderState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchOrders: "",
-  successFetchOrders: false,
-  loadingFetchOrders: false,
 };
 
 const orderSlice = createSlice({
@@ -174,59 +148,40 @@ const orderSlice = createSlice({
       }
     );
     builder.addCase(getMyOrders.pending, state => {
-      state.loadingFetchOrders = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyOrders.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchOrders = false;
-        state.successFetchOrders = true;
+        state.loading = false;
         state.orders = action.payload.data;
       }
     );
     builder.addCase(
       getMyOrders.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchOrders = false;
-        state.errorFetchOrders = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
     builder.addCase(getMyOrdersbyMerchant.pending, state => {
-      state.loadingFetchOrders = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyOrdersbyMerchant.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchOrders = false;
-        state.successFetchOrders = true;
+        state.loading = false;
         state.ordersByMerchant = action.payload.data;
       }
     );
     builder.addCase(
       getMyOrdersbyMerchant.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchOrders = false;
-        state.errorFetchOrders = action.payload.message;
-      }
-    );
-    builder.addCase(updateOrder.pending, state => {
-      state.loading = true;
-    });
-    builder.addCase(
-      updateOrder.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.success = true;
-        state.message = action.payload.message;
-      }
-    );
-    builder.addCase(
-      updateOrder.rejected,
-      (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload.message;
       }
     );
+
     builder.addCase(
       deleteOrder.fulfilled,
       (state, action: PayloadAction<any>) => {

@@ -108,10 +108,6 @@ interface transactionState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchtransactions: string;
-  successFetchtransactions: boolean;
-  loadingFetchtransactions: boolean;
 }
 
 const initialState: transactionState = {
@@ -123,10 +119,6 @@ const initialState: transactionState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchtransactions: "",
-  successFetchtransactions: false,
-  loadingFetchtransactions: false,
 };
 
 const transactionSlice = createSlice({
@@ -145,77 +137,77 @@ const transactionSlice = createSlice({
 
   extraReducers: builder => {
     builder.addCase(getMyTransactions.pending, state => {
-      state.loadingFetchtransactions = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyTransactions.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.successFetchtransactions = true;
+        state.loading = false;
+
         state.transactions = action.payload.data;
       }
     );
     builder.addCase(
       getMyTransactions.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.errorFetchtransactions = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
 
     builder.addCase(getTransactionsbyApp.pending, state => {
-      state.loadingFetchtransactions = true;
+      state.loading = true;
     });
     builder.addCase(
       getTransactionsbyApp.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.successFetchtransactions = true;
+        state.loading = false;
+
         state.transactionsByApp = action.payload.data;
       }
     );
     builder.addCase(
       getTransactionsbyApp.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.errorFetchtransactions = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
 
     builder.addCase(getWalletTransactions.pending, state => {
-      state.loadingFetchtransactions = true;
+      state.loading = true;
     });
     builder.addCase(
       getWalletTransactions.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.successFetchtransactions = true;
+        state.loading = false;
+
         state.walletTransactions = action.payload.data;
       }
     );
     builder.addCase(
       getWalletTransactions.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.errorFetchtransactions = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
     builder.addCase(getPaystackTransactions.pending, state => {
-      state.loadingFetchtransactions = true;
+      state.loading = true;
     });
     builder.addCase(
       getPaystackTransactions.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.successFetchtransactions = true;
+        state.loading = false;
+
         state.paystackTransactions = action.payload.data;
       }
     );
     builder.addCase(
       getPaystackTransactions.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchtransactions = false;
-        state.errorFetchtransactions = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
     builder.addCase(

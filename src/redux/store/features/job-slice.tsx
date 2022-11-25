@@ -62,6 +62,7 @@ export const editjob = createAsyncThunk(
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${jobApi}/${data.endpoint}/${data.jobID}`,
+        {},
 
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -92,7 +93,7 @@ export const deletejob = createAsyncThunk(
   async (id: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.delete(`${jobApi}/delete-job/${id}`, {
+      const response = await axios.delete(`${jobApi}/delete-job-post/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -107,10 +108,6 @@ interface jobState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchjobs: string;
-  successFetchjobs: boolean;
-  loadingFetchjobs: boolean;
 }
 
 const initialState: jobState = {
@@ -119,10 +116,6 @@ const initialState: jobState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchjobs: "",
-  successFetchjobs: false,
-  loadingFetchjobs: false,
 };
 
 const jobSlice = createSlice({
@@ -156,19 +149,18 @@ const jobSlice = createSlice({
       state.error = action.payload.message;
     });
     builder.addCase(getMyjobs.pending, state => {
-      state.loadingFetchjobs = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyjobs.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchjobs = false;
-        state.successFetchjobs = true;
+        state.loading = false;
         state.jobs = action.payload.data;
       }
     );
     builder.addCase(getMyjobs.rejected, (state, action: PayloadAction<any>) => {
-      state.loadingFetchjobs = false;
-      state.errorFetchjobs = action.payload.message;
+      state.loading = false;
+      state.error = action.payload.message;
     });
     builder.addCase(updatejob.pending, state => {
       state.loading = true;
@@ -182,6 +174,18 @@ const jobSlice = createSlice({
       }
     );
     builder.addCase(updatejob.rejected, (state, action: PayloadAction<any>) => {
+      state.loading = false;
+      state.error = action.payload.message;
+    });
+    builder.addCase(editjob.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(editjob.fulfilled, (state, action: PayloadAction<any>) => {
+      state.loading = false;
+      state.success = true;
+      state.message = action.payload.message;
+    });
+    builder.addCase(editjob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
       state.error = action.payload.message;
     });

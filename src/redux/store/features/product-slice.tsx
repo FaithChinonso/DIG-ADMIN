@@ -23,13 +23,9 @@ export const createproduct = createAsyncThunk(
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.post(
-        `${productApi}/create-product`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const response = await axios.post(`${productApi}/create-product`, data, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -58,15 +54,11 @@ export const updateproduct = createAsyncThunk(
 
 export const getMyproduct = createAsyncThunk(
   "order/getMyproduct",
-  async (accessToken:any, thunkAPI: any) => {
+  async (accessToken: any, thunkAPI: any) => {
     try {
-
-      const response = await axios.get(
-        `${productApi}/all-products`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const response = await axios.get(`${productApi}/all-products`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -79,7 +71,7 @@ export const editproduct = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
-        `${productApi}/${data.endpoint}/${data.productID}`,
+        `${productApi}/${data.endPoint}/${data.productID}`,
 
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -115,10 +107,6 @@ interface productState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchproducts: string;
-  successFetchproducts: boolean;
-  loadingFetchproducts: boolean;
 }
 
 const initialState: productState = {
@@ -127,10 +115,6 @@ const initialState: productState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchproducts: "",
-  successFetchproducts: false,
-  loadingFetchproducts: false,
 };
 
 const productSlice = createSlice({
@@ -167,21 +151,20 @@ const productSlice = createSlice({
       }
     );
     builder.addCase(getMyproduct.pending, state => {
-      state.loadingFetchproducts = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyproduct.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchproducts = false;
-        state.successFetchproducts = true;
+        state.loading = false;
         state.products = action.payload.data;
       }
     );
     builder.addCase(
       getMyproduct.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchproducts = false;
-        state.errorFetchproducts = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
     builder.addCase(updateproduct.pending, state => {

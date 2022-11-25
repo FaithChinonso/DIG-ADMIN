@@ -108,15 +108,7 @@ const AddServiceCategory = ({ type, id }: any) => {
     const url = `${serviceCategoryApi}/single-service-category/${id}`;
     const dataFunction = (res: any) => {
       setName(res.data.data.name);
-      saveProfilePict(res.data.data.image);
-      // reader.readAsBinaryString(res.data.data.image);
-      // console.log(formData);
 
-      // reader.onload = file => {
-      //   let fileString = file?.target?.result;
-      //   console.log(fileString);
-      // };
-      // setSelectedFile((res.data.data.image).);
       console.log(res);
     };
     request({ url, accessToken }, dataFunction);
@@ -126,10 +118,7 @@ const AddServiceCategory = ({ type, id }: any) => {
       payload: formData,
       id,
     };
-    // const dataFunction = (res: any) => {};
-    // const accessToken = sessionStorage.getItem("accessToken");
-    // const url = `${serviceCategoryApi}/update-service-category/${id}`;
-    // send({ url, values: formData, accessToken }, dataFunction);
+
     dispatch(updateserviceCategory(data));
     if (successUpdateserviceCategorys === true) {
       dispatch(uiActions.closedrawer());

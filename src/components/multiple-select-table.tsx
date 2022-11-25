@@ -37,6 +37,7 @@ const MultipleSelectTable = ({
   emptyPlaceHolder,
   recent,
   extraButton,
+  rowClickable,
   list,
   onClickFunction,
 }: Partial<any>) => {
@@ -217,14 +218,14 @@ const MultipleSelectTable = ({
                   return (
                     <tr
                       key={row.id}
-                      // {...row.getRowProps()}
-                      // onClick={() => {
-                      //   if (rowClickable === true) {
-                      //     router.push(
-                      //       `${location.pathname}/${row?.original.id}`
-                      //     );
-                      //   }
-                      // }}
+                      {...row.getRowProps()}
+                      onClick={() => {
+                        if (rowClickable === true) {
+                          router.push(
+                            `${location.pathname}/${row?.original.id}`
+                          );
+                        }
+                      }}
                       className="px-[30px] py-[20px] border-b border-[#e5e5e5] h-[82px]  children-even:bg-[#cb91df]"
                     >
                       {row?.cells.map((cell: any) => {

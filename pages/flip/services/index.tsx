@@ -4,42 +4,26 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import AddService from "src/components/Forms/AddService";
 import ParentContainer from "src/components/ParentContainer";
 import ServiceCategory from "src/components/ServiceCategory";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
 import { useAppSelector } from "src/Hooks/use-redux";
-import { addServices } from "src/redux/store/data-slice";
 import { MyServiceValue } from "src/utils/boxValues";
-import { numberWithCommas } from "src/utils/formatNumber";
 import { a11yProps, TabPanel } from "src/utils/helperFunctions";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/filter-table";
-import AddMerchant from "../../../src/components/Forms/AddMerchant";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
-
 import { uiActions } from "../../../src/redux/store/ui-slice";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-} from "../../../src/utils/analytics";
-import {
-  deleteservice,
-  editservice,
+  clearError,
+  clearMessage,
   getMyservice,
 } from "src/redux/store/features/service-slice";
 import ServiceTable from "src/components/tables/ServiceTable";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Service = () => {
   const dispatch = useDispatch();
 
-  const { services } = useAppSelector(state => state.service);
+  const { services, loading, error, message, success } = useAppSelector(
+    state => state.service
+  );
   const { token } = useAppSelector(state => state.auth);
 
   const [selected, setSelected] = useState(1);
@@ -59,6 +43,38 @@ const Service = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
   useEffect(() => {
     dispatch(getMyservice(token));

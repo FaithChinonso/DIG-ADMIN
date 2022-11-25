@@ -43,7 +43,7 @@ export const updateproductCategory = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${productCategoryApi}/update-product-category/${data.productCategoryID}`,
+        `${productCategoryApi}/update-product-category/${data.productID}`,
         data,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -77,9 +77,9 @@ export const editproductCategory = createAsyncThunk(
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.get(
-        `${productCategoryApi}/${data.endpoint}/${data.productCategoryID}`,
-
+      const response = await axios.post(
+        `${productCategoryApi}/${data.endpoint}/${data.productID}`,
+        {},
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }

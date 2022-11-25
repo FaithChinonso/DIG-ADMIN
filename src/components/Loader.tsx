@@ -17,7 +17,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    zIndex: 20000000,
+    zIndex: 20000000000,
   } as CSSProperties,
 };
 

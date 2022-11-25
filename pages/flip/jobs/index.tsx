@@ -9,20 +9,55 @@ import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppSelector } from "src/Hooks/use-redux";
-import { getMyjobs } from "src/redux/store/features/job-slice";
+import {
+  clearError,
+  clearMessage,
+  getMyjobs,
+} from "src/redux/store/features/job-slice";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
+import { uiActions } from "src/redux/store/ui-slice";
 
 const Jobs = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { jobs } = useAppSelector(state => state.job);
+  const { jobs, loading, error, message, success } = useAppSelector(
+    state => state.job
+  );
   const { token } = useAppSelector(state => state.auth);
 
-  // const fetchAllJobs = () => {
-  //   const accessToken = sessionStorage.getItem("accessToken");
-
-  // };
-
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   useEffect(() => {
     dispatch(getMyjobs(token));
   }, []);

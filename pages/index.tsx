@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime";
 import Head from "next/head";
-import SignUp from "./signupPage";
+import SignUp from "../src/components/signupPage";
 import { Provider } from "react-redux";
 import store from "../src/redux/store/index";
 

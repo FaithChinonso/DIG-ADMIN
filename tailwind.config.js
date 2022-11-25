@@ -40,6 +40,7 @@ module.exports = {
         offWhite: "rgba(239, 237, 255, .6)",
         text: "rgba(132, 135, 163, 1)",
         textD: "rgba(239, 237, 255, .6)",
+        header: 'rgba(6, 78, 200, 1)'
       },
       backgroundImage: "linear-gradient(90deg, #122644 0%, #015FFF 100%)",
     },

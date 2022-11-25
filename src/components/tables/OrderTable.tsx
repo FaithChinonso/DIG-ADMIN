@@ -18,7 +18,11 @@ import useHTTPPost from "src/Hooks/use-httppost";
 import moment from "moment";
 import { uiActions } from "src/redux/store/ui-slice";
 import ModalAction from "../ModalContent/ModalAction";
-import { editorder, getMyOrders } from "src/redux/store/features/order-slice";
+import {
+  deleteOrder,
+  editorder,
+  getMyOrders,
+} from "src/redux/store/features/order-slice";
 import { useRouter } from "next/router";
 import { DataFilterTable } from "../DataTable";
 
@@ -37,10 +41,13 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
         categoryName: client.product.category.name,
         paymentStatus: client.paymentStatus,
         phone: client.phone,
+        deliveryAddress: client.deliveryAddress,
         quantityPurchased: client.quantityPurchased,
         expectedDeliveryDate: moment(client.expectedDeliveryDate).format("ll"),
         price: client.price,
         status: client.status,
+        buyer: client.buyer,
+        product: client.product,
         isActive: client.isActive,
       };
     });
@@ -176,7 +183,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
                               action="delete"
                               item="order"
                               actionFunction={() =>
-                                dispatch(deleteorder(prop?.id))
+                                dispatch(deleteOrder(prop?.id))
                               }
                             />
                           </>

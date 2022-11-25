@@ -6,7 +6,11 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { addProductCategory, addProposal } from "src/redux/store/data-slice";
-import { getMyproposal } from "src/redux/store/features/proposal-slice";
+import {
+  clearError,
+  getMyproposal,
+} from "src/redux/store/features/proposal-slice";
+import { uiActions } from "src/redux/store/ui-slice";
 import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
 import DrawerCard from "../../src/components/Drawer";
@@ -21,10 +25,29 @@ import {
 
 const Proposals = () => {
   const dispatch = useAppDispatch();
-  const { proposals } = useAppSelector((state: any) => state.proposal);
+  const { proposals, loading, error } = useAppSelector(
+    (state: any) => state.proposal
+  );
   const { token } = useAppSelector((state: any) => state.auth);
-  const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+  }, [loading, error, dispatch]);
   useEffect(() => {
     dispatch(getMyproposal(token));
   }, []);

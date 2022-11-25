@@ -5,6 +5,8 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { addServiceCategory } from "src/redux/store/data-slice";
 import {
+  clearError,
+  clearMessage,
   deleteserviceCategory,
   editserviceCategory,
   getMyserviceCategories,
@@ -17,11 +19,12 @@ import DrawerCard from "./Drawer";
 import AddServiceCategory from "./Forms/AddServiceCategory";
 // import AddServiceCategory from "./Forms/AddServiceCategory";
 import ModalAction from "./ModalContent/ModalAction";
+import SuccessfulModal from "./ModalContent/SuccessfulModal";
 import MultipleSelectTable from "./multiple-select-table";
 
 const ServiceCategory = () => {
   const dispatch = useDispatch();
-  const { serviceCategories } = useSelector(
+  const { serviceCategories, loading, error, message, success } = useSelector(
     (state: any) => state.serviceCategory
   );
   const { token } = useSelector((state: any) => state.auth);
@@ -40,7 +43,38 @@ const ServiceCategory = () => {
       })
     );
   };
-
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openModalAndSetContent({
+          modalContent: (
+            <>
+              <SuccessfulModal title="Successful" message={message} />
+            </>
+          ),
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   useEffect(() => {
     dispatch(getMyserviceCategories(token));
   }, [dispatch]);
@@ -76,7 +110,7 @@ const ServiceCategory = () => {
       name: "Status",
       selector: "isActive",
       cell: (prop: any) => {
-        <div> {prop.status ? "Active" : "Inactive"}</div>;
+        <div> {prop.isActive ? "Active" : "Inactive"}</div>;
       },
     },
 

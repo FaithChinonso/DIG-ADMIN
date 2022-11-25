@@ -1,5 +1,6 @@
 import moment from "moment";
 import React from "react";
+import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
@@ -11,66 +12,64 @@ const ProposalTable = ({ data }: any) => {
     .reverse()
     .map((client: any, index: number) => {
       return {
-        id: client.userID,
+        id: client.proposalID,
         serial: index + 1,
-        gender: client.gender,
-        fullName: client.fullName,
-        email: client.email,
-        phone: client.phone,
-        applicationName: client.applicationName,
-        emailVerifiedStatus: client.emailVerifiedStatus,
-        role: client.role,
-        isActive: client.isActive,
-        dateAdded: moment(client.dateAdded).format("ll"),
+        paymentOption: client.paymentOption,
+        expectedDuration: client.expectedDuration,
+        total_price: client.total_price,
+        numOfMilestones: client.numOfMilestones,
+        amountToReceive: client.amountToReceive,
+        paymentStatus: client.paymentStatus,
+        status: client.status,
+        submissionDate: moment(client.submissionDate).format("ll"),
       };
     });
   const columnDasboard = [
     {
-      name: "#",
-      selector: "serial",
+      name: "ID",
+      selector: (row: { id: any }) => `${row.id}`,
     },
     {
-      name: "Business Name",
-      selector: "businessName",
+      name: "Payment Option",
+      selector: (row: { paymentOption: any }) => `${row.paymentOption}`,
     },
     {
-      name: "Contact Person",
-      selector: "contactPerson",
+      name: "Submission Date",
+      selector: (row: { submissionDate: any }) => `${row.submissionDate}`,
     },
     {
-      name: "Email",
-      selector: "email",
+      name: "Payment Status",
+      selector: (row: { paymentStatus: any }) => `${row.paymentStatus}`,
     },
     {
-      name: "Phone Number",
-      selector: "number",
+      name: "Num Of Milestones",
+      selector: (row: { numOfMilestones: any }) => `${row.numOfMilestones}`,
     },
 
     {
-      name: "Client Type",
-      selector: "clientType",
+      name: "Submission Date",
+      selector: (row: { submissionDate: any }) => `${row.submissionDate}`,
+    },
+    {
+      name: "Total Price",
+      selector: (row: { total_price: any }) => `${row.total_price}`,
+      cell: (prop: any) => (
+        <div> &#8358; {numberWithCommas(Number(prop.total_price || 0))}</div>
+      ),
+    },
+    {
+      name: "Amount To Receive",
+      selector: (row: { amountToReceive: any }) => `${row.amountToReceive}`,
+      cell: (prop: any) => (
+        <div>
+          {" "}
+          &#8358; {numberWithCommas(Number(prop.amountToReceive || 0))}
+        </div>
+      ),
     },
     {
       name: "Status",
-      selector: "status",
-    },
-    {
-      name: "Action",
-      selector: "action",
-      Filter: false,
-      cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem name="View Details" />
-
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
+      selector: (row: { status: any }) => `${row.status}`,
     },
   ];
   return (

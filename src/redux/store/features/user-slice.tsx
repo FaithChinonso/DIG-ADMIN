@@ -65,37 +65,11 @@ export const getMyuser = createAsyncThunk(
     }
   }
 );
-export const getAUser = createAsyncThunk(
-  "user/ getAUser",
-  async (accessToken: any, thunkAPI: any) => {
-    try {
-      const response = await axios.get(`${userApi}/single-user`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      return response.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
-export const getMyconsumer = createAsyncThunk(
-  "user/getMyconsumer",
-  async (accessToken: any, thunkAPI: any) => {
-    try {
-      const response = await axios.get(`${userApi}/all-users?role=consumer`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      return response.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
 export const getMymerchant = createAsyncThunk(
-  "user/getMymerchant",
+  "user/getMyuser",
   async (accessToken: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${userApi}/all-users?role=merchant`, {
+      const response = await axios.get(`${userApi}/all-users?role='merchant`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -104,6 +78,7 @@ export const getMymerchant = createAsyncThunk(
     }
   }
 );
+
 export const edituser = createAsyncThunk(
   "user/edituser",
   async (data: any, thunkAPI: any) => {
@@ -125,10 +100,10 @@ export const edituser = createAsyncThunk(
 
 export const deleteuser = createAsyncThunk(
   "user/deleteuser",
-  async (id: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.delete(`${userApi}/delete-user/${id}`, {
+      const response = await axios.delete(`${userApi}/delete-user/${data.id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -140,55 +115,19 @@ export const deleteuser = createAsyncThunk(
 interface userState {
   users: any;
   merchants: any;
-  consumers: any;
-  user: any;
   success: boolean;
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchusers: string;
-  successFetchusers: boolean;
-  loadingFetchusers: boolean;
-
-  errorFetchmerchants: string;
-  successFetchmerchants: boolean;
-  loadingFetchmerchants: boolean;
-
-  errorFetchuser: string;
-  successFetchuser: boolean;
-  loadingFetchuser: boolean;
-
-  errorFetchconsumers: string;
-  successFetchconsumers: boolean;
-  loadingFetchconsumers: boolean;
 }
 
 const initialState: userState = {
   users: [],
   merchants: [],
-  consumers: [],
-  user: [],
-
   success: false,
   loading: false,
   error: "",
   message: "",
-
-  errorFetchusers: "",
-  successFetchusers: false,
-  loadingFetchusers: false,
-
-  errorFetchmerchants: "",
-  successFetchmerchants: false,
-  loadingFetchmerchants: false,
-
-  errorFetchconsumers: "",
-  successFetchconsumers: false,
-  loadingFetchconsumers: false,
-  errorFetchuser: "",
-  successFetchuser: false,
-  loadingFetchuser: false,
 };
 
 const userSlice = createSlice({
@@ -225,68 +164,19 @@ const userSlice = createSlice({
       }
     );
     builder.addCase(getMyuser.pending, state => {
-      state.loadingFetchusers = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyuser.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchusers = false;
-        state.successFetchusers = true;
+        state.loading = false;
         state.users = action.payload.data;
       }
     );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
-      state.loadingFetchusers = false;
-      state.errorFetchusers = action.payload.message;
+      state.loading = false;
+      state.error = action.payload.message;
     });
-    builder.addCase(getMyconsumer.pending, state => {
-      state.loadingFetchconsumers = true;
-    });
-    builder.addCase(
-      getMyconsumer.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        state.loadingFetchconsumers = false;
-        state.successFetchconsumers = true;
-        state.consumers = action.payload.data;
-      }
-    );
-    builder.addCase(
-      getMyconsumer.rejected,
-      (state, action: PayloadAction<any>) => {
-        state.loadingFetchconsumers = false;
-        state.errorFetchconsumers = action.payload.message;
-      }
-    );
-    builder.addCase(getAUser.pending, state => {
-      state.loadingFetchuser = true;
-    });
-    builder.addCase(getAUser.fulfilled, (state, action: PayloadAction<any>) => {
-      state.loadingFetchuser = false;
-      state.successFetchuser = true;
-      state.user = action.payload.data;
-    });
-    builder.addCase(getAUser.rejected, (state, action: PayloadAction<any>) => {
-      state.loadingFetchuser = false;
-      state.errorFetchuser = action.payload.message;
-    });
-    builder.addCase(getMymerchant.pending, state => {
-      state.loadingFetchmerchants = true;
-    });
-    builder.addCase(
-      getMymerchant.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        state.loadingFetchmerchants = false;
-        state.successFetchmerchants = true;
-        state.merchants = action.payload.data;
-      }
-    );
-    builder.addCase(
-      getMymerchant.rejected,
-      (state, action: PayloadAction<any>) => {
-        state.loadingFetchmerchants = false;
-        state.errorFetchmerchants = action.payload.message;
-      }
-    );
 
     builder.addCase(updateuser.pending, state => {
       state.loading = true;
