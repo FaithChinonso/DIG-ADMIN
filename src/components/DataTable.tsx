@@ -20,7 +20,7 @@ export const DataFilterTable = (props: any) => {
         striped
         responsive
         noDataComponent={
-          <div className="text-text text-xs font-bold">No Data</div>
+          <div className="text-text text-lg font-bold">No Data to display</div>
         }
         theme="solarized"
       />

@@ -158,7 +158,13 @@ const serviceCategorySlice = createSlice({
       createserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(getMyserviceCategories.pending, state => {
@@ -175,7 +181,13 @@ const serviceCategorySlice = createSlice({
       getMyserviceCategories.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action?.payload?.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(updateserviceCategory.pending, state => {
@@ -193,7 +205,13 @@ const serviceCategorySlice = createSlice({
       updateserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -208,7 +226,13 @@ const serviceCategorySlice = createSlice({
       deleteserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -223,7 +247,13 @@ const serviceCategorySlice = createSlice({
       editserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
   },

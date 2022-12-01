@@ -105,7 +105,7 @@ export const deleteproductCategory = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -155,7 +155,13 @@ const productCategorySlice = createSlice({
       createproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(getMyproductCategories.pending, state => {
@@ -173,7 +179,13 @@ const productCategorySlice = createSlice({
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         console.log(action.payload);
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(updateproductCategory.pending, state => {
@@ -191,7 +203,13 @@ const productCategorySlice = createSlice({
       updateproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -206,7 +224,13 @@ const productCategorySlice = createSlice({
       deleteproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -221,7 +245,13 @@ const productCategorySlice = createSlice({
       editproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
   },

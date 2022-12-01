@@ -151,7 +151,13 @@ const productSlice = createSlice({
       createproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(getMyproduct.pending, state => {
@@ -168,7 +174,13 @@ const productSlice = createSlice({
       getMyproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(updateproduct.pending, state => {
@@ -186,7 +198,13 @@ const productSlice = createSlice({
       updateproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -201,7 +219,13 @@ const productSlice = createSlice({
       deleteproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -216,7 +240,13 @@ const productSlice = createSlice({
       editproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
   },

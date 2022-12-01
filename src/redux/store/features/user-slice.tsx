@@ -47,7 +47,7 @@ export const updateuser = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -93,7 +93,7 @@ export const edituser = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -108,7 +108,7 @@ export const deleteuser = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -160,7 +160,13 @@ const userSlice = createSlice({
       createuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(getMyuser.pending, state => {
@@ -175,7 +181,13 @@ const userSlice = createSlice({
     );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
 
     builder.addCase(getMymerchant.pending, state => {
@@ -192,7 +204,13 @@ const userSlice = createSlice({
       getMymerchant.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
 
@@ -211,7 +229,13 @@ const userSlice = createSlice({
       updateuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -226,7 +250,13 @@ const userSlice = createSlice({
       deleteuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(edituser.fulfilled, (state, action: PayloadAction<any>) => {
@@ -236,7 +266,13 @@ const userSlice = createSlice({
     });
     builder.addCase(edituser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
   },
 });

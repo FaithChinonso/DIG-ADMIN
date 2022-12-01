@@ -73,15 +73,18 @@ const ProductDetails = ({ data }: any) => {
   return (
     <DrawerWrapper title="Product Detail">
       <div className="flex flex-col items-center">
-        <div className="mx-auto mb-4 rounded-[50%] w-[100px] h-[100px]">
-          <Image
-            src={primary?.image}
-            width={100}
-            height={100}
-            className="rounded-[50%] w-full h-full object-cover border border-darkPurple"
-            alt={""}
-          />
-        </div>
+        {primary?.image && (
+          <div className="mx-auto mb-4 rounded-[50%] w-[100px] h-[100px]">
+            <Image
+              src={primary?.image}
+              width={100}
+              height={100}
+              className="rounded-[50%] w-full h-full object-cover border border-darkPurple"
+              alt={""}
+            />
+          </div>
+        )}
+
         <div className="w-full max-h-[300px] overflow-y-auto flex flex-wrap gap-2 items-center justify-center my-4 p-3">
           {secondary?.map((image: any) => (
             <div

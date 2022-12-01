@@ -61,7 +61,13 @@ const logSlice = createSlice({
       getAdminlogs.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
   },

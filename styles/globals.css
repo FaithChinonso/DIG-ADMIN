@@ -35,10 +35,12 @@ a {
   z-index: 10;
   max-width: 100%;
   overflow-y: auto;
+  margin-top: 10px;
 }
 .rdt_TableHeadRow {
   color: rgba(18, 38, 68, 1);
   font-size: 14px;
+  font-weight: 700;
   text-align: center;
 }
 .rdt_TableRow {
@@ -48,4 +50,13 @@ a {
 .spinner {
   z-index: 200000000000;
   color: red;
+}
+.rdt_TableCol {
+  width: 130px;
+  text-align: center;
+}
+.rdt_TableCell {
+  text-align: center;
+  color: rgba(16, 24, 40, 1);
+  font-weight: 200;
 }

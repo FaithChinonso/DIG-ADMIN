@@ -78,7 +78,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
   const columnDasboard = [
     {
       name: "#",
-      selector: "jobID",
+      selector: "id",
     },
     {
       name: "Headline",

@@ -38,7 +38,7 @@ const ActionMenuBase = ({ items, text = <MoreHorizIcon />, type }: any) => {
         className={`${
           type === "export"
             ? ""
-            : "text-[#09121f] flex items-center justify-center w-full hover:bg-[#e0dede] hover:rounded-[50%] hover:w-[35px] hover:h-[35px]"
+            : "text-grey90 flex items-center justify-center w-full hover:text-lightPurple hover:bg-[#4356e31a] hover:rounded-[50%] hover:w-[35px] hover:h-[35px]"
         }`}
         onClick={openActionMenuHandler}
       >

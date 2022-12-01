@@ -32,7 +32,7 @@ export const createwithdrawal = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -51,7 +51,7 @@ export const updatewithdrawal = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -84,7 +84,7 @@ export const editwithdrawal = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -102,7 +102,7 @@ export const deletewithdrawal = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -112,10 +112,6 @@ interface withdrawalState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchwithdrawals: string;
-  successFetchwithdrawals: boolean;
-  loadingFetchwithdrawals: boolean;
 }
 
 const initialState: withdrawalState = {
@@ -124,10 +120,6 @@ const initialState: withdrawalState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchwithdrawals: "",
-  successFetchwithdrawals: false,
-  loadingFetchwithdrawals: false,
 };
 
 const withdrawalSlice = createSlice({
@@ -160,25 +152,37 @@ const withdrawalSlice = createSlice({
       createwithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(getMywithdrawal.pending, state => {
-      state.loadingFetchwithdrawals = true;
+      state.loading = true;
     });
     builder.addCase(
       getMywithdrawal.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchwithdrawals = false;
-        state.successFetchwithdrawals = true;
+        state.loading = false;
+        state.success = true;
         state.withdrawals = action.payload.data;
       }
     );
     builder.addCase(
       getMywithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchwithdrawals = false;
-        state.errorFetchwithdrawals = action.payload.message;
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(updatewithdrawal.pending, state => {
@@ -196,7 +200,13 @@ const withdrawalSlice = createSlice({
       updatewithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -211,7 +221,13 @@ const withdrawalSlice = createSlice({
       deletewithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
     builder.addCase(
@@ -226,7 +242,13 @@ const withdrawalSlice = createSlice({
       editwithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload.message;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
       }
     );
   },

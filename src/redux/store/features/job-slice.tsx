@@ -33,7 +33,7 @@ export const createjob = createAsyncThunk(
       console.log(response);
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -52,7 +52,7 @@ export const updatejob = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -71,7 +71,7 @@ export const editjob = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -99,7 +99,7 @@ export const deletejob = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -147,7 +147,14 @@ const jobSlice = createSlice({
     );
     builder.addCase(createjob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
     builder.addCase(getMyjobs.pending, state => {
       state.loading = true;
@@ -161,7 +168,13 @@ const jobSlice = createSlice({
     );
     builder.addCase(getMyjobs.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
     builder.addCase(updatejob.pending, state => {
       state.loading = true;
@@ -176,7 +189,13 @@ const jobSlice = createSlice({
     );
     builder.addCase(updatejob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
     builder.addCase(editjob.pending, state => {
       state.loading = true;
@@ -188,7 +207,13 @@ const jobSlice = createSlice({
     });
     builder.addCase(editjob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
     builder.addCase(
       deletejob.fulfilled,
@@ -200,7 +225,13 @@ const jobSlice = createSlice({
     );
     builder.addCase(deletejob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      state.error = action.payload.message;
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     });
   },
 });

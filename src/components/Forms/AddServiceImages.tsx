@@ -76,29 +76,40 @@ const AddServiceImages = ({ id }: any) => {
       dispatch(uiActions.closedrawer());
       dispatch(uiActions.closeLoader());
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={res.data.message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: res.data.message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
     } catch (err: any) {
-      dispatch(
-        uiActions.openToastAndSetContent({
-          toastContent: { err },
-        })
-      );
+      if (err.response) {
+        dispatch(
+          uiActions.openToastAndSetContent({
+            toastContent: err.response.data.message,
+            backgroundColor: "red",
+          })
+        );
+      } else if (err.request) {
+        dispatch(
+          uiActions.openToastAndSetContent({
+            toastContent: "A Error occured on our end",
+            backgroundColor: "red",
+          })
+        );
+      } else {
+        dispatch(
+          uiActions.openToastAndSetContent({
+            toastContent: "A Error occured",
+            backgroundColor: "red",
+          })
+        );
+      }
     }
   };
   return (
     <DrawerWrapper title="Create Service Images">
       <form className="w-full h-full flex flex-col" onSubmit={sendImages}>
-        <label className=" text-[10px] text-[#1D2939] bg-white">
+        <label className=" text-[10px] text-[#1D2939] bg-white mx-auto ">
           <Image src={userPic} alt="" />
           <input
             type="file"

@@ -43,8 +43,13 @@ const authSlice = createSlice({
       window.location.href = "/dashboard";
     },
     errorHandler(state, action) {
-      state.error = action.payload.message;
-      console.log(action.payload.message);
+      if (action.payload.response) {
+        state.error = action.payload.response.data.message;
+      } else if (action.payload.request) {
+        state.error = "An Error occured on our end";
+      } else {
+        state.error = "An Error";
+      }
     },
     logoutHandler(state) {
       sessionStorage.removeItem("accessToken");

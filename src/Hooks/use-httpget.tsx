@@ -27,18 +27,34 @@ const useHTTPGet = () => {
           dispatch(
             uiActions.openToastAndSetContent({
               toastContent: res.data.message,
-              backgroundColor: "green",
+              backgroundColor: "rgba(24, 160, 251, 1)",
             })
           );
         }
       })
       .catch((error: any) => {
-        dispatch(
-          uiActions.openToastAndSetContent({
-            toastContent: error.message,
-            backgroundColor: "red",
-          })
-        );
+        if (error.response) {
+          dispatch(
+            uiActions.openToastAndSetContent({
+              toastContent: error.response.data.message,
+              backgroundColor: "red",
+            })
+          );
+        } else if (error.request) {
+          dispatch(
+            uiActions.openToastAndSetContent({
+              toastContent: "A Error occured on our end",
+              backgroundColor: "red",
+            })
+          );
+        } else {
+          dispatch(
+            uiActions.openToastAndSetContent({
+              toastContent: "A Error occured",
+              backgroundColor: "red",
+            })
+          );
+        }
       });
   };
 

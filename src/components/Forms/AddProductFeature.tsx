@@ -9,8 +9,8 @@ const AddProductFeature = ({ id, title, existingFeature }: any) => {
   const [items, setItems] = useState<any[]>([]);
   const send = useHTTPPost();
 
-  console.log(existingFeature.keys());
-  const newFeature = existingFeature.map((item: any) => {
+  console.log(existingFeature?.keys());
+  const newFeature = existingFeature?.map((item: any) => {
     return item.featureName;
   });
 

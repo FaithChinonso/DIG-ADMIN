@@ -33,7 +33,7 @@ module.exports = {
         lightPurple: "rgba(18, 38, 68, 1) ",
         Purple: "rgba(18, 38, 68, 0.9) ",
         darkPurple: "rgba(24, 160, 251, 1) ",
-        faintPurple: "rgba(24, 160, 251, 0.4)",
+        faintPurple: "rgba(24, 160, 251, 0.2)",
         lightDark: "rgba(16,24,40, .6)",
         primary: "rgba(255,187,40, 1)",
         grey: "#101828",

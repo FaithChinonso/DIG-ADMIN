@@ -88,6 +88,12 @@ export default function DrawerCard() {
               e.stopPropagation();
             }}
           >
+            <div
+              className="text-3xl text-darkPurple absolute top-7 right-5 "
+              onClick={e => Close(e)}
+            >
+              &times;
+            </div>
             <div>{drawerContent}</div>
           </div>
         </div>
