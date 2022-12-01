@@ -33,7 +33,7 @@ const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {
         <div className=" bg-white py-3 rounded-sm  w-full  max-h-[400px] overflow-hidden px-3 ">
           <div className="text-gray-800 text-3xl"> Recent Users</div>
           <div className=" overflow-auto max-h-[calc(400px-65px)]">
-            <UserTable data={recentUsers} type="dashboard" />{" "}
+            <UserTable data={recentUsers} type="dashboard" action="none" />{" "}
           </div>
         </div>
       </div>

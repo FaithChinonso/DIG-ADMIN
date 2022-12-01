@@ -24,11 +24,24 @@ import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
+import { uiActions } from "src/redux/store/ui-slice";
+import { clearError, clearMessage } from "src/redux/store/features/user-slice";
+import { useAppSelector } from "src/Hooks/use-redux";
 
 const OneMerchant = (props: any) => {
   const router = useRouter();
   const request = useHTTPGet();
   const dispatch = useDispatch();
+  const { users, loading, success, message, error } = useAppSelector(
+    (state: any) => state.user
+  );
+  // const {
+  //   jobs,
+  //   loading: loadJob,
+  //   success: successJob,
+  //   message: messageJob,
+  //   error: errorJob,
+  // } = useAppSelector((state: any) => state.job);
   const [user, setUser] = useState<any>({});
   const [orders, setOrders] = useState<any>([]);
   const [job, setJob] = useState<any>();
@@ -69,6 +82,38 @@ const OneMerchant = (props: any) => {
     fetchAllJobs(props.merchantId);
     fetchOrdersByAMerchant(props.merchantId);
   }, [props.merchantId, dispatch]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <ParentContainer>
       <div>
@@ -223,7 +268,7 @@ const OneMerchant = (props: any) => {
               <div></div>
             </TabPanel>
             <TabPanel value={value} index={5}>
-              <JobsDisplay jobs={job} />
+              <JobsDisplay jobs={job} type="profile" />
             </TabPanel>
           </Box>
         </div>

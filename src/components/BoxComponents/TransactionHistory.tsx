@@ -34,7 +34,7 @@ const transactionHistory = ({ id }: any) => {
   return (
     <div>
       {" "}
-      <TransactionTable data={transactions} />
+      <TransactionTable data={transactions} type="profile" />
     </div>
   );
 };

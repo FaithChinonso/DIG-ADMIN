@@ -44,6 +44,7 @@ const Merchants = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(uiActions.closeModal());
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,

@@ -1,8 +1,10 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import React from "react";
-import { useAppDispatch } from "src/Hooks/use-redux";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
+  clearError,
+  clearMessage,
   deleteservice,
   editservice,
 } from "src/redux/store/features/service-slice";
@@ -20,7 +22,40 @@ import ServiceDetails from "../ServiceDetails";
 const ServiceTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-
+  const { loading, success, message, error } = useAppSelector(
+    (state: any) => state.service
+  );
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   const toggleDrawer = () => {
     dispatch(
       uiActions.openDrawerAndSetContent({

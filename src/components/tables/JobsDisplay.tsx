@@ -4,9 +4,14 @@ import React, { useEffect, useState } from "react";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { useAppDispatch } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { addJobs } from "src/redux/store/data-slice";
-import { deletejob, editjob } from "src/redux/store/features/job-slice";
+import {
+  clearError,
+  clearMessage,
+  deletejob,
+  editjob,
+} from "src/redux/store/features/job-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
@@ -21,7 +26,40 @@ import MultipleSelectTable from "../multiple-select-table";
 const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
+  const { loading, success, message, error } = useAppSelector(
+    (state: any) => state.job
+  );
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   const formatData = jobs
     ?.slice(0)
     .reverse()

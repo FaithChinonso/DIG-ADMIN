@@ -19,7 +19,7 @@ import DataFilterTable from "../DataTable";
 import CreateProduct from "../Forms/CreateProduct";
 import AddService from "../Forms/AddService";
 
-const UserTable = ({ data, type = "" }: any) => {
+const UserTable = ({ data, type = "", action = "" }: any) => {
   const [userId, setUserId] = useState();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -342,6 +342,43 @@ const UserTable = ({ data, type = "" }: any) => {
       },
     },
   ];
+  const columnUser = [
+    {
+      name: "Full Name",
+      selector: (row: { fullName: any }) => `${row.fullName}`,
+      sortable: true,
+    },
+    {
+      name: "Gender",
+      selector: (row: { gender: any }) => `${row.gender}`,
+    },
+    {
+      name: "Email Address",
+      selector: (row: { email: any }) => `${row.email}`,
+    },
+    {
+      name: "Date Created",
+      selector: (row: { dateAdded: any }) => `${row.dateAdded}`,
+    },
+    {
+      name: "Role",
+      selector: (row: { role: any }) => `${row.role}`,
+    },
+    {
+      name: "Phone Number",
+      selector: (row: { phone: any }) => `${row.phone}`,
+    },
+
+    {
+      name: "Application Name",
+      selector: (row: { applicationName: any }) => `${row.applicationName}`,
+    },
+    {
+      name: "Status",
+      selector: (row: { emailVerifiedStatus: any }) =>
+        `${row.emailVerifiedStatus}`,
+    },
+  ];
   return (
     <div>
       {type !== "dashboard" && (
@@ -353,7 +390,10 @@ const UserTable = ({ data, type = "" }: any) => {
         </button>
       )}
 
-      <DataFilterTable columns={columnUsers} data={formatData} />
+      <DataFilterTable
+        columns={action === "none" ? columnUser : columnUsers}
+        data={formatData}
+      />
     </div>
   );
 };
