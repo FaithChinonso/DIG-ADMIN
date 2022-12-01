@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import ParentContainer from "src/components/ParentContainer";
 import TransactionTable from "src/components/tables/TransactionTable";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
+  fetchPaystackTransactions,
+  fetchWalletTransactions,
   getMyTransactions,
   getPaystackTransactions,
   getWalletTransactions,
@@ -53,6 +55,7 @@ const Transaction = () => {
           backgroundColor: "red",
         })
       );
+      dispatch(getMyTransactions(token));
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
@@ -64,6 +67,8 @@ const Transaction = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchPaystackTransactions(token))
+      dispatch(fetchWalletTransactions(token))
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
@@ -125,4 +130,4 @@ const Transaction = () => {
     </ParentContainer>
   );
 };
-export default Transaction;
+export default memo(Transaction);

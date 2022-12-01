@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
@@ -9,6 +9,7 @@ import {
   clearMessage,
   deleteproductCategory,
   editproductCategory,
+  fetchProductCategory,
   getMyproductCategories,
 } from "src/redux/store/features/product-category-slice";
 import { editserviceCategory } from "src/redux/store/features/service-category-slice";
@@ -74,6 +75,7 @@ const ProductCategory = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchProductCategory(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
@@ -250,4 +252,4 @@ const ProductCategory = () => {
   );
 };
 
-export default ProductCategory;
+export default memo(ProductCategory);

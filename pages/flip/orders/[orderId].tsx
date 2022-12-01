@@ -79,6 +79,7 @@ const OneOrder = (props: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      fetchAnOrder(props.orderId);
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

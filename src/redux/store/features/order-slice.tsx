@@ -45,6 +45,7 @@ export const editorder = createAsyncThunk(
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
+
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
@@ -54,6 +55,19 @@ export const editorder = createAsyncThunk(
 
 export const getMyOrders = createAsyncThunk(
   "order/getMyOrders",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${orderApi}/all-orders`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchOrder = createAsyncThunk(
+  "order/fetchOrder",
   async (accessToken: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${orderApi}/all-orders`, {
@@ -164,6 +178,12 @@ const orderSlice = createSlice({
       }
     );
     builder.addCase(
+      fetchOrder.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.orders = action.payload.data;
+      }
+    );
+    builder.addCase(
       getMyOrders.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -224,6 +244,7 @@ const orderSlice = createSlice({
     builder.addCase(
       editorder.fulfilled,
       (state, action: PayloadAction<any>) => {
+        const accessToken = sessionStorage.getItem("accessToken");
         state.loading = false;
         state.success = true;
         state.message = action.payload.message;

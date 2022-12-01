@@ -11,6 +11,7 @@ import { useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
+  fetchProduct,
   getMyproduct,
 } from "src/redux/store/features/product-slice";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
@@ -60,6 +61,7 @@ const Products = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchProduct(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

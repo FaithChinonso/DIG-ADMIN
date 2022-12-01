@@ -10,6 +10,7 @@ import {
   clearMessage,
   deleteuser,
   edituser,
+  fetchMymerchant,
   getMymerchant,
   getMyuser,
 } from "src/redux/store/features/user-slice";
@@ -51,6 +52,7 @@ const Merchants = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchMymerchant(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

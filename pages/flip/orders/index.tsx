@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
+  fetchOrder,
   getMyOrders,
 } from "src/redux/store/features/order-slice";
 import OrderTable from "src/components/tables/OrderTable";
@@ -45,6 +46,7 @@ const Orders = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchOrder(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

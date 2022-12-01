@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddService from "src/components/Forms/AddService";
 import JobsDisplay from "src/components/tables/JobsDisplay";
@@ -12,6 +12,7 @@ import { useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
+  fetchJob,
   getMyjobs,
 } from "src/redux/store/features/job-slice";
 import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
@@ -40,6 +41,7 @@ const Jobs = () => {
           backgroundColor: "red",
         })
       );
+
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
@@ -53,6 +55,7 @@ const Jobs = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchJob(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

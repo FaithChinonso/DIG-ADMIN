@@ -89,6 +89,19 @@ export const getMyjobs = createAsyncThunk(
     }
   }
 );
+export const fetchJob = createAsyncThunk(
+  "job/fetchJob",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${jobApi}/all-jobs`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const deletejob = createAsyncThunk(
   "job/deletejob",
   async (id: any, thunkAPI: any) => {
@@ -175,6 +188,9 @@ const jobSlice = createSlice({
       } else {
         state.error = "An Error";
       }
+    });
+    builder.addCase(fetchJob.fulfilled, (state, action: PayloadAction<any>) => {
+      state.jobs = action.payload.data;
     });
     builder.addCase(updatejob.pending, state => {
       state.loading = true;

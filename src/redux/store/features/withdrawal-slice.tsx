@@ -70,6 +70,21 @@ export const getMywithdrawal = createAsyncThunk(
     }
   }
 );
+export const fetchMywithdrawal = createAsyncThunk(
+  "withdrawal/fetchMywithdrawal",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const response = await axios.get(`${withdrawalApi}/all-withdrawals`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const editwithdrawal = createAsyncThunk(
   "withdrawal/editwithdrawal",
   async (data: any, thunkAPI: any) => {
@@ -168,7 +183,12 @@ const withdrawalSlice = createSlice({
       getMywithdrawal.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.success = true;
+        state.withdrawals = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchMywithdrawal.fulfilled,
+      (state, action: PayloadAction<any>) => {
         state.withdrawals = action.payload.data;
       }
     );

@@ -87,7 +87,19 @@ export const editproduct = createAsyncThunk(
     }
   }
 );
-
+export const fetchProduct = createAsyncThunk(
+  "order/fetchProduct",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${productApi}/all-products`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const deleteproduct = createAsyncThunk(
   "product/deleteproduct",
   async (id: any, thunkAPI: any) => {
@@ -181,6 +193,12 @@ const productSlice = createSlice({
         } else {
           state.error = "An Error";
         }
+      }
+    );
+    builder.addCase(
+      fetchProduct.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.products = action.payload.data;
       }
     );
     builder.addCase(updateproduct.pending, state => {

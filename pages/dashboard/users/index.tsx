@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
 
@@ -10,6 +10,7 @@ import {
   clearMessage,
   deleteuser,
   edituser,
+  fetchMyuser,
   getMyuser,
 } from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
@@ -51,6 +52,7 @@ const Users = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchMyuser(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
@@ -69,4 +71,4 @@ const Users = () => {
     </ParentContainer>
   );
 };
-export default Users;
+export default memo(Users);

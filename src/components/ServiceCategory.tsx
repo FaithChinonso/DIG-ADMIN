@@ -9,6 +9,7 @@ import {
   clearMessage,
   deleteserviceCategory,
   editserviceCategory,
+  fetchServiceCategories,
   getMyserviceCategories,
 } from "src/redux/store/features/service-category-slice";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -70,6 +71,7 @@ const ServiceCategory = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchServiceCategories(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

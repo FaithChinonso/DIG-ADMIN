@@ -115,6 +115,7 @@ const OneMerchant = (props: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      fetchAJob(props.jobId);
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

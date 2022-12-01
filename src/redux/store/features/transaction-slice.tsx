@@ -82,6 +82,39 @@ export const getPaystackTransactions = createAsyncThunk(
     }
   }
 );
+export const fetchWalletTransactions = createAsyncThunk(
+  "transaction/fetchWalletTransactions",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(
+        `${transactionApi}/transactions-by-payment-method/wallet`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchPaystackTransactions = createAsyncThunk(
+  "transaction/fetchPaystackTransactions",
+  async (method: any, thunkAPI: any) => {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${transactionApi}/transactions-by-payment-method/paystack`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const deleteTransaction = createAsyncThunk(
   "transaction/deleteTransaction",
   async (id: any, thunkAPI: any) => {
@@ -193,7 +226,12 @@ const transactionSlice = createSlice({
       getWalletTransactions.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-
+        state.walletTransactions = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchWalletTransactions.fulfilled,
+      (state, action: PayloadAction<any>) => {
         state.walletTransactions = action.payload.data;
       }
     );
@@ -217,7 +255,12 @@ const transactionSlice = createSlice({
       getPaystackTransactions.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-
+        state.paystackTransactions = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchPaystackTransactions.fulfilled,
+      (state, action: PayloadAction<any>) => {
         state.paystackTransactions = action.payload.data;
       }
     );

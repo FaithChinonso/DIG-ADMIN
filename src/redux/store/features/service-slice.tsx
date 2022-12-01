@@ -69,6 +69,19 @@ export const getMyservice = createAsyncThunk(
     }
   }
 );
+export const fetchService = createAsyncThunk(
+  "service/fetchService",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${serviceApi}/all-services`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const editservice = createAsyncThunk(
   "service/editservice",
   async (data: any, thunkAPI: any) => {
@@ -168,6 +181,12 @@ const serviceSlice = createSlice({
       (state, action: PayloadAction<any>) => {
         state.loading = false;
 
+        state.services = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchService.fulfilled,
+      (state, action: PayloadAction<any>) => {
         state.services = action.payload.data;
       }
     );

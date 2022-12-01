@@ -30,6 +30,8 @@ import { DataFilterTable } from "../DataTable";
 
 const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
   const dispatch = useAppDispatch();
+  const accessToken = sessionStorage.getItem("accessToken");
+
   const router = useRouter();
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.order
@@ -60,6 +62,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

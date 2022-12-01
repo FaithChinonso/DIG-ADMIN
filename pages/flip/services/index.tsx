@@ -13,6 +13,7 @@ import { uiActions } from "../../../src/redux/store/ui-slice";
 import {
   clearError,
   clearMessage,
+  fetchService,
   getMyservice,
 } from "src/redux/store/features/service-slice";
 import ServiceTable from "src/components/tables/ServiceTable";
@@ -57,6 +58,7 @@ const Service = () => {
           backgroundColor: "red",
         })
       );
+
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
@@ -70,6 +72,7 @@ const Service = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchService(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

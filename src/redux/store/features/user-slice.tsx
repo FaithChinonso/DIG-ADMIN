@@ -65,6 +65,19 @@ export const getMyuser = createAsyncThunk(
     }
   }
 );
+export const fetchMyuser = createAsyncThunk(
+  "user/fetchMyuser",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/all-users`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const getMymerchant = createAsyncThunk(
   "user/getMymerchant",
   async (accessToken: any, thunkAPI: any) => {
@@ -78,7 +91,19 @@ export const getMymerchant = createAsyncThunk(
     }
   }
 );
-
+export const fetchMymerchant = createAsyncThunk(
+  "user/fetchMymerchant",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/all-users?role=merchant`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const edituser = createAsyncThunk(
   "user/edituser",
   async (data: any, thunkAPI: any) => {
@@ -179,6 +204,13 @@ const userSlice = createSlice({
         state.users = action.payload.data;
       }
     );
+    builder.addCase(
+      fetchMyuser.fulfilled,
+      (state, action: PayloadAction<any>) => {
+  
+        state.users = action.payload.data;
+      }
+    );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
       if (action.payload.response) {
@@ -197,6 +229,13 @@ const userSlice = createSlice({
       getMymerchant.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.merchants = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchMymerchant.fulfilled,
+      (state, action: PayloadAction<any>) => {
+  
         state.merchants = action.payload.data;
       }
     );

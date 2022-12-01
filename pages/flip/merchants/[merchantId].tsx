@@ -109,6 +109,7 @@ const OneMerchant = (props: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      fetchAMerchant(props.merchantId);
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

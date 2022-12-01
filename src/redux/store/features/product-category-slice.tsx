@@ -73,6 +73,22 @@ export const getMyproductCategories = createAsyncThunk(
     }
   }
 );
+export const fetchProductCategory = createAsyncThunk(
+  "product-category/fetchProductCategory",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(
+        `${productCategoryApi}/all-product-categories`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const editproductCategory = createAsyncThunk(
   "product-category/editproductCategory",
   async (data: any, thunkAPI: any) => {
@@ -169,6 +185,13 @@ const productCategorySlice = createSlice({
     });
     builder.addCase(
       getMyproductCategories.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.productCategories = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchProductCategory.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.productCategories = action.payload.data;

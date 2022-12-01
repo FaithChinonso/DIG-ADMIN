@@ -75,6 +75,22 @@ export const getMyserviceCategories = createAsyncThunk(
     }
   }
 );
+export const fetchServiceCategories = createAsyncThunk(
+  "service-category/fetchServiceCategories",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(
+        `${serviceCategoryApi}/all-service-categories`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const editserviceCategory = createAsyncThunk(
   "service-category/editserviceCategory",
   async (data: any, thunkAPI: any) => {
@@ -174,6 +190,12 @@ const serviceCategorySlice = createSlice({
       getMyserviceCategories.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.serviceCategories = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchServiceCategories.fulfilled,
+      (state, action: PayloadAction<any>) => {
         state.serviceCategories = action.payload.data;
       }
     );
