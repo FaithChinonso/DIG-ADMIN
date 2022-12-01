@@ -124,8 +124,8 @@ const ProductDetails = ({ data }: any) => {
             <div className="text-base text-[#090F47]">{data.name}</div>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product ID</div>
-            <div className="text-base text-[#090F47]">{data.seriel}</div>
+            <div className="text-xs text-[#8487A3]">Serial Number</div>
+            <div className="text-base text-[#090F47]">{data.serial}</div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-[#8487A3]">Product Quantity</div>

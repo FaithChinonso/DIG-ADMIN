@@ -26,7 +26,7 @@ const Audit = () => {
 
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <LogTable data={logs} />
       </div>
     </ParentContainer>

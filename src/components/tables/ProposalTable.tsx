@@ -1,10 +1,7 @@
 import moment from "moment";
 import React from "react";
 import { numberWithCommas } from "src/utils/formatNumber";
-import ActionMenuBase from "../ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
-import MultipleSelectTable from "../multiple-select-table";
 
 const ProposalTable = ({ data }: any) => {
   const formatData = data

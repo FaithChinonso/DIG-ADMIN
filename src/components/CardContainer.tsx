@@ -22,11 +22,8 @@ const CardContainer = ({ orders, transaction, users }: any) => {
     })
     .reduce(sumofArray, 0);
 
-  console.log(totalSales);
   const totalOrders = orders.length;
   const totalUsers = users.length;
-
-  console.log(totalSales);
 
   const cardData = [
     {
@@ -60,10 +57,10 @@ const CardContainer = ({ orders, transaction, users }: any) => {
   ];
 
   return (
-    <div className="p-[10px] md:p-[30px] justify-center md:justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 items-center  py-6">
+    <div className=" justify-center md:justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 items-center py-3">
       {cardData.map(item => (
         <div
-          className="w-[190px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
+          className="w-[120px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
           key={item.id}
           style={{
             boxShadow: "0px 1px 2px 1px #d7d7d7",
@@ -72,17 +69,12 @@ const CardContainer = ({ orders, transaction, users }: any) => {
           <div className="flex flex-col h-full justify-center">
             <h3 className="text-sm">{item.name}</h3>
 
-            <div className="text-2xl font-extrabold">
+            <div className="md:text-2xl text-lg font-extrabold">
               <span>{item.type === "number" ? "₦" : ""}</span>
-              <CountUp
-                start={0}
-                end={item.figures}
-                duration={5}
-                enableScrollSpy
-              />
+              {Math.ceil(item.figures)}
             </div>
           </div>
-          <div>
+          <div className="hidden md:block">
             <Image src={item.img} alt={""} />{" "}
           </div>
         </div>

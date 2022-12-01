@@ -7,12 +7,10 @@ import { RootState } from ".";
 interface uiState {
   modalContent: string | Element | JSX.Element | FunctionComponent;
   modalStyles: {};
+  backgroundColor: string;
   modalOpened: boolean;
   drawerContent: string;
-  drawerStyles: {
-    fontWeight: number;
-    color: string;
-  };
+  drawerStyles: {};
   drawerOpened: boolean;
   loaderOpened: boolean;
   toastOpened: boolean;
@@ -24,14 +22,12 @@ const initialState: uiState = {
   modalStyles: {},
   modalOpened: false,
   drawerContent: "",
-  drawerStyles: {
-    fontWeight: 800,
-    color: "white",
-  },
+  drawerStyles: {},
   drawerOpened: false,
   loaderOpened: false,
   toastOpened: false,
   toastContent: "",
+  backgroundColor: "",
 };
 
 const uiSlice = createSlice({
@@ -69,11 +65,16 @@ const uiSlice = createSlice({
       return {
         ...state,
         toastOpened: true,
+        backgroundColor: action.payload.backgroundColor,
         toastContent: action.payload.toastContent,
       };
     },
     closeToast(state) {
-      return { ...state, toastOpened: false };
+      return {
+        ...state,
+        toastOpened: false,
+        toastContent: "",
+      };
     },
   },
 });

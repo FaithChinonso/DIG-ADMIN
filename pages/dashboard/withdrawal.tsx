@@ -32,7 +32,7 @@ const Withdrawals = () => {
   }, [token]);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <WithdrawalTable data={withdrawals} />
       </div>
     </ParentContainer>

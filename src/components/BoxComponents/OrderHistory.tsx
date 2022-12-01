@@ -24,25 +24,10 @@ import {
 } from "src/redux/store/features/order-slice";
 import OrderTable from "../tables/OrderTable";
 
-const OrderHistory = ({ id }: any) => {
-  const dispatch = useAppDispatch();
-  const request = useHTTPGet();
-  const remove = useHTTPDelete();
-  const send = useHTTPPost();
-  const { ordersByMerchant } = useAppSelector((state: any) => state.order);
-
-  const fetchAllOrder = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    dispatch(getMyOrdersbyMerchant(id));
-  };
-
-  useEffect(() => {
-    fetchAllOrder();
-  }, []);
-
+const OrderHistory = ({ data }: any) => {
   return (
     <div className=" p-[10px] md:p-[30px]">
-      <OrderTable data={ordersByMerchant} type="history" />
+      <OrderTable data={data} type="history" />
     </div>
   );
 };

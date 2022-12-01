@@ -32,8 +32,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
       <Provider store={store}>
         <div>
-          <Modal />
-          <Loader />
           <Toast />
           <DrawerCard />
 

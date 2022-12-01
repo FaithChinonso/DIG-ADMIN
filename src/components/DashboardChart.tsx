@@ -22,7 +22,7 @@ const DashboardChart = ({ transaction }: any) => {
   }, []);
   const filterTransactions = transaction?.filter((tr: any) => {
     const formDate = moment(tr?.transDate).format("MMM");
-    console.log(formDate);
+
     return formDate === month;
   });
   const data = filterTransactions?.map((pc: any) => {
@@ -41,7 +41,7 @@ const DashboardChart = ({ transaction }: any) => {
 
   return (
     <div className="w-full">
-      <div className="flex gap-4 md:gap-0 flex-col justify-between items-start md:items-center md:p-5 w-full md:flex-row ">
+      <div className="flex gap-4 md:gap-0 flex-col justify-between items-start md:items-center md:py-5 w-full md:flex-row ">
         <div className="text-gray-800 text-3xl">Transactions</div>
         <div
           style={{
@@ -73,7 +73,6 @@ const DashboardChart = ({ transaction }: any) => {
               background: "rgba(249, 250, 252)",
               border: "none",
               fontSize: "12px",
-              fontFamily: "Steradian",
               color: "#212B4C",
               height: "30px",
             }}
@@ -83,7 +82,6 @@ const DashboardChart = ({ transaction }: any) => {
                 value={month}
                 style={{
                   fontSize: "13px",
-                  fontFamily: "Steradian",
                   color: "#212B4C",
                   height: "30px",
                 }}
@@ -124,8 +122,8 @@ const DashboardChart = ({ transaction }: any) => {
           <Area
             type="monotone"
             dataKey="wallet"
-            stroke="rgba(82, 68, 192, 1)"
-            fill="rgba(82, 68, 192, 0.2)"
+            stroke="rgba(18, 38, 68, 1) "
+            fill="rgba(18, 38, 68, 0.2) "
             activeDot={{ r: 8 }}
             strokeWidth={1.5}
             dot={false}
@@ -137,7 +135,7 @@ const DashboardChart = ({ transaction }: any) => {
             fill="rgba(255,187,40, 0.2)"
             activeDot={{ r: 8 }}
             strokeWidth={1.5}
-            style={{ fontFamily: "Steradian !important" }}
+            style={{ fontFamily: "ClashDisplay !important" }}
             dot={false}
           />
 

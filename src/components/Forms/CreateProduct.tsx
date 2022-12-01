@@ -13,7 +13,11 @@ import { delivery } from "src/utils/analytics";
 import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
 import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { createproduct } from "src/redux/store/features/product-slice";
+import {
+  clearError,
+  clearMessage,
+  createproduct,
+} from "src/redux/store/features/product-slice";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { productApi } from "../api";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
@@ -29,7 +33,7 @@ const CreateProduct = ({ title, id }: any) => {
   const [data, setData] = useState({
     name: "",
     description: "",
-    discountAvailable: "",
+    discountAvailable: null,
     discountPercentage: null,
     quantity: null,
     brand: "",
@@ -45,7 +49,7 @@ const CreateProduct = ({ title, id }: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const { productCategory } = useSelector(
+  const { productCategories } = useSelector(
     (state: any) => state.productCategory
   );
 
@@ -57,7 +61,7 @@ const CreateProduct = ({ title, id }: any) => {
         ...data,
         name: res.data.data.product.name,
         description: res.data.data.product.description,
-        discountAvailable: res.data.data.product.discount.name,
+        discountAvailable: res.data.data.product.discount.isDiscountAvailable,
         discountPercentage: res.data.data.product.discount.discountPercentage,
         quantity: res.data.data.product.quantity,
         brand: res.data.data.product.brand,
@@ -69,7 +73,7 @@ const CreateProduct = ({ title, id }: any) => {
         category: res.data.data.category.categoryID,
       });
     };
-    console.log(data);
+
     request({ url, accessToken }, dataFunction);
   };
 
@@ -89,28 +93,7 @@ const CreateProduct = ({ title, id }: any) => {
   };
 
   const createProduct = async () => {
-    dispatch(createproduct(payload));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
-        })
-      );
-    }
-    if (loading === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
-    }
+    dispatch(createproduct({ payload, id }));
   };
   const updateProduct = () => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -135,23 +118,46 @@ const CreateProduct = ({ title, id }: any) => {
     }
     dispatch(getMyproductCategories(accessToken));
   }, [title]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <DrawerWrapper title={title}>
       <form
         className="w-full h-full flex flex-col"
         onSubmit={submitFormHandler}
       >
-        <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-          <Image src={userPic} alt={""} />
-          <input
-            type="file"
-            name="resume"
-            id="resume"
-            accept="image/png, image/jpg, image/gif, image/jpeg"
-            className="hidden"
-          />{" "}
-        </label>
-
         <div className="mt-[10px]">
           <label
             htmlFor="productName"
@@ -260,7 +266,7 @@ const CreateProduct = ({ title, id }: any) => {
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="Category"
           >
-            {productCategory?.map((item: any) => (
+            {productCategories?.map((item: any) => (
               <option
                 value={item.categoryID}
                 key={item.categoryID}
@@ -357,7 +363,7 @@ const CreateProduct = ({ title, id }: any) => {
           </label>
 
           <select
-            name="delivery"
+            name="deliveryTag"
             value={data.deliveryTag}
             id="delivery"
             onChange={(e: any) => {

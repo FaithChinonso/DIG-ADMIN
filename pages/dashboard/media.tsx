@@ -8,7 +8,7 @@ const Media = () => {
   const [details, setDetails] = useState<any>(contacts[0]);
   return (
     <ParentContainer>
-      <div className="flex w-full p-[10px] md:p-[30px] h-full gap-6">
+      <div className="flex w-full h-full gap-6">
         <ContactContainer contacts={contacts} setDetails={setDetails} />
         <ChatContainer
           contactImage={details?.contactImage}

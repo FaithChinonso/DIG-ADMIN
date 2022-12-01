@@ -55,7 +55,7 @@ const Carts = () => {
       <DrawerCard title="Add Carts" open={isOpen} toggleDrawer={toggleDrawer}>
         <div>red</div>
       </DrawerCard>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <MultipleSelectTable
           columns={columnDasboard}
           data={tableData}
@@ -66,4 +66,3 @@ const Carts = () => {
   );
 };
 export default Carts;
-

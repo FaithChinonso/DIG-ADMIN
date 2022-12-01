@@ -11,7 +11,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
-import { MyUserValue } from "../../../src/utils/boxValues";
+import { MyJobValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
 
 import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
@@ -29,19 +29,26 @@ import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import ProposalTable from "src/components/tables/ProposalTable";
+import { GetStaticProps } from "next/types";
+import JobList from "src/components/jobList";
+import { clearError, clearMessage } from "src/redux/store/features/job-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 
-const OneMerchant = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const [service, setService] = useState<any>();
+const OneMerchant = (props: any) => {
+  const { jobs, loading, error, message, success } = useAppSelector(
+    state => state.job
+  );
+  const dispatch = useAppDispatch();
+  const [job, setJob] = useState<any>();
+  const [proposal, setProposal] = useState<any>();
 
-  const id = router.query.serviceId;
-  const fetchAService = async () => {
+  const fetchAJob = async (id: any) => {
     console.log(id);
     const accessToken = sessionStorage.getItem("accessToken");
     try {
       const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/service/single-service/${id}`,
+        `https://backendapi.flip.onl/api/admin/job/single-job/${id}`,
         {
           headers: {
             authorization: `Bearer ${accessToken}`,
@@ -50,21 +57,28 @@ const OneMerchant = () => {
         }
       );
       console.log(res?.data.data);
-      setService(res?.data.data);
+      setJob(res?.data.data);
+    } catch (error: any) {}
+  };
+  const fetchProposal = async (id: any) => {
+    console.log(id);
+    const accessToken = sessionStorage.getItem("accessToken");
+    try {
+      const res: any = await axios.get(
+        `https://backendapi.flip.onl/api/admin/proposal/proposals-for-job/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+            authsource: "user",
+          },
+        }
+      );
+      console.log(res?.data.data);
+      setProposal(res?.data.data);
     } catch (error: any) {}
   };
 
-
   const [selected, setSelected] = useState(1);
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
 
   const [value, setValue] = useState(0);
 
@@ -72,70 +86,76 @@ const OneMerchant = () => {
     setValue(newValue);
   };
   useEffect(() => {
-    fetchAService();
-  }, []);
+    fetchAJob(props.jobId);
+    fetchProposal(props.jobId);
+  }, [props.jobId]);
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
-        <ActionList />
-        <div className="bg-darkPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row">
-          <div className="flex gap-[30px] items-start text-white ">
-            {" "}
-            <div>
-              <Image src={profilePic} alt={""} />
+      <div>
+        <JobList job={job} />
+        <div className="flex flex-wrap items-center bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] md:flex-row justify-between relative z-1 text-white">
+          <div className="flex justify-between w-full">
+            <div className="flex flex-col gap-3">
+              <div className="text-xs">Headline</div>
+              <div className="text-base">{job?.headline}</div>
             </div>
-            <div className="flex flex-col gap-[14px]">
-              <div className="text-[16px]">
-                {service?.service?.serviceName}
-                <span>
-                  {" "}
-                  <Image src={verify} alt={""} />
-                </span>
-              </div>
-              <div className="flex justify-between gap-[9px] items-center">
-                <div className="text-[10px]"> {service?.category?.name}</div>
-                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                <div className="text-[10px]">
-                  {service?.service?.phoneNumber}
-                </div>
-              </div>
-              <div className="flex justify-between gap-[9px] items-center">
-                <div className="text-[10px]"> {service?.service?.location}</div>
-                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                <div className="text-[10px]">
-                  {" "}
-                  {service?.service?.datePosted}
-                </div>
-              </div>
-              <div>
-                <Image src={rating} alt={""} />
-              </div>
-              <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
-                <div className="flex flex-col justify-between">
-                  <div className="text-[8px]">Lifetime Earning</div>
-                  <div className="text-xs font-[500]">₦ 500,000</div>
-                </div>
-                <div className="flex flex-col justify-between">
-                  <div className="text-[8px] ">Lifetime Transactions</div>
-                  <div className="text-xs font-[500]">100</div>
-                </div>
-              </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs">Experience Level</div>
+              <div className="text-base">{job?.experienceLevel}</div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs">Job Scope</div>
+              <div className="text-base">{job?.jobScope} </div>
             </div>
           </div>
-          <div className="text-white flex flex-col w-full  md:w-[200px]">
-            <div className="text-[13px] mt-[28px]">About</div>
-            <div className="text-[10px]">{service?.service?.description}</div>
+          <div className="flex justify-between mt-5 w-full">
+            <div className="flex flex-col gap-3">
+              <div className="text-xs "> Duration</div>
+              <div className="text-base">{job?.duration}</div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs ">Date Posted</div>
+              <div className="text-base">{job?.datePosted}</div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs ">Budget</div>
+              <div className="text-base">₦ {job?.budget}</div>
+            </div>
           </div>
-          <div className="flex flex-col items-center justify-around text-white gap-4">
-            <div className="text-white text-[13px]">Total Orders</div>
-            <div className="bg-faintWhite p-[11px] w-[117px] rounded-md ">
-              <div className="text-[8px] ">Successful</div>
-              <div className="text-sm font-semibold">100</div>
-            </div>
-            <div className="bg-faintWhite p-[11px]  w-[117px] rounded-md ">
-              <div className="text-[8px] ">Cancelled</div>
-              <div className="text-sm font-semibold">100</div>
-            </div>
+          <div className="w-full flex flex-col justify-center gap-3">
+            <div className="text-xs ">Description</div>
+            <div className="text-base">{job?.description}</div>
           </div>
         </div>
         <div className="mt-[30px]">
@@ -152,7 +172,7 @@ const OneMerchant = () => {
                 style={{ background: "#edf2f7" }}
                 // classes={{ flexContainer: classes.flexContainer }}
               >
-                {MyUserValue.map(value => (
+                {MyJobValue.map(value => (
                   <Tab
                     label={value.label}
                     {...a11yProps(value.id)}
@@ -160,13 +180,12 @@ const OneMerchant = () => {
                     style={{
                       backgroundColor:
                         selected === value.id ? "white" : "transparent",
-                      fontFamily: "Steradian",
                       fontStyle: "normal",
                       fontWeight: "normal",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       lineHeight: "136.52%",
                       textAlign: "center",
-                      color: "#979797",
+                      color: "rgba(132, 135, 163, 1)",
                       textTransform: "capitalize",
                     }}
                     onClick={() => {
@@ -178,19 +197,26 @@ const OneMerchant = () => {
             </Box>
 
             <TabPanel value={value} index={0}>
-              <SupportingDocuments />
+              {job?.skillsNeeded?.length !== 0 ? (
+                <div className=" mt-5 w-full">
+                  <div className="text-darkPurple text-lg text-center">
+                    Skills Needed
+                  </div>
+                  <div className="flex justify-between mt-5 w-full">
+                    {job?.skillsNeeded?.map((item: any) => (
+                      <div className="mt-5">
+                        <div className="text-xs text-text mb-5">
+                          {item?.title}
+                        </div>
+                        <div className="text-base">{item?.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <BankDetails />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <OrderHistory />
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-              <TransactionHistory />
-            </TabPanel>
-            <TabPanel value={value} index={4}>
-              <OrderHistory />
+              <ProposalTable data={proposal} />
             </TabPanel>
           </Box>
         </div>
@@ -198,5 +224,12 @@ const OneMerchant = () => {
     </ParentContainer>
   );
 };
-
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  const jobId = context.params.jobId;
+  return {
+    props: {
+      jobId,
+    },
+  };
+};
 export default OneMerchant;

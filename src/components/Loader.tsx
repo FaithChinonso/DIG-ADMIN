@@ -17,6 +17,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+    backgroundColor: "rgba(137, 146, 163, 0.5)",
     zIndex: 20000000000,
   } as CSSProperties,
 };
@@ -28,11 +29,10 @@ export default function Loader() {
     <>
       {loaderOpened ? (
         <div style={styles.loaderContainer}>
-          <Bars color="#0157ff" height={33} width={35} />
+          <Bars color="rgba(82, 68, 192, 1)" height={33} width={35} />
           <div
             style={{
-              fontFamily: "SteradianBold",
-              color: "#0157ff",
+              color: "rgba(82, 68, 192, 1)",
               fontSize: "17px",
               paddingTop: "8px",
             }}

@@ -5,6 +5,8 @@ import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { addProductCategory } from "src/redux/store/data-slice";
 import {
+  clearError,
+  clearMessage,
   deleteproductCategory,
   editproductCategory,
   getMyproductCategories,
@@ -23,7 +25,7 @@ import MultipleSelectTable from "./multiple-select-table";
 const ProductCategory = () => {
   const dispatch = useDispatch();
 
-  const { productCategories } = useSelector(
+  const { productCategories, loading, error, success, message } = useSelector(
     (state: any) => state.productCategory
   );
   const { token } = useSelector((state: any) => state.auth);
@@ -45,6 +47,38 @@ const ProductCategory = () => {
   useEffect(() => {
     dispatch(getMyproductCategories(token));
   }, [dispatch]);
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   type Data = {
     categoryID: number;
     serial: number;

@@ -32,7 +32,7 @@ export const createproductCategory = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -43,15 +43,16 @@ export const updateproductCategory = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${productCategoryApi}/update-product-category/${data.productID}`,
-        data,
+        `${productCategoryApi}/update-product-category/${data.id}`,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -68,7 +69,7 @@ export const getMyproductCategories = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -86,7 +87,7 @@ export const editproductCategory = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -114,15 +115,6 @@ interface productCategoryState {
   loading: boolean;
   error: string;
   message: string;
-
-  errorFetchproductCategorys: string;
-  successFetchproductCategorys: boolean;
-  loadingFetchproductCategorys: boolean;
-
-  errorUpdateproductCategorys: string;
-  messageUpdateproductCategorys: string;
-  successUpdateproductCategorys: boolean;
-  loadingUpdateproductCategorys: boolean;
 }
 
 const initialState: productCategoryState = {
@@ -131,15 +123,6 @@ const initialState: productCategoryState = {
   loading: false,
   error: "",
   message: "",
-
-  errorFetchproductCategorys: "",
-  successFetchproductCategorys: false,
-  loadingFetchproductCategorys: false,
-
-  errorUpdateproductCategorys: "",
-  messageUpdateproductCategorys: "",
-  successUpdateproductCategorys: false,
-  loadingUpdateproductCategorys: false,
 };
 
 const productCategorySlice = createSlice({
@@ -176,39 +159,39 @@ const productCategorySlice = createSlice({
       }
     );
     builder.addCase(getMyproductCategories.pending, state => {
-      state.loadingFetchproductCategorys = true;
+      state.loading = true;
     });
     builder.addCase(
       getMyproductCategories.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchproductCategorys = false;
-        state.successFetchproductCategorys = true;
+        state.loading = false;
         state.productCategories = action.payload.data;
       }
     );
     builder.addCase(
       getMyproductCategories.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingFetchproductCategorys = false;
-        state.errorFetchproductCategorys = action.payload.message;
+        state.loading = false;
+        console.log(action.payload);
+        state.error = action.payload.message;
       }
     );
     builder.addCase(updateproductCategory.pending, state => {
-      state.loadingUpdateproductCategorys = true;
+      state.loading = true;
     });
     builder.addCase(
       updateproductCategory.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loadingUpdateproductCategorys = false;
-        state.successUpdateproductCategorys = true;
-        state.messageUpdateproductCategorys = action.payload.message;
+        state.loading = false;
+        state.success = true;
+        state.message = action.payload.message;
       }
     );
     builder.addCase(
       updateproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
-        state.loadingUpdateproductCategorys = false;
-        state.errorUpdateproductCategorys = action.payload.message;
+        state.loading = false;
+        state.error = action.payload.message;
       }
     );
     builder.addCase(

@@ -9,27 +9,32 @@ import Link from "next/link";
 
 import { useRouter } from "next/router";
 import { authActions } from "src/redux/store/auth-slice";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "src/Hooks/use-redux";
 
 const SideNav = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { adminDetails } = useAppSelector(state => state.auth);
   const [array, setArray] = useState<string[]>([]);
   const [path, setPath] = useState<string>("");
   const [value, setValue] = useState("dashboard");
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState("dashboard");
 
   useEffect(() => {
     setArray(router.pathname.split("/"));
     setPath(router.pathname.slice(1));
-    setValue(path);
-  }, [path, router.pathname]);
+  }, [router.pathname]);
 
-  console.log(router.pathname.split("/"));
+  // useEffect(() => {
+  //   setArray(router.pathname.split("/"));
+  //   setPath(router.pathname.slice(1));
+  //   setValue(path);
+  // }, []);
 
-  useEffect(() => {}, [value]);
   return (
-    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-darkPurple z-30">
-      <div className="bg-lightPurple w-[70px] rounded-r-3xl py-10 flex flex-col items-center">
+    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-Purple z-30">
+      <div className="bg-lightPurple w-[60px] rounded-r-3xl py-10 flex flex-col items-center">
         <div>LOGO</div>
         <ul className="mt-[70px] flex flex-col gap-5">
           {innerNav.map((item: any) => (
@@ -47,7 +52,7 @@ const SideNav = () => {
                 }}
               >
                 <li
-                  className="p-2 md:w-full text-white rounded"
+                  className="p-2 md:w-[40px] text-white rounded text-center"
                   style={{
                     border: value === item.value ? "1px solid" : "none",
 
@@ -87,6 +92,12 @@ const SideNav = () => {
             </div>
           ))}
         </ul>
+        <button
+          className="md:hidden text-xs text-center p-2 rounded-l-full rounded-[-12px] absolute bottom-6 text-white border border-faintWhite"
+          onClick={() => dispatch(authActions.logoutHandler())}
+        >
+          Logout
+        </button>
       </div>
       <div className="hidden md:block relative w-full px-6 mt-8">
         <div className="bg-faintWhite flex items-center gap-3 rounded p-3">
@@ -95,9 +106,11 @@ const SideNav = () => {
           </div>
 
           <div>
-            <div className="text-xs text-white">Jude Chikezie</div>
+            <div className="text-xs text-white">{adminDetails?.firstName}</div>
 
-            <div className="text-xs text-white">Administrator</div>
+            <div className="text-xs text-white capitalize">
+              {adminDetails?.role}
+            </div>
           </div>
         </div>
         <ul className=" flex flex-col gap-2 mt-10 w-full">
@@ -126,22 +139,6 @@ const SideNav = () => {
             ))}
         </ul>
 
-        {/* <ul className="p-10 flex flex-col gap-6 mt-[55px] w-full absolute bottom-8 left-0">
-          {bottomNav.map((item: any) => (
-            <li
-              className="text-xs w-full text-center p-2 rounded-l-full rounded-[-12px] "
-              style={{
-                backgroundColor:
-                  selected === item.name ? "white" : "transparent",
-                color: selected === item.name ? "#4B0081" : "white",
-              }}
-              key={item.id}
-              onClick={() => setSelected(item.name)}
-            >
-              {item.name}
-            </li>
-          ))}
-        </ul> */}
         <button
           className="text-xs w-full text-center p-2 rounded-l-full rounded-[-12px] absolute bottom-6 text-white border border-faintWhite"
           onClick={() => dispatch(authActions.logoutHandler())}

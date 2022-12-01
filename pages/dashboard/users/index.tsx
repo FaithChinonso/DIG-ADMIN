@@ -35,6 +35,7 @@ const Users = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -42,13 +43,12 @@ const Users = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
         })
       );
       setTimeout(() => {
@@ -63,7 +63,7 @@ const Users = () => {
 
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div className="">
         <UserTable data={users} />
       </div>
     </ParentContainer>

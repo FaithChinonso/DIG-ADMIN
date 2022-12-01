@@ -3,9 +3,7 @@ import { SignUpType } from "../@types/form";
 import useInput from "../Hooks/use-input";
 import HidePassword from "../assets/image/hide-password.svg";
 import ShowPassword from "../assets/image/show-password.svg";
-import Google from "../assets/image/google (1).png";
-import Apple from "../assets/image/apple (1).png";
-import Facebook from "../assets/image/facebook (1).png";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -73,7 +71,7 @@ const SignInForm = ({ login }: any) => {
 
           dispatch(authActions.loginHandler(res.data));
         } catch (err: any) {
-          console.log(err.response.data.message);
+          console.log(err);
           dispatch(authActions.errorHandler(err));
         }
       };
@@ -142,31 +140,10 @@ const SignInForm = ({ login }: any) => {
 
         <button
           type="submit"
-          className="bg-gradient-to-r from-[#122644] to-[#015FFF] w-full text-white text-center py-2 rounded-[10px] mt-[30px]"
+          className="bg-lightPurple w-full text-white text-center py-2 rounded-[10px] mt-[30px]"
         >
           Sign In
         </button>
-
-        <div>
-          <div className="border-t border-softGray w-full mt-[50px] relative flex items-center justify-center">
-            <div className="bg-white absolute text-xs text-[#1D2939] px-0.5">
-              {" "}
-              Or Sign in with
-            </div>
-          </div>
-
-          <div className="flex justify-center items-center gap-[30px] mt-[30px]">
-            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
-              <Image src={Google} alt={""} />
-            </div>
-            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
-              <Image src={Apple} alt={""} />
-            </div>
-            <div className="h-10 w-10 border border-header flex justify-center items-center rounded-[10px]">
-              <Image src={Facebook} alt={""} />
-            </div>
-          </div>
-        </div>
       </form>
     </Provider>
   );

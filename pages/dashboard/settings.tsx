@@ -58,7 +58,7 @@ const Setting = () => {
   };
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px] ">
+      <div >
         {" "}
         <Box
           sx={{ width: "100%" }}
@@ -84,18 +84,13 @@ const Setting = () => {
                   key={value.id}
                   style={{
                     backgroundColor:
-                      selected === value.id
-                        ? "rgba(107, 93, 211, 1)"
-                        : "transparent",
-
-                    fontFamily: "Steradian",
+                      selected === value.id ? "white" : "transparent",
                     fontStyle: "normal",
                     fontWeight: "normal",
-                    fontSize: "14px",
+                    fontSize: "12px",
                     lineHeight: "136.52%",
-                    outline: "none",
                     textAlign: "center",
-                    color: selected === value.id ? "white" : "#979797",
+                    color: "rgba(132, 135, 163, 1)",
                     textTransform: "capitalize",
                   }}
                   onClick={() => {

@@ -14,6 +14,8 @@ import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import UploadInputButton from "../UploadInputButtons";
 import DrawerWrapper from "../DrawerWrapper";
 import {
+  clearError,
+  clearMessage,
   createserviceCategory,
   updateserviceCategory,
 } from "src/redux/store/features/service-category-slice";
@@ -30,16 +32,9 @@ const AddServiceCategory = ({ type, id }: any) => {
   const [selectedFile, setSelectedFile] = useState<any>("");
 
   const dispatch = useAppDispatch();
-  const {
-    success,
-    loading,
-    error,
-    message,
-    successUpdateserviceCategorys,
-    loadingUpdateserviceCategorys,
-    errorUpdateserviceCategorys,
-    messageUpdateserviceCategorys,
-  } = useAppSelector((state: any) => state.serviceCategory);
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.serviceCategory
+  );
 
   const updateProps = (event: any) => {
     const newValue = event?.target?.value;
@@ -73,34 +68,7 @@ const AddServiceCategory = ({ type, id }: any) => {
   formData.append("name", name);
 
   const createCategory = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-
     dispatch(createserviceCategory(formData));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
-        })
-      );
-    }
-    if (loading === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (success === false) {
-      dispatch(
-        uiActions.openToastAndSetContent({
-          toastContent: error,
-        })
-      );
-    }
   };
   const getMyCategory = async () => {
     const reader = new FileReader();
@@ -108,8 +76,7 @@ const AddServiceCategory = ({ type, id }: any) => {
     const url = `${serviceCategoryApi}/single-service-category/${id}`;
     const dataFunction = (res: any) => {
       setName(res.data.data.name);
-
-      console.log(res);
+      // saveProfilePict(res.data.data.image);
     };
     request({ url, accessToken }, dataFunction);
   };
@@ -120,34 +87,6 @@ const AddServiceCategory = ({ type, id }: any) => {
     };
 
     dispatch(updateserviceCategory(data));
-    if (successUpdateserviceCategorys === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal
-                title="Successful"
-                message={messageUpdateserviceCategorys}
-              />
-            </>
-          ),
-        })
-      );
-    }
-    if (loadingUpdateserviceCategorys === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (successUpdateserviceCategorys === false) {
-      dispatch(
-        uiActions.openToastAndSetContent({
-          toastContent: errorUpdateserviceCategorys,
-        })
-      );
-    }
   };
 
   const submitFormHandler = (e: any) => {
@@ -163,6 +102,7 @@ const AddServiceCategory = ({ type, id }: any) => {
       getMyCategory();
     }
   }, []);
+
   return (
     <DrawerWrapper
       title={

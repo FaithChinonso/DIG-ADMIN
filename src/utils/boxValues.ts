@@ -37,3 +37,7 @@ export const MyOrderValue = [
   { id: 2, label: "Product" },
   { id: 2, label: "Merchant" },
 ];
+export const MyJobValue = [
+  { id: 1, label: "Skills" },
+  { id: 2, label: "Proposals" },
+];

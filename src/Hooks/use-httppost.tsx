@@ -18,21 +18,12 @@ const useHTTPPost = () => {
       })
       .then(res => {
         dispatch(uiActions.closeLoader());
+        dispatch(uiActions.closedrawer());
         dataFunction(res);
-        console.log("here");
         dispatch(
-          uiActions.openModalAndSetContent({
-            modalStyles: {
-              padding: 0,
-            },
-            modalContent: (
-              <>
-                <SuccessfulModal
-                  title="Successfull"
-                  message={res.data.message}
-                />
-              </>
-            ),
+          uiActions.openToastAndSetContent({
+            toastContent: res.data.message,
+            backgroundColor: "green",
           })
         );
       })
@@ -40,7 +31,10 @@ const useHTTPPost = () => {
         dispatch(uiActions.closeLoader());
         console.log(error.message);
         dispatch(
-          uiActions.openToastAndSetContent({ toastContent: error.message })
+          uiActions.openToastAndSetContent({
+            toastContent: error.message,
+            backgroundColor: "red",
+          })
         );
       });
   };

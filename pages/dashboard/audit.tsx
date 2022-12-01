@@ -29,6 +29,7 @@ const Audit = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -43,7 +44,7 @@ const Audit = () => {
 
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <LogTable data={adminLogs} />
       </div>
     </ParentContainer>

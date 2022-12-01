@@ -37,6 +37,7 @@ const Jobs = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -44,13 +45,12 @@ const Jobs = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
         })
       );
       setTimeout(() => {
@@ -63,7 +63,7 @@ const Jobs = () => {
   }, []);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <JobsDisplay jobs={jobs} />
       </div>
     </ParentContainer>

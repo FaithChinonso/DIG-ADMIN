@@ -16,8 +16,10 @@ import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
 import FilterTable from "../filter-table";
 import DataFilterTable from "../DataTable";
+import CreateProduct from "../Forms/CreateProduct";
+import AddService from "../Forms/AddService";
 
-const UserTable = ({ data }: any) => {
+const UserTable = ({ data, type = "" }: any) => {
   const [userId, setUserId] = useState();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -245,6 +247,47 @@ const UserTable = ({ data }: any) => {
                     }
                   />
                 )}
+                {prop.role === "merchant" && (
+                  <ActionMenuItem
+                    name="Create Product"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerStyles: {
+                            padding: 0,
+                          },
+                          drawerContent: (
+                            <>
+                              <CreateProduct
+                                id={prop.id}
+                                title="Create Product"
+                              />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                )}
+                {prop.role === "merchant" && (
+                  <ActionMenuItem
+                    name="Create Service"
+                    onClickFunction={() => {
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerStyles: {
+                            padding: 0,
+                          },
+                          drawerContent: (
+                            <>
+                              <AddService id={prop.id} title="Create Service" />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                )}
 
                 <ActionMenuItem
                   name="Create Job posting"
@@ -257,7 +300,7 @@ const UserTable = ({ data }: any) => {
                         },
                         drawerContent: (
                           <>
-                            <AddJob id={prop.id} />
+                            <AddJob id={prop.id} title="Create Job Posting" />
                           </>
                         ),
                       })
@@ -301,18 +344,15 @@ const UserTable = ({ data }: any) => {
   ];
   return (
     <div>
-      <div>
-        {" "}
+      {type !== "dashboard" && (
         <button
           onClick={toggleDrawer}
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
         >
-          <span style={{ marginRight: "3px", translate: "0 3px" }}>
-            {/* <Image src={Add} alt="" /> */}
-          </span>
           Add User
         </button>
-      </div>
+      )}
+
       <DataFilterTable columns={columnUsers} data={formatData} />
     </div>
   );

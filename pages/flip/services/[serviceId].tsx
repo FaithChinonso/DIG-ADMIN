@@ -106,9 +106,9 @@ const OneMerchant = () => {
   }, []);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <ActionList />
-        <div className="bg-darkPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row">
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row">
           <div className="flex gap-[30px] items-start text-white ">
             {" "}
             <div>
@@ -190,13 +190,12 @@ const OneMerchant = () => {
                     style={{
                       backgroundColor:
                         selected === value.id ? "white" : "transparent",
-                      fontFamily: "Steradian",
                       fontStyle: "normal",
                       fontWeight: "normal",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       lineHeight: "136.52%",
                       textAlign: "center",
-                      color: "#979797",
+                      color: "rgba(132, 135, 163, 1)",
                       textTransform: "capitalize",
                     }}
                     onClick={() => {

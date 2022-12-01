@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "../src/redux/store/index";
 
 const Home = () => {
+  if (typeof window === undefined) return;
   return (
     <Provider store={store}>
       <div>

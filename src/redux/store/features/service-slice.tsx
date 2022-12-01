@@ -23,12 +23,16 @@ export const createservice = createAsyncThunk(
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.post(`${serviceApi}/create-service`, data, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await axios.post(
+        `${serviceApi}/create-service/${data.id}`,
+        data.payload,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -47,7 +51,7 @@ export const updateservice = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -61,7 +65,7 @@ export const getMyservice = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -79,7 +83,7 @@ export const editservice = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -97,7 +101,7 @@ export const deleteservice = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );

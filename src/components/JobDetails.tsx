@@ -15,7 +15,7 @@ import ModalAction from "./ModalContent/ModalAction";
 
 const JobDetails = ({ data }: any) => {
   return (
-    <DrawerWrapper title="Product Detail">
+    <DrawerWrapper title="Job Detail">
       <div className="flex flex-col items-center">
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-3">

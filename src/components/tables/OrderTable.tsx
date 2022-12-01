@@ -35,20 +35,20 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
     .reverse()
     .map((client: any, index: number) => {
       return {
-        id: client.orderID,
-        serial: client.serial,
-        name: client.product.product.name,
-        categoryName: client.product.category.name,
-        paymentStatus: client.paymentStatus,
-        phone: client.phone,
-        deliveryAddress: client.deliveryAddress,
-        quantityPurchased: client.quantityPurchased,
-        expectedDeliveryDate: moment(client.expectedDeliveryDate).format("ll"),
-        price: client.price,
-        status: client.status,
-        buyer: client.buyer,
-        product: client.product,
-        isActive: client.isActive,
+        id: client?.orderID,
+        serial: client?.serial,
+        name: client?.product?.product?.name,
+        categoryName: client?.product?.category?.name,
+        paymentStatus: client?.paymentStatus,
+        phone: client?.phone,
+        deliveryAddress: client?.deliveryAddress,
+        quantityPurchased: client?.quantityPurchased,
+        expectedDeliveryDate: moment(client?.expectedDeliveryDate).format("ll"),
+        price: client?.price,
+        status: client?.status,
+        buyer: client?.buyer,
+        product: client?.product,
+        isActive: client?.isActive,
       };
     });
   const columnOrders = [

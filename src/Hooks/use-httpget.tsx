@@ -25,25 +25,19 @@ const useHTTPGet = () => {
         dataFunction(res);
         if (alert === "send") {
           dispatch(
-            uiActions.openModalAndSetContent({
-              modalStyles: {
-                padding: 0,
-              },
-              modalContent: (
-                <>
-                  <SuccessfulModal
-                    title="Successfull"
-                    message={res.data.message}
-                  />
-                </>
-              ),
+            uiActions.openToastAndSetContent({
+              toastContent: res.data.message,
+              backgroundColor: "green",
             })
           );
         }
       })
       .catch((error: any) => {
         dispatch(
-          uiActions.openToastAndSetContent({ toastContent: error.message })
+          uiActions.openToastAndSetContent({
+            toastContent: error.message,
+            backgroundColor: "red",
+          })
         );
       });
   };

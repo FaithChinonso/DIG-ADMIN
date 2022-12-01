@@ -2,50 +2,68 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/filter-table";
-import AddUser from "../../../src/components/Forms/AddUser";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
 
-import { uiActions } from "../../../src/redux/store/ui-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import AddJob from "src/components/Forms/AddJob";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-} from "../../../src/utils/analytics";
-import axios from "axios";
-
-import moment from "moment";
-
-import CreateProduct from "src/components/Forms/CreateProduct";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import AddService from "src/components/Forms/AddService";
-import { useAppSelector } from "src/Hooks/use-redux";
-import CreateWithrawalRequest from "src/components/Forms/CreateWithdrawalRequest";
-import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
-import { getMymerchant } from "src/redux/store/features/user-slice";
-import MerchantTable from "src/components/tables/MerchantTable";
+  clearError,
+  clearMessage,
+  deleteuser,
+  edituser,
+  getMymerchant,
+  getMyuser,
+} from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
+import { uiActions } from "src/redux/store/ui-slice";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Merchants = () => {
-  const dispatch = useDispatch();
-
-  const { users } = useAppSelector((state: any) => state.user);
+  const dispatch = useAppDispatch();
+  const { merchants, loading, success, message, error } = useAppSelector(
+    (state: any) => state.user
+  );
   const { token } = useAppSelector((state: any) => state.auth);
+  console.log(token);
 
-  // useEffect(() => {
-  //   dispatch(getMyproductCategories(accessToken));
-  //   dispatch(getMymerchant(accessToken));
-  // }, [dispatch]);
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
+
+  useEffect(() => {
+    dispatch(getMymerchant(token));
+  }, [dispatch]);
 
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
-        {/* <UserTable data={users} /> */}
+      <div>
+        <UserTable data={merchants} />
       </div>
     </ParentContainer>
   );

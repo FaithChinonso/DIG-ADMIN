@@ -19,26 +19,21 @@ const useHTTPDelete = () => {
       .then(res => {
         dispatch(uiActions.closeLoader());
         dataFunction(res);
+        dispatch(uiActions.closedrawer());
         dispatch(
-          uiActions.openModalAndSetContent({
-            modalStyles: {
-              padding: 0,
-            },
-            modalContent: (
-              <>
-                <SuccessfulModal
-                  title="Successfull"
-                  message={res.data.message}
-                />
-              </>
-            ),
+          uiActions.openToastAndSetContent({
+            toastContent: res.data.message,
+            backgroundColor: "green",
           })
         );
       })
       .catch((error: any) => {
         dispatch(uiActions.closeLoader());
         dispatch(
-          uiActions.openToastAndSetContent({ toastContent: error.message })
+          uiActions.openToastAndSetContent({
+            toastContent: error.message,
+            backgroundColor: "red",
+          })
         );
       });
   };

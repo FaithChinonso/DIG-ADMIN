@@ -4,7 +4,7 @@ import DrawerWrapper from "./DrawerWrapper";
 
 const TransactionDetails = ({ data }: any) => {
   return (
-    <DrawerWrapper title="Product Detail">
+    <DrawerWrapper title="Transaction Detail">
       <div className="flex flex-col items-center">
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-3">
@@ -25,15 +25,15 @@ const TransactionDetails = ({ data }: any) => {
         <div className="flex justify-between mt-5 w-full">
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text"> Amount</div>
-            <div className="text-base text-text">₦{data?.amount}</div>
+            <div className="text-base text-[#090F47]">₦{data?.amount}</div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text">Transaction Status</div>
-            <div className="text-base text-text">{data?.status}</div>
+            <div className="text-base text-[#090F47]">{data?.status}</div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text">Transaction Date</div>
-            <div className="text-base text-text">₦ {data?.transDate}</div>
+            <div className="text-base text-[#090F47]">₦ {data?.transDate}</div>
           </div>
         </div>
       </div>

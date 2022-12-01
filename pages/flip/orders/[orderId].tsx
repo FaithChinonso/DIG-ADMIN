@@ -15,13 +15,21 @@ import { orderApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import BuyerDetails from "src/components/BuyerDetails";
 import ProductOrderDetails from "src/components/ProductOrderDetails";
+import OrderList from "src/components/OrderList";
 
-const OneOrder = () => {
-  const router = useRouter();
+import { uiActions } from "src/redux/store/ui-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+
+import { GetStaticProps } from "next/types";
+import { clearError, clearMessage } from "src/redux/store/features/order-slice";
+
+const OneOrder = (props: any) => {
+  const { orders, loading, error, message, success } = useAppSelector(
+    (state: any) => state.order
+  );
   const request = useHTTPGet();
   const [order, setOrder] = useState<any>({});
-  const dispatch = useDispatch();
-  const id = router.query.orderId;
+  const dispatch = useAppDispatch();
 
   const fetchAnOrder = async (id: any) => {
     const url = `${orderApi}/single-order/${id}`;
@@ -41,17 +49,52 @@ const OneOrder = () => {
     setValue(newValue);
   };
   useEffect(() => {
-    fetchAnOrder(id);
-  }, [id]);
+    fetchAnOrder(props.orderId);
+  }, [props.orderId]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
-        <ActionList />
-        <div className="bg-darkPurple flex-col rounded-[20px] px-[8px] py-[23px] md:px-[38px] flex gap-5">
+      <div>
+        <OrderList order={order} />
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[23px] md:px-[38px] flex gap-5">
           {" "}
-          <div className="text-offWhite text-lg">Overview</div>
-          <div className="flex flex-col md:flex-row  justify-between  items-center">
-            <div className="flex flex-col gap-[14px]">
+          <div className="text-offWhite md:text-left md:text-lg text-center text-2xl">
+            Overview
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+            <div className="flex md:flex-col gap-[14px] w-full md:w-auto items-center justify-center md:items-start md:justify-start">
               <div className="text-lg text-white font-semibold">
                 OrderId:
                 <span className="text-offWhite text-sm ml-2">
@@ -59,18 +102,22 @@ const OneOrder = () => {
                   {order?.orderID}
                 </span>
               </div>
-
-              <div className="text-offWhite text-sm">
-                <span style={{ marginRight: "3px" }}>
+              <div className="flex">
+                <div className="text-offWhite text-sm ">
                   <Image src={location} alt={""} />
-                </span>
-                {order?.deliveryAddress}
+                </div>
+                <div className="text-offWhite text-sm">
+                  {order?.deliveryAddress}
+                </div>
               </div>
             </div>
-            <div className="flex gap-6">
-              <div>
-                <Image src={quantity} alt={""} />
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={quantity} alt={""} />
+                </div>
               </div>
+
               <div>
                 <div className="text-offWhite text-sm">Quantity Purchased</div>
                 <div className="text-base text-white font-semibold mt-[10px]">
@@ -78,9 +125,11 @@ const OneOrder = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-6">
-              <div>
-                <Image src={cost} alt={""} />
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={cost} alt={""} />
+                </div>
               </div>
               <div>
                 <div className="text-offWhite text-sm">Order Cost</div>
@@ -90,9 +139,11 @@ const OneOrder = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-6">
-              <div>
-                <Image src={date} alt={""} />
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={date} alt={""} />
+                </div>
               </div>
               <div>
                 <div className="text-offWhite text-sm">Date and Time</div>
@@ -124,13 +175,12 @@ const OneOrder = () => {
                   style={{
                     backgroundColor:
                       selected === value.id ? "white" : "transparent",
-                    fontFamily: "Steradian",
                     fontStyle: "normal",
                     fontWeight: "normal",
-                    fontSize: "14px",
+                    fontSize: "12px",
                     lineHeight: "136.52%",
                     textAlign: "center",
-                    color: "#979797",
+                    color: "rgba(132, 135, 163, 1)",
                     textTransform: "capitalize",
                   }}
                   onClick={() => {
@@ -158,5 +208,12 @@ const OneOrder = () => {
     </ParentContainer>
   );
 };
-
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  const orderId = context.params.orderId;
+  return {
+    props: {
+      orderId,
+    },
+  };
+};
 export default OneOrder;

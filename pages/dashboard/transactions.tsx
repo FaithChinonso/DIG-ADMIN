@@ -50,6 +50,7 @@ const Transaction = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -58,12 +59,9 @@ const Transaction = () => {
     }
     if (success) {
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
         })
       );
       setTimeout(() => {
@@ -79,7 +77,7 @@ const Transaction = () => {
 
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <Box
           sx={{ width: "100%" }}
           style={{ background: "white", height: "100vh" }}
@@ -100,13 +98,12 @@ const Transaction = () => {
                   style={{
                     backgroundColor:
                       selected === value.id ? "white" : "transparent",
-                    fontFamily: "Steradian",
                     fontStyle: "normal",
                     fontWeight: "normal",
-                    fontSize: "14px",
+                    fontSize: "12px",
                     lineHeight: "136.52%",
                     textAlign: "center",
-                    color: "#979797",
+                    color: "rgba(132, 135, 163, 1)",
                     textTransform: "capitalize",
                   }}
                   onClick={() => {

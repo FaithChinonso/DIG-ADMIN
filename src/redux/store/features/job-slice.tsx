@@ -30,6 +30,7 @@ export const createjob = createAsyncThunk(
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
+      console.log(response);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -84,7 +85,7 @@ export const getMyjobs = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );

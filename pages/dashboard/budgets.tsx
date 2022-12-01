@@ -63,7 +63,7 @@ const Budgets = () => {
   ];
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         {" "}
         <FilterTable columns={columnDasboard} data={tableData} />
       </div>

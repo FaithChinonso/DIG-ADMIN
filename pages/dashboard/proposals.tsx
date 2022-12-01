@@ -41,19 +41,21 @@ const Proposals = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
     }
-  }, [loading, error, dispatch]);
+    
+  }, [loading, error,  dispatch]);
   useEffect(() => {
     dispatch(getMyproposal(token));
   }, []);
   return (
     <ParentContainer>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <ProposalTable data={proposals} />
       </div>
     </ParentContainer>

@@ -13,6 +13,8 @@ import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import DrawerWrapper from "../DrawerWrapper";
 import {
+  clearError,
+  clearMessage,
   createservice,
   updateservice,
 } from "src/redux/store/features/service-slice";
@@ -23,7 +25,7 @@ import {
   updateserviceCategory,
 } from "src/redux/store/features/service-category-slice";
 
-const AddService = ({ id, fetchAllMerchants, title }: any) => {
+const AddService = ({ id, title }: any) => {
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
   const send = useHTTPPost();
@@ -105,60 +107,11 @@ const AddService = ({ id, fetchAllMerchants, title }: any) => {
     description: data.description,
   };
 
-  const sendData = {
-    serviceID: id,
-    payload,
-  };
   const createService = () => {
-    try {
-      dispatch(createservice(payload));
-      if (success === true) {
-        dispatch(uiActions.closedrawer());
-        dispatch(
-          uiActions.openModalAndSetContent({
-            modalStyles: {
-              padding: 0,
-            },
-            modalContent: (
-              <>
-                <SuccessfulModal title="Successful" message={message} />
-              </>
-            ),
-          })
-        );
-      }
-      if (loading === true) {
-        dispatch(uiActions.openLoader());
-      }
-      if (success === false) {
-        dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
-      }
-    } catch {}
+    dispatch(createservice({ payload, id }));
   };
   const updateService = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    // dispatch(updateservice(sendData));
-    // if (scsuccess === true) {
-    //   dispatch(uiActions.closedrawer());
-    //   dispatch(
-    //     uiActions.openModalAndSetContent({
-    //       modalStyles: {
-    //         padding: 0,
-    //       },
-    //       modalContent: (
-    //         <>
-    //           <SuccessfulModal title="Successful" message={scmessage} />
-    //         </>
-    //       ),
-    //     })
-    //   );
-    // }
-    // if (scloading === true) {
-    //   dispatch(uiActions.openLoader());
-    // }
-    // if (scsuccess === false) {
-    //   dispatch(uiActions.openToastAndSetContent({ toastContent: scerror }));
-    // }
     const url = `${serviceApi}/update-service/${id}`;
     const dataFunction = (res: any) => {};
     send({ url, values: payload, accessToken }, dataFunction);
@@ -179,24 +132,45 @@ const AddService = ({ id, fetchAllMerchants, title }: any) => {
     }
     dispatch(getMyserviceCategories(accessToken));
   }, [title]);
-
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
-    <DrawerWrapper title="Create Service">
+    <DrawerWrapper title={title}>
       <form
         className="w-full h-full flex flex-col"
         onSubmit={submitFormHandler}
       >
-        {/* <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-          <Image src={userPic} alt={""} />
-          <input
-            type="file"
-            name="resume"
-            id="resume"
-            accept="image/png, image/jpg, image/gif, image/jpeg"
-            className="hidden"
-          />{" "}
-        </label> */}
-
         <div className="mt-[10px]">
           <label
             htmlFor="serviceName"

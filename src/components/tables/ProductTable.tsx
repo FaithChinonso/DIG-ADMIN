@@ -22,21 +22,6 @@ import ProductDetails from "../ProductDetails";
 const ProductTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
 
-  const toggleDrawer = () => {
-    dispatch(
-      uiActions.openDrawerAndSetContent({
-        drawerStyles: {
-          padding: 0,
-        },
-        drawerContent: (
-          <>
-            <CreateProduct title="Create Product" />
-          </>
-        ),
-      })
-    );
-  };
-
   type Data = {
     product: {
       productID: number;
@@ -384,18 +369,6 @@ const ProductTable = ({ data }: any) => {
 
   return (
     <div>
-      <div>
-        {" "}
-        <button
-          onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
-        >
-          <span style={{ marginRight: "3px", translate: "0 3px" }}>
-            {/* <Image src={Add} alt="" /> */}
-          </span>
-          Add Product
-        </button>
-      </div>
       <DataFilterTable columns={columnProduct} data={formatData} />
     </div>
   );

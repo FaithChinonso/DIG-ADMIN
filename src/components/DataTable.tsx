@@ -11,13 +11,17 @@ createTheme("solarized", {
 });
 export const DataFilterTable = (props: any) => {
   return (
-    <div className="min-h-[600px] mt-3">
+    <div className="min-h-[600px]">
       <DataTable
         columns={props.columns}
         data={props.data}
         sortIcon={<SortIcon />}
         pagination
         striped
+        responsive
+        noDataComponent={
+          <div className="text-text text-xs font-bold">No Data</div>
+        }
         theme="solarized"
       />
     </div>

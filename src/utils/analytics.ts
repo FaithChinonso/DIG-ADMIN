@@ -316,12 +316,7 @@ export const innerNav = [
         value: "flip",
         route: "/flip/jobs",
       },
-      {
-        id: 5,
-        name: "Carts",
-        value: "flip",
-        route: "/flip/carts",
-      },
+
       {
         id: 6,
         name: "Merchants",
@@ -466,12 +461,7 @@ export const outerNav = [
     value: "flip",
     route: "/flip/jobs",
   },
-  {
-    id: 13,
-    name: "Carts",
-    value: "flip",
-    route: "/flip/carts",
-  },
+
   {
     id: 15,
     name: "Merchants",

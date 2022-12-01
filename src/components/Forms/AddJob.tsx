@@ -13,7 +13,11 @@ import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { delivery, negotiable, productLevel } from "../../utils/analytics";
 import DrawerWrapper from "../DrawerWrapper";
-import { createjob } from "src/redux/store/features/job-slice";
+import {
+  clearError,
+  clearMessage,
+  createjob,
+} from "src/redux/store/features/job-slice";
 import { jobApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
 
@@ -23,8 +27,6 @@ const AddJob = ({ id, title }: any) => {
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.job
   );
-  const [phoneNumber, setPhoneNumber] = useState(0);
-  const [amount, setamount] = useState(null);
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
   const send = useHTTPPost();
 
@@ -60,9 +62,6 @@ const AddJob = ({ id, title }: any) => {
     let newItems = [...items];
     newItems.splice(i, 1);
     setItems(newItems);
-  };
-  const onChangeNumber = (event: any) => {
-    setPhoneNumber(event);
   };
 
   const payload = {
@@ -109,27 +108,6 @@ const AddJob = ({ id, title }: any) => {
       userID: id,
     };
     dispatch(createjob(data));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={message} />
-            </>
-          ),
-        })
-      );
-    }
-    if (loading === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
-    }
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
@@ -145,6 +123,38 @@ const AddJob = ({ id, title }: any) => {
       getJobDetail();
     }
   }, []);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
   return (
     <DrawerWrapper title={title}>

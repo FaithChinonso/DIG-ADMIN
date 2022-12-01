@@ -102,7 +102,7 @@ const Payments = () => {
       >
         <div>red</div>
       </DrawerCard>
-      <div className=" p-[10px] md:p-[30px]">
+      <div>
         <MultipleSelectTable
           columns={columnDasboard}
           data={request}

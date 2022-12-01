@@ -54,6 +54,7 @@ const ServiceCategory = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -61,13 +62,12 @@ const ServiceCategory = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(uiActions.closeModal());
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
         })
       );
       setTimeout(() => {

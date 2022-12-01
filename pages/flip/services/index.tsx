@@ -54,6 +54,7 @@ const Service = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
+          backgroundColor: "red",
         })
       );
       setTimeout(() => {
@@ -61,13 +62,12 @@ const Service = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
       dispatch(
-        uiActions.openModalAndSetContent({
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
         })
       );
       setTimeout(() => {
@@ -101,13 +101,12 @@ const Service = () => {
                 style={{
                   backgroundColor:
                     selected === value.id ? "white" : "transparent",
-                  fontFamily: "Steradian",
                   fontStyle: "normal",
                   fontWeight: "normal",
-                  fontSize: "14px",
+                  fontSize: "12px",
                   lineHeight: "136.52%",
                   textAlign: "center",
-                  color: "#979797",
+                  color: "rgba(132, 135, 163, 1)",
                   textTransform: "capitalize",
                 }}
                 onClick={() => {
@@ -119,7 +118,7 @@ const Service = () => {
         </Box>
 
         <TabPanel value={value} index={0}>
-          <div className=" p-[10px] md:p-[30px]">
+          <div>
             <ServiceTable data={services} />
           </div>
         </TabPanel>

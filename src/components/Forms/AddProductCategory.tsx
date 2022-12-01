@@ -4,6 +4,8 @@ import axios from "axios";
 import UploadInputButton from "../UploadInputButtons";
 import DrawerWrapper from "../DrawerWrapper";
 import {
+  clearError,
+  clearMessage,
   createproductCategory,
   updateproductCategory,
 } from "src/redux/store/features/product-category-slice";
@@ -23,16 +25,9 @@ const AddProductCategory = ({ type, id }: any) => {
   const [profilePict, saveProfilePict] = React.useState<any>("");
   const [selectedFile, setSelectedFile] = useState<any>("");
   const dispatch = useAppDispatch();
-  const {
-    success,
-    loading,
-    error,
-    message,
-    successUpdateproductCategorys,
-    errorUpdateproductCategorys,
-    loadingUpdateproductCategorys,
-    messageUpdateproductCategorys,
-  } = useAppSelector((state: any) => state.productCategory);
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.productCategory
+  );
 
   const updateProps = (event: any) => {
     const newValue = event?.target?.value;
@@ -70,7 +65,6 @@ const AddProductCategory = ({ type, id }: any) => {
     const dataFunction = (res: any) => {
       setName(res.data.data.name);
       saveProfilePict(res.data.data.image);
-      console.log(res);
     };
     request({ url, accessToken }, dataFunction);
   };
@@ -81,60 +75,11 @@ const AddProductCategory = ({ type, id }: any) => {
     };
 
     dispatch(updateproductCategory(data));
-    if (successUpdateproductCategorys === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal
-                title="Successful"
-                message={messageUpdateproductCategorys}
-              />
-            </>
-          ),
-        })
-      );
-    }
-    if (loadingUpdateproductCategorys === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (successUpdateproductCategorys === false) {
-      dispatch(
-        uiActions.openToastAndSetContent({
-          toastContent: errorUpdateproductCategorys,
-        })
-      );
-    }
   };
   const createCategory = async () => {
     const accessToken = sessionStorage.getItem("accessToken");
 
     dispatch(createproductCategory(formData));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successfull" message={message} />
-            </>
-          ),
-        })
-      );
-    }
-    if (loading === true) {
-      dispatch(uiActions.openLoader());
-    }
-    if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
-    }
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
@@ -149,6 +94,37 @@ const AddProductCategory = ({ type, id }: any) => {
       getMyCategory();
     }
   }, []);
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "green",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
   return (
     <DrawerWrapper

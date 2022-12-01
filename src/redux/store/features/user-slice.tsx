@@ -61,20 +61,20 @@ export const getMyuser = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
 export const getMymerchant = createAsyncThunk(
-  "user/getMyuser",
+  "user/getMymerchant",
   async (accessToken: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${userApi}/all-users?role='merchant`, {
+      const response = await axios.get(`${userApi}/all-users?role=merchant`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -177,6 +177,24 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload.message;
     });
+
+    builder.addCase(getMymerchant.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getMymerchant.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.merchants = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMymerchant.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      }
+    );
 
     builder.addCase(updateuser.pending, state => {
       state.loading = true;

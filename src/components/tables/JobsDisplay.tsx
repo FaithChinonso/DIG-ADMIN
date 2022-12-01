@@ -18,7 +18,7 @@ import JobDetails from "../JobDetails";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
 
-const JobsDisplay = ({ jobs }: any) => {
+const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -93,20 +93,15 @@ const JobsDisplay = ({ jobs }: any) => {
           <ActionMenuBase
             items={
               <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    dispatch(
-                      uiActions.openDrawerAndSetContent({
-                        drawerContent: (
-                          <>
-                            <JobDetails data={prop} />
-                          </>
-                        ),
-                      })
-                    );
-                  }}
-                />
+                {type !== "profile" && prop?.isActive === true && (
+                  <ActionMenuItem
+                    name="View More"
+                    onClickFunction={() => {
+                      router.push(`${location.pathname}/${prop?.id}`);
+                    }}
+                  />
+                )}
+
                 <ActionMenuItem
                   name="Update Job"
                   onClickFunction={() => {
