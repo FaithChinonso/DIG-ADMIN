@@ -5,6 +5,8 @@ import Cancel from "../assets/cancel.png";
 import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
 import { Bars } from "react-loader-spinner";
 import { useAppSelector } from "src/Hooks/use-redux";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const styles = {
   loaderContainer: {
@@ -27,20 +29,11 @@ export default function Loader() {
 
   return (
     <>
-      {loaderOpened ? (
+      {loaderOpened && (
         <div style={styles.loaderContainer}>
-          <Bars color="rgba(82, 68, 192, 1)" height={33} width={35} />
-          <div
-            style={{
-              color: "rgba(82, 68, 192, 1)",
-              fontSize: "17px",
-              paddingTop: "8px",
-            }}
-          >
-            Loading...
-          </div>
+          <Bars color="rgba(18, 38, 68, 1) " />
         </div>
-      ) : null}
+      )}
     </>
   );
 }

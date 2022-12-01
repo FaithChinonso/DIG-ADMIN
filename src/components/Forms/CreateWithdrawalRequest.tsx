@@ -15,7 +15,11 @@ import { delivery } from "src/utils/analytics";
 import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
 import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { createwithdrawal } from "src/redux/store/features/withdrawal-slice";
+import {
+  clearError,
+  clearMessage,
+  createwithdrawal,
+} from "src/redux/store/features/withdrawal-slice";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
 
 const CreateWithrawalRequest = ({ merchantId, fetchAllProducts }: any) => {
@@ -34,28 +38,40 @@ const CreateWithrawalRequest = ({ merchantId, fetchAllProducts }: any) => {
     };
     console.log(payload);
     dispatch(createwithdrawal(payload));
-    if (success === true) {
-      dispatch(uiActions.closedrawer());
-      dispatch(
-        uiActions.openModalAndSetContent({
-          modalStyles: {
-            padding: 0,
-          },
-          modalContent: (
-            <>
-              <SuccessfulModal title="Successful" message={message} />
-            </>
-          ),
-        })
-      );
-    }
+  };
+  useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
     }
-    if (success === false) {
-      dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
     }
-  };
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <DrawerWrapper title="Create Withdrawal Request">
       <form

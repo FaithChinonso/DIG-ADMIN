@@ -13,24 +13,21 @@ import MultipleSelectTable from "../multiple-select-table";
 
 const WithdrawalTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: any, index: number) => {
-      return {
-        id: client.userID,
-        serial: index + 1,
-        gender: client.gender,
-        fullName: client.fullName,
-        email: client.email,
-        phone: client.phone,
-        applicationName: client.applicationName,
-        emailVerifiedStatus: client.emailVerifiedStatus,
-        role: client.role,
-        isActive: client.isActive,
-        dateAdded: moment(client.dateAdded).format("ll"),
-      };
-    });
+  const formatData = data?.slice(0).map((client: any, index: number) => {
+    return {
+      id: client.userID,
+      serial: index + 1,
+      gender: client.gender,
+      fullName: client.fullName,
+      email: client.email,
+      phone: client.phone,
+      applicationName: client.applicationName,
+      emailVerifiedStatus: client.emailVerifiedStatus,
+      role: client.role,
+      isActive: client.isActive,
+      dateAdded: moment(client.dateAdded).format("ll"),
+    };
+  });
   const columnDasboard = [
     {
       name: "#",

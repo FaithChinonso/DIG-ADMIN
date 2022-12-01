@@ -52,7 +52,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "green",
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
       setTimeout(() => {
@@ -60,24 +60,21 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       }, 10000);
     }
   }, [loading, error, message, success, dispatch]);
-  const formatData = jobs
-    ?.slice(0)
-    .reverse()
-    .map((client: any) => {
-      return {
-        id: client.jobID,
-        headline: client.headline,
-        jobDuration: client.jobDuration,
-        experienceLevel: client.experienceLevel,
-        description: client.description,
-        budget: client.budget,
-        jobScope: client.jobScope,
-        isActive: client.isActive,
-        isBudgetNegotiable: client.isBudgetNegotiable,
-        datePosted: moment(client.datePosted).format("ll"),
-        skillsNeeded: client.skillsNeeded,
-      };
-    });
+  const formatData = jobs?.slice(0).map((client: any) => {
+    return {
+      id: client.jobID,
+      headline: client.headline,
+      jobDuration: client.jobDuration,
+      experienceLevel: client.experienceLevel,
+      description: client.description,
+      budget: client.budget,
+      jobScope: client.jobScope,
+      isActive: client.isActive,
+      isBudgetNegotiable: client.isBudgetNegotiable,
+      datePosted: moment(client.datePosted).format("ll"),
+      skillsNeeded: client.skillsNeeded,
+    };
+  });
   const columnDasboard = [
     {
       name: "#",

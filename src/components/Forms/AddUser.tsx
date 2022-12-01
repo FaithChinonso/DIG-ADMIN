@@ -5,12 +5,16 @@ import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
 import { useDispatch } from "react-redux";
 import SuccessfulModal from "../ModalContent/SuccessfulModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import useHTTPPost from "src/Hooks/use-httppost";
 import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { createuser } from "src/redux/store/features/user-slice";
+import {
+  clearError,
+  clearMessage,
+  createuser,
+} from "src/redux/store/features/user-slice";
 import { is8Chars, isEmail, isNotEmpty } from "src/utils/helperFunctions";
 import { category, gender, merchantType, role } from "src/utils/analytics";
 
@@ -149,30 +153,41 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
     ) {
       setFormIsValid(true);
       dispatch(createuser(payload));
-      if (success === true) {
-        dispatch(uiActions.closedrawer());
-        dispatch(
-          uiActions.openModalAndSetContent({
-            modalStyles: {
-              padding: 0,
-            },
-            modalContent: (
-              <>
-                <SuccessfulModal title="Successful" message={message} />
-              </>
-            ),
-          })
-        );
-      }
-      if (loading === true) {
-        dispatch(uiActions.openLoader());
-      }
-      if (success === false) {
-        dispatch(uiActions.openToastAndSetContent({ toastContent: error }));
-      }
     }
   };
-
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
     <DrawerWrapper title="Create User">
       <form

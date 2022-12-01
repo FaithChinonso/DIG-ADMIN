@@ -5,23 +5,20 @@ import { numberWithCommas } from "src/utils/formatNumber";
 import DataFilterTable from "../DataTable";
 
 const ProposalTable = ({ data }: any) => {
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: any, index: number) => {
-      return {
-        id: client.proposalID,
-        serial: index + 1,
-        paymentOption: client.paymentOption,
-        expectedDuration: client.expectedDuration,
-        total_price: client.total_price,
-        numOfMilestones: client.numOfMilestones,
-        amountToReceive: client.amountToReceive,
-        paymentStatus: client.paymentStatus,
-        status: client.status,
-        submissionDate: moment(client.submissionDate).format("ll"),
-      };
-    });
+  const formatData = data?.slice(0).map((client: any, index: number) => {
+    return {
+      id: client.proposalID,
+      serial: index + 1,
+      paymentOption: client.paymentOption,
+      expectedDuration: client.expectedDuration,
+      total_price: client.total_price,
+      numOfMilestones: client.numOfMilestones,
+      amountToReceive: client.amountToReceive,
+      paymentStatus: client.paymentStatus,
+      status: client.status,
+      submissionDate: moment(client.submissionDate).format("ll"),
+    };
+  });
   const columnDasboard = [
     {
       name: "ID",

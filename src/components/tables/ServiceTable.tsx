@@ -48,7 +48,7 @@ const ServiceTable = ({ data }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "green",
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
       setTimeout(() => {
@@ -87,27 +87,24 @@ const ServiceTable = ({ data }: any) => {
       name: string;
     };
   };
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: any) => {
-      return {
-        id: client.service.serviceID,
-        serial: client.service.serial,
-        location: client.service.location,
-        serviceName: client.service.serviceName,
-        phoneNumber: client.service.phoneNumber,
-        pricing: client.service.pricing,
-        isActive: client.service.isActive,
-        description: client.service.description,
-        images: client.service.images,
-        yearsOfExperience: client.service.yearsOfExperience,
-        categoryName: client.category.name,
-        merchant: client.merchant,
-        otherDetails: client.service.other_details,
-        datePosted: moment(client.service.datePosted).format("ll"),
-      };
-    });
+  const formatData = data?.slice(0).map((client: any) => {
+    return {
+      id: client.service.serviceID,
+      serial: client.service.serial,
+      location: client.service.location,
+      serviceName: client.service.serviceName,
+      phoneNumber: client.service.phoneNumber,
+      pricing: client.service.pricing,
+      isActive: client.service.isActive,
+      description: client.service.description,
+      images: client.service.images,
+      yearsOfExperience: client.service.yearsOfExperience,
+      categoryName: client.category.name,
+      merchant: client.merchant,
+      otherDetails: client.service.other_details,
+      datePosted: moment(client.service.datePosted).format("ll"),
+    };
+  });
   const columnDasboard = [
     {
       name: "Serial",

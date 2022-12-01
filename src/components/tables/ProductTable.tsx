@@ -49,7 +49,7 @@ const ProductTable = ({ data }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "green",
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
       setTimeout(() => {
@@ -89,31 +89,28 @@ const ProductTable = ({ data }: any) => {
     };
     productCreationDate: string;
   };
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: Data, index: number) => {
-      return {
-        id: client.product.productID,
-        serial: client.product.serial,
-        brand: client.product.brand,
-        name: client.product.name,
-        weight: client.product.weight,
-        quantity: client.product.quantity,
-        productWarranty: client.product.productWarranty,
-        price: client.product.price,
-        categoryName: client?.category?.name,
-        productCreationDate: moment(client.productCreationDate).format("ll"),
-        isActive: client.product.isActive,
-        numberOfOrders: client.product.numberOfOrders,
-        freeDelivery: client.product.delivery.freeDelivery,
-        shippingFee: client.product.delivery.shippingFee,
-        description: client.product.description,
-        specifications: client.product.specifications,
-        features: client.product.features,
-        images: client.product.images,
-      };
-    });
+  const formatData = data?.slice(0).map((client: Data, index: number) => {
+    return {
+      id: client.product.productID,
+      serial: client.product.serial,
+      brand: client.product.brand,
+      name: client.product.name,
+      weight: client.product.weight,
+      quantity: client.product.quantity,
+      productWarranty: client.product.productWarranty,
+      price: client.product.price,
+      categoryName: client?.category?.name,
+      productCreationDate: moment(client.productCreationDate).format("ll"),
+      isActive: client.product.isActive,
+      numberOfOrders: client.product.numberOfOrders,
+      freeDelivery: client.product.delivery.freeDelivery,
+      shippingFee: client.product.delivery.shippingFee,
+      description: client.product.description,
+      specifications: client.product.specifications,
+      features: client.product.features,
+      images: client.product.images,
+    };
+  });
   console.log(formatData);
   const columnProduct = [
     {

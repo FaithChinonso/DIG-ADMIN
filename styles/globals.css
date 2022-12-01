@@ -45,3 +45,7 @@ a {
   height: 52px;
   text-align: center;
 }
+.spinner {
+  z-index: 200000000000;
+  color: red;
+}

@@ -54,7 +54,7 @@ const TransactionTable = ({ data, type = "" }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "green",
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
       setTimeout(() => {
@@ -72,23 +72,20 @@ const TransactionTable = ({ data, type = "" }: any) => {
     isBudgetNegotiable: string;
     datePosted: string;
   };
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: any) => {
-      return {
-        id: client.transID,
-        serial: client.serial,
-        purpose: client.purpose,
-        fullname: client.fullname,
-        paymentMethod: client.paymentMethod,
-        paymentReference: client.paymentReference,
-        status: client.status,
-        applicationName: client.applicationName,
-        amount: client.amount,
-        transDate: moment(client.transDate).format("ll"),
-      };
-    });
+  const formatData = data?.slice(0).map((client: any) => {
+    return {
+      id: client.transID,
+      serial: client.serial,
+      purpose: client.purpose,
+      fullname: client.fullname,
+      paymentMethod: client.paymentMethod,
+      paymentReference: client.paymentReference,
+      status: client.status,
+      applicationName: client.applicationName,
+      amount: client.amount,
+      transDate: moment(client.transDate).format("ll"),
+    };
+  });
   const columnDasboard = [
     {
       name: "Transaction ID",

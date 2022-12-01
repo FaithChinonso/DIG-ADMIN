@@ -60,24 +60,21 @@ const UserTable = ({ data, type = "", action = "" }: any) => {
     };
     isActive: boolean;
   };
-  const formatData = data
-    ?.slice(0)
-    .reverse()
-    .map((client: Data, index: number) => {
-      return {
-        id: client.userID,
-        serial: index + 1,
-        gender: client.gender,
-        fullName: client.fullName,
-        email: client.email,
-        phone: client.phone,
-        applicationName: client.applicationName,
-        emailVerifiedStatus: client.emailVerifiedStatus,
-        role: client.role,
-        isActive: client.isActive,
-        dateAdded: moment(client.dateAdded).format("ll"),
-      };
-    });
+  const formatData = data?.slice(0).map((client: Data, index: number) => {
+    return {
+      id: client.userID,
+      serial: index + 1,
+      gender: client.gender,
+      fullName: client.fullName,
+      email: client.email,
+      phone: client.phone,
+      applicationName: client.applicationName,
+      emailVerifiedStatus: client.emailVerifiedStatus,
+      role: client.role,
+      isActive: client.isActive,
+      dateAdded: moment(client.dateAdded).format("ll"),
+    };
+  });
   const columnUsers = [
     {
       name: "Full Name",

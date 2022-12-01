@@ -143,7 +143,7 @@ const CreateProduct = ({ title, id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "green",
+          backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
       setTimeout(() => {
