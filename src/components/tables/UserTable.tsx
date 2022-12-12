@@ -244,7 +244,7 @@ const UserTable = ({ data, type = "", action = "" }: any) => {
                     }
                   />
                 )}
-                {prop.role === "merchant" && (
+                {prop?.role === "merchant" && (
                   <ActionMenuItem
                     name="Create Product"
                     onClickFunction={() => {
@@ -266,7 +266,7 @@ const UserTable = ({ data, type = "", action = "" }: any) => {
                     }}
                   />
                 )}
-                {prop.role === "merchant" && (
+                {prop?.role === "merchant" && (
                   <ActionMenuItem
                     name="Create Service"
                     onClickFunction={() => {
@@ -285,25 +285,26 @@ const UserTable = ({ data, type = "", action = "" }: any) => {
                     }}
                   />
                 )}
-
-                <ActionMenuItem
-                  name="Create Job posting"
-                  onClickFunction={() => {
-                    setUserId(prop?.id);
-                    dispatch(
-                      uiActions.openDrawerAndSetContent({
-                        drawerStyles: {
-                          padding: 0,
-                        },
-                        drawerContent: (
-                          <>
-                            <AddJob id={prop.id} title="Create Job Posting" />
-                          </>
-                        ),
-                      })
-                    );
-                  }}
-                />
+                {prop?.applicationName === "flip" && (
+                  <ActionMenuItem
+                    name="Create Job posting"
+                    onClickFunction={() => {
+                      setUserId(prop?.id);
+                      dispatch(
+                        uiActions.openDrawerAndSetContent({
+                          drawerStyles: {
+                            padding: 0,
+                          },
+                          drawerContent: (
+                            <>
+                              <AddJob id={prop.id} title="Create Job Posting" />
+                            </>
+                          ),
+                        })
+                      );
+                    }}
+                  />
+                )}
 
                 <ActionMenuItem
                   name="Delete"

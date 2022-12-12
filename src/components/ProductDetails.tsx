@@ -121,56 +121,76 @@ const ProductDetails = ({ data }: any) => {
           ))}
         </div>
 
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full gap-2">
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product Name</div>
-            <div className="text-base text-[#090F47]">{data.name}</div>
+            <div className="text-xs text-[#8487A3] text-center">
+              Product Name
+            </div>
+            <div className="text-xs text-[#090F47] text-center">
+              {data.name}
+            </div>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Serial Number</div>
-            <div className="text-base text-[#090F47]">{data.serial}</div>
+            <div className="text-xs text-[#8487A3] text-center">
+              Serial Number
+            </div>
+            <div className="text-xs text-[#090F47] text-center">
+              {data.serial}
+            </div>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Product Quantity</div>
-            <div className="text-base text-[#090F47]">{`${data.quantity} ${data.name}`}</div>
-          </div>
-        </div>
-        <div className="flex justify-between mt-5 w-full">
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text"> Product Weight</div>
-            <div className="text-base text-[#090F47]">{data.weight}kg</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Delivery Tag</div>
-            <div className="text-base text-[#090F47]">{data.freeDelivery}</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Price (per unit)</div>
-            <div className="text-base text-[#090F47]">₦ {data.price}</div>
+            <div className="text-xs text-[#8487A3] text-center">
+              Product Quantity
+            </div>
+            <div className="text-xs text-[#090F47] text-center">{`${data.quantity} ${data.name}`}</div>
           </div>
         </div>
-        <div className="flex justify-between mt-5 w-full">
+        <div className="flex justify-between mt-5 w-full gap-2">
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Warranty</div>
-            <div className="text-base text-[#090F47]">
+            <div className="text-xs text-text text-center"> Product Weight</div>
+            <div className="text-xs text-[#090F47] text-center">
+              {data.weight}kg
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text text-center">Delivery Tag</div>
+            <div className="text-xs text-[#090F47] text-center">
+              {data.freeDelivery}
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text text-center">
+              Price (per unit)
+            </div>
+            <div className="text-xs text-[#090F47] text-center">
+              ₦ {data.price}
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-between mt-3 w-full">
+          <div className="flex flex-col gap-3">
+            <div className="text-xs text-text text-center">Warranty</div>
+            <div className="text-xs text-[#090F47] text-center">
               {data.producWarranty}
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-center gap-3">
+        <div className="w-full flex flex-col justify-center gap-2">
           <div className="text-xs text-text">Description</div>
-          <div className="text-base text-[#090F47]">{data.description}</div>
+          <div className="text-xs text-[#090F47] text-center">
+            {data.description}
+          </div>
         </div>
         {data?.specifications?.length !== 0 ? (
-          <div className=" mt-5 w-full">
+          <div className=" mt-3 w-full">
             <div className="text-darkPurple text-lg text-center">
               Product Specification
             </div>
-            <div className="flex justify-between mt-5 w-full">
+            <div className="flex justify-between mt-3 w-full">
               {data?.specifications?.map((item: any) => (
                 <div className="mt-5">
                   <div className="text-xs text-text mb-5">{item?.title}</div>
-                  <div className="text-base text-[#090F47]">{item?.value}</div>
+                  <div className="text-xs text-[#090F47]">{item?.value}</div>
                 </div>
               ))}
             </div>
@@ -179,12 +199,12 @@ const ProductDetails = ({ data }: any) => {
         {data?.features?.length === 0 ? (
           ""
         ) : (
-          <div className=" mt-5 w-full">
+          <div className=" mt-3 w-full">
             <div className="text-darkPurple text-lg text-center">Features</div>
-            <div className="flex justify-between mt-5 w-full">
+            <div className="flex justify-between mt-3 w-full gap-2">
               {data?.features?.map((item: any) => (
                 <div
-                  className="text-sm text-text mb-5 mt-5"
+                  className="text-xs text-text mb-5 mt-3 capitalize"
                   key={item.featureID}
                 >
                   {item?.featureName}

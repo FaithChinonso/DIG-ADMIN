@@ -40,7 +40,7 @@ const SideNav = () => {
           {innerNav.map((item: any) => (
             <div
               key={item.id}
-              className="flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center "
             >
               <div
                 className="px-4"
@@ -68,13 +68,13 @@ const SideNav = () => {
                 <ul className="flex flex-col md:hidden max-h-[100px] overflow-y-auto pl-4 mt-2">
                   {item?.navItems?.map((nav: any) => (
                     <li
-                      className=" text-[8px] w-full  p-2  rounded-[-12px]"
+                      className=" text-[8px] w-full  p-2  rounded-[-12px] hover:bg-darkPurple text-white"
                       style={{
                         backgroundColor:
                           selected === nav.name
                             ? "rgba(255,255,255, .2)"
                             : "transparent",
-                        color: selected === nav.name ? "#4B0081" : "white",
+                        // color: selected === nav.name ? "white" : "white",
                         borderRadius: selected === nav.name ? "4px" : "0",
                       }}
                       key={nav.id}
@@ -118,13 +118,13 @@ const SideNav = () => {
             .filter((item: any) => item.value === value)
             .map((item: any) => (
               <li
-                className=" text-xs w-full  p-2 rounded-l-full rounded-[-12px]"
+                className=" text-xs w-full  p-2 rounded-l-full rounded-[-12px] hover:bg-darkPurple"
                 style={{
                   backgroundColor:
                     selected === item.name
                       ? "rgba(255,255,255, .2)"
                       : "transparent",
-                  color: selected === item.name ? "#4B0081" : "white",
+                  color: selected === item.name ? "white" : "white",
                   borderRadius: selected === item.name ? "4px" : "0",
                 }}
                 key={item.id}

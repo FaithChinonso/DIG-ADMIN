@@ -6,7 +6,9 @@ import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
 import { useAppDispatch } from "src/Hooks/use-redux";
 
 export default function Toast() {
+  if (typeof window === "undefined") return;
   const dispatch = useAppDispatch();
+
   const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
   const { toastOpened, toastContent, backgroundColor } = useSelector(
     (state: any) => state.ui
@@ -54,8 +56,7 @@ export default function Toast() {
       window.addEventListener("resize", updateMedia);
       return () => window.removeEventListener("resize", updateMedia);
     }
-    console.log(backgroundColor);
-  });
+  }, []);
 
   return (
     <>

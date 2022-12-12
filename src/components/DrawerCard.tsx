@@ -6,6 +6,7 @@ import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
 import { useAppDispatch } from "src/Hooks/use-redux";
 
 export default function DrawerCard() {
+  if (typeof window === "undefined") return;
   const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
   const updateMedia = () => {
     if (typeof window !== "undefined") {
@@ -18,9 +19,7 @@ export default function DrawerCard() {
       return () => window.removeEventListener("resize", updateMedia);
     }
   });
-  if (typeof window === "undefined") {
-    return <div></div>;
-  }
+
   const styles = {
     main: {
       backgroundColor: "rgba(137, 146, 163, 0.1)",

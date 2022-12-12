@@ -25,7 +25,7 @@ import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const accessToken = sessionStorage.getItem("accessToken");
+  const accessToken = useAppSelector(state => state.auth);
   const request = useHTTPGet();
   const { users, loading, error, message, success } = useAppSelector(
     state => state.user

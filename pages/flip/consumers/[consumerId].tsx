@@ -29,7 +29,7 @@ import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 
-const OneUser = (props: any) => {
+const OneUser = ({ consumerID }: any) => {
   const request = useHTTPGet();
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>({});
@@ -71,10 +71,10 @@ const OneUser = (props: any) => {
     setValue(newValue);
   };
   useEffect(() => {
-    fetchAUser(props.userId);
-    fetchAllJobs(props.userId);
-    fetchOrdersByAUser(props.userId);
-  }, [props.userId, dispatch]);
+    fetchAUser(consumerID);
+    fetchAllJobs(consumerID);
+    fetchOrdersByAUser(consumerID);
+  }, [consumerID, dispatch]);
 
   useEffect(() => {
     if (loading === true) {
@@ -114,6 +114,7 @@ const OneUser = (props: any) => {
           <ActionList user={user} />
           <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
             <div className="flex gap-[30px] items-start text-white ">
+              {" "}
               {user.image && (
                 <div>
                   <Image src={user.image} alt={""} />
@@ -179,29 +180,7 @@ const OneUser = (props: any) => {
               </div>
             </div>
 
-            {user?.role === "merchant" && (
-              <div className="flex flex-col items-center justify-around text-white">
-                <div className="flex flex-row gap-3 text-white">
-                  <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
-                    <p className="text-[10px]">{user?.profile?.merchantType}</p>
-                  </div>
-                  <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
-                    <p className="text-[10px]">
-                      {user?.profile?.merchantCategory}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="text-white flex flex-col ">
-                  <h3 className="text-[13px] mt-[28px]">About</h3>
-                  <p className="text-[10px]">{user?.profile?.bio}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col items-center justify-around text-white">
+            <div className="flex md:flex-col items-center justify-around text-white mt-4">
               <div className="text-white text-[13px]">Total Orders</div>
               <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
                 <div className="text-[8px] ">Successful</div>
@@ -268,10 +247,8 @@ const OneUser = (props: any) => {
               <TabPanel value={value} index={3}>
                 <TransactionHistory id={user.userID} />
               </TabPanel>
+
               <TabPanel value={value} index={4}>
-                <div></div>
-              </TabPanel>
-              <TabPanel value={value} index={5}>
                 <JobsDisplay jobs={job} type="profile" />
               </TabPanel>
             </Box>
@@ -282,10 +259,10 @@ const OneUser = (props: any) => {
   );
 };
 export const getServerSideProps: GetStaticProps = async (context: any) => {
-  const userId = context.params.usersId;
+  const consumerID = context.params.consumerId;
   return {
     props: {
-      userId,
+      consumerID,
     },
   };
 };

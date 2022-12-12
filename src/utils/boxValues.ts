@@ -3,7 +3,6 @@ export const MyUserValue = [
   { id: 2, label: "Bank Details" },
   { id: 3, label: "Order History" },
   { id: 4, label: "Transaction History" },
-  { id: 5, label: "Tracking" },
   { id: 6, label: "Job Posting" },
 ];
 export const MySettingsValue = [
@@ -14,6 +13,11 @@ export const MySettingsValue = [
 export const MyDriversValue = [
   { id: 1, label: "General Info" },
   { id: 2, label: "Trips" },
+  { id: 3, label: "Tracking" },
+];
+export const MyRidersValue = [
+  { id: 1, label: "Trip History" },
+  { id: 2, label: "Bank Details" },
   { id: 3, label: "Tracking" },
 ];
 export const MyProductValue = [

@@ -21,7 +21,7 @@ const nextConfig = {
   },
 
   // redirects: async () =>{
-  //   return [
+  //   returyar de                           n [
   //     {
   //       source: '/about',
   //       destination: '/',

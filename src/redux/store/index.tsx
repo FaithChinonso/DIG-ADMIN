@@ -13,6 +13,7 @@ import serviceCategorySlice from "./features/service-category-slice";
 import orderSlice from "./features/order-slice";
 import logSlice from "./features/log-slice";
 import transactionSlice from "./features/transaction-slice";
+import tripSlice from "./features/trip-slice";
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ const store = configureStore({
     transaction: transactionSlice,
     productCategory: productCategorySlice,
     serviceCategory: serviceCategorySlice,
+    trip: tripSlice,
   },
 });
 

@@ -11,6 +11,7 @@ import { uiActions } from "src/redux/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { productApi, serviceApi } from "../api";
 import userPic from "../../assets/image/userPic.svg";
+import { fetchProduct } from "src/redux/store/features/product-slice";
 
 const AddProductImages = ({ id }: any) => {
   const [images, setImages] = useState<any>([]);
@@ -75,6 +76,7 @@ const AddProductImages = ({ id }: any) => {
 
       dispatch(uiActions.closedrawer());
       dispatch(uiActions.closeLoader());
+      dispatch(fetchProduct(accessToken));
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: res.data.message,

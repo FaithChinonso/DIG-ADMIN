@@ -18,28 +18,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   useEffect(() => {
-    const securePage = async () => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      if (!accessToken) {
-        router.push("/");
-      }
-    };
-    securePage();
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.push("/");
+    }
+    if (typeof window === "undefined") return <div></div>;
   }, []);
-  if (typeof window === "undefined") {
-    return <></>;
-  } else {
-    return (
-      <Provider store={store}>
-        <div>
-          <Toast />
-          <DrawerCard />
 
-          <Component {...pageProps} />
-        </div>
-      </Provider>
-    );
-  }
+  return (
+    <Provider store={store}>
+      <div>
+        <Component {...pageProps} />
+      </div>
+    </Provider>
+  );
 }
 
 export default MyApp;

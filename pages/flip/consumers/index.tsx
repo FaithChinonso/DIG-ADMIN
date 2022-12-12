@@ -1,21 +1,31 @@
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
-import TripTable from "src/components/tables/TripTable";
+
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import AddJob from "src/components/Forms/AddJob";
 import {
   clearError,
   clearMessage,
-  fetchMyTrips,
-  getMyTrips,
-} from "src/redux/store/features/trip-slice";
+  deleteuser,
+  edituser,
+  fetchMyConsumers,
+  fetchMyuser,
+  getMyConsumers,
+  getMyuser,
+} from "src/redux/store/features/user-slice";
+import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
-const Trips = () => {
-  const { token } = useAppSelector((state: any) => state.auth);
-  const { trips, loading, success, error, message } = useAppSelector(
-    state => state.trip
-  );
+const Users = () => {
   const dispatch = useAppDispatch();
+  const { consumers, loading, success, message, error } = useAppSelector(
+    (state: any) => state.user
+  );
+  const { token } = useAppSelector((state: any) => state.auth);
+  console.log(token);
 
   useEffect(() => {
     if (loading === true) {
@@ -37,27 +47,30 @@ const Trips = () => {
     }
     if (success) {
       dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchMyTrips(token));
+      dispatch(fetchMyConsumers(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
   }, [loading, error, message, success, dispatch]);
+
   useEffect(() => {
-    dispatch(getMyTrips(token));
-  }, []);
+    dispatch(getMyConsumers(token));
+  }, [dispatch]);
+
   return (
     <ParentContainer>
-      {/* <div className=" p-[10px] md:p-[30px]"> */}
-      <TripTable data={trips} />
-      {/* </div> */}
+      <div className="">
+        <UserTable data={consumers} />
+      </div>
     </ParentContainer>
   );
 };
-export default Trips;
+export default memo(Users);

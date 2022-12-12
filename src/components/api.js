@@ -13,3 +13,4 @@ export const serviceApi = "https://backendapi.flip.onl/api/admin/service";
 export const logApi = "https://backendapi.flip.onl/api/admin/logs";
 export const transactionApi =
   "https://backendapi.flip.onl/api/admin/transaction";
+export const tripApi = "https://backendapi.flip.onl/api/admin/trips";

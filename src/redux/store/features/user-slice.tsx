@@ -82,7 +82,7 @@ export const getMymerchant = createAsyncThunk(
   "user/getMymerchant",
   async (accessToken: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${userApi}/all-users?role=merchant`, {
+      const response = await axios.get(`${userApi}/users-by-role/merchant`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -95,7 +95,85 @@ export const fetchMymerchant = createAsyncThunk(
   "user/fetchMymerchant",
   async (accessToken: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${userApi}/all-users?role=merchant`, {
+      const response = await axios.get(`${userApi}/users-by-role/merchant`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getMyConsumers = createAsyncThunk(
+  "user/getMyConsumers",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/consumer`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchMyConsumers = createAsyncThunk(
+  "user/fetchMyConsumers",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/consumer`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getMyRiders = createAsyncThunk(
+  "user/getMyRiders",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/rider`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchMyRiders = createAsyncThunk(
+  "user/fetchMyRiders",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/rider`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getMyDrivers = createAsyncThunk(
+  "user/getMyDrivers",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/driver`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchMyDriver = createAsyncThunk(
+  "user/fetchMyDriver",
+  async (accessToken: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/users-by-role/driver`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -140,6 +218,9 @@ export const deleteuser = createAsyncThunk(
 interface userState {
   users: any;
   merchants: any;
+  drivers: any;
+  consumers: any;
+  riders: any;
   success: boolean;
   loading: boolean;
   error: string;
@@ -149,6 +230,9 @@ interface userState {
 const initialState: userState = {
   users: [],
   merchants: [],
+  drivers: [],
+  consumers: [],
+  riders: [],
   success: false,
   loading: false,
   error: "",
@@ -207,7 +291,6 @@ const userSlice = createSlice({
     builder.addCase(
       fetchMyuser.fulfilled,
       (state, action: PayloadAction<any>) => {
-  
         state.users = action.payload.data;
       }
     );
@@ -235,12 +318,101 @@ const userSlice = createSlice({
     builder.addCase(
       fetchMymerchant.fulfilled,
       (state, action: PayloadAction<any>) => {
-  
         state.merchants = action.payload.data;
       }
     );
     builder.addCase(
       getMymerchant.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
+      }
+    );
+
+    builder.addCase(getMyDrivers.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getMyDrivers.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.drivers = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchMyDriver.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.drivers = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMyDrivers.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
+      }
+    );
+
+    builder.addCase(getMyConsumers.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getMyConsumers.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.consumers = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchMyConsumers.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.consumers = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMyConsumers.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error";
+        }
+      }
+    );
+
+    builder.addCase(getMyRiders.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getMyRiders.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.riders = action.payload.data;
+      }
+    );
+    builder.addCase(
+      fetchMyRiders.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.riders = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMyRiders.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         if (action.payload.response) {

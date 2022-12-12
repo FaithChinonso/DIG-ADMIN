@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
 import ParentContainer from "src/components/ParentContainer";
-import TripTable from "src/components/tables/TripTable";
+import WithdrawalTable from "src/components/tables/WithdrawalTable";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
-  fetchMyTrips,
-  getMyTrips,
-} from "src/redux/store/features/trip-slice";
+  getMywithdrawal,
+} from "src/redux/store/features/withdrawal-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 
-const Trips = () => {
-  const { token } = useAppSelector((state: any) => state.auth);
-  const { trips, loading, success, error, message } = useAppSelector(
-    state => state.trip
-  );
+const Withdrawals = () => {
   const dispatch = useAppDispatch();
-
+  const { withdrawals, loading, success, error, message } = useAppSelector(
+    (state: any) => state.withdrawal
+  );
+  const { token } = useAppSelector((state: any) => state.auth);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -31,33 +29,33 @@ const Trips = () => {
           backgroundColor: "red",
         })
       );
+
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
     }
     if (success) {
-      dispatch(uiActions.closeModal());
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchMyTrips(token));
+      dispatch(getMywithdrawal(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
   }, [loading, error, message, success, dispatch]);
   useEffect(() => {
-    dispatch(getMyTrips(token));
-  }, []);
+    dispatch(getMywithdrawal(token));
+  }, [token]);
   return (
     <ParentContainer>
-      {/* <div className=" p-[10px] md:p-[30px]"> */}
-      <TripTable data={trips} />
-      {/* </div> */}
+      <div>
+        <WithdrawalTable data={withdrawals} />
+      </div>
     </ParentContainer>
   );
 };
-export default Trips;
+export default Withdrawals;

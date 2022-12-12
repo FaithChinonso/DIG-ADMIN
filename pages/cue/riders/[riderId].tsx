@@ -9,7 +9,7 @@ import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { MyUserValue } from "../../../src/utils/boxValues";
+import { MyRidersValue, MyUserValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
@@ -28,11 +28,13 @@ import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
+import Trip from "src/components/BoxComponents/Trip";
 
-const OneUser = (props: any) => {
+const OneUser = ({ riderID }: any) => {
   const request = useHTTPGet();
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>({});
+  const [trips, setTrips] = useState();
   const [orders, setOrders] = useState<any>([]);
   const [job, setJob] = useState<any>();
   const [selected, setSelected] = useState(1);
@@ -50,19 +52,11 @@ const OneUser = (props: any) => {
     };
     request({ url, accessToken }, dataFunction);
   };
-  const fetchAllJobs = (id: any) => {
+  const fetchAllTrips = (id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+    const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-rider/${id}`;
     const dataFunction = (res: any) => {
-      setJob(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-  const fetchOrdersByAUser = (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
-    const dataFunction = (res: any) => {
-      setOrders(res.data.data);
+      setTrips(res.data.data);
     };
     request({ url, accessToken }, dataFunction);
   };
@@ -71,10 +65,9 @@ const OneUser = (props: any) => {
     setValue(newValue);
   };
   useEffect(() => {
-    fetchAUser(props.userId);
-    fetchAllJobs(props.userId);
-    fetchOrdersByAUser(props.userId);
-  }, [props.userId, dispatch]);
+    fetchAUser(riderID);
+    fetchAllTrips(riderID);
+  }, [riderID, dispatch]);
 
   useEffect(() => {
     if (loading === true) {
@@ -119,6 +112,7 @@ const OneUser = (props: any) => {
                   <Image src={user.image} alt={""} />
                 </div>
               )}
+
               <div className="flex flex-col gap-[14px]">
                 <h2 className="text-[16px]">
                   {user?.fullName}
@@ -134,6 +128,7 @@ const OneUser = (props: any) => {
                   <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                   <div className="text-[10px]">{user?.email}</div>
                 </div>
+
                 <div className="flex justify-between gap-[9px] items-center">
                   {user?.gender && (
                     <h4 className="text-[10px]">
@@ -160,8 +155,15 @@ const OneUser = (props: any) => {
                     </div>
                   )}
                 </div>
+                {user?.address && (
+                  <div className="flex justify-between gap-[9px] items-center">
+                    <h4 className="text-[10px]">Address</h4>
+                    <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                    <div className="text-[10px]">{user?.address}</div>
+                  </div>
+                )}
 
-                <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
+                <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-2">
                   <div className="flex flex-col justify-between">
                     <div className="text-[8px]">Escrow Balance</div>
                     <div className="text-xs font-[500]">
@@ -179,37 +181,19 @@ const OneUser = (props: any) => {
               </div>
             </div>
 
-            {user?.role === "merchant" && (
-              <div className="flex flex-col items-center justify-around text-white">
-                <div className="flex flex-row gap-3 text-white">
-                  <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
-                    <p className="text-[10px]">{user?.profile?.merchantType}</p>
-                  </div>
-                  <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
-                    <p className="text-[10px]">
-                      {user?.profile?.merchantCategory}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="text-white flex flex-col ">
-                  <h3 className="text-[13px] mt-[28px]">About</h3>
-                  <p className="text-[10px]">{user?.profile?.bio}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col items-center justify-around text-white">
-              <div className="text-white text-[13px]">Total Orders</div>
+            <div className="flex md:flex-col  items-center justify-around text-white mt-4">
+              <div className="text-white text-[13px]">Total Rides</div>
               <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
                 <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {user?.profile?.completedRides}
+                </div>
               </div>
               <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
                 <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {user?.profile?.completedRides}
+                </div>
               </div>
             </div>
           </div>
@@ -231,7 +215,7 @@ const OneUser = (props: any) => {
                   style={{ background: "#edf2f7" }}
                   // classes={{ flexContainer: classes.flexContainer }}
                 >
-                  {MyUserValue.map(value => (
+                  {MyRidersValue.map(value => (
                     <Tab
                       label={value.label}
                       {...a11yProps(value.id)}
@@ -256,23 +240,13 @@ const OneUser = (props: any) => {
               </Box>
 
               <TabPanel value={value} index={0}>
-                <SupportingDocuments />
+                <Trip data={trips} type="rider" />
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <BankDetails data={user?.bank} />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                <OrderHistory data={orders} />
-              </TabPanel>
-
-              <TabPanel value={value} index={3}>
-                <TransactionHistory id={user.userID} />
-              </TabPanel>
-              <TabPanel value={value} index={4}>
                 <div></div>
-              </TabPanel>
-              <TabPanel value={value} index={5}>
-                <JobsDisplay jobs={job} type="profile" />
               </TabPanel>
             </Box>
           </div>
@@ -282,10 +256,10 @@ const OneUser = (props: any) => {
   );
 };
 export const getServerSideProps: GetStaticProps = async (context: any) => {
-  const userId = context.params.usersId;
+  const riderID = context.params.riderId;
   return {
     props: {
-      userId,
+      riderID,
     },
   };
 };
