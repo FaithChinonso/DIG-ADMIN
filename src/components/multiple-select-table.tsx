@@ -35,31 +35,31 @@ const MultipleSelectTable = ({
   data,
   columns,
   emptyPlaceHolder,
-  loader,
   recent,
   extraButton,
+  rowClickable,
   list,
   onClickFunction,
-  rowClickable,
 }: Partial<any>) => {
   const router = useRouter();
-  const [showList, setShowList] = useState(false);
-  const IndeterminateCheckbox = React.forwardRef(
-    ({ indeterminate, ...rest }: any, ref: any) => {
-      const defaultRef = React.useRef();
-      const resolvedRef = ref || defaultRef;
+  console.log(data, columns, recent);
 
-      React.useEffect(() => {
-        resolvedRef.current.indeterminate = indeterminate;
-      }, [resolvedRef, indeterminate]);
+  // const IndeterminateCheckbox = React.forwardRef(
+  //   ({ indeterminate, ...rest }: any, ref: any) => {
+  //     const defaultRef = React.useRef();
+  //     const resolvedRef = ref || defaultRef;
 
-      return (
-        <>
-          <input type="checkbox" ref={resolvedRef} {...rest} />
-        </>
-      );
-    }
-  );
+  //     // React.useEffect(() => {
+  //     //   resolvedRef.current.indeterminate = indeterminate;
+  //     // }, [resolvedRef, indeterminate]);
+
+  //     return (
+  //       <>
+  //         <input type="checkbox" ref={resolvedRef} {...rest} />
+  //       </>
+  //     );
+  //   }
+  // );
 
   const {
     getTableProps,
@@ -81,35 +81,35 @@ const MultipleSelectTable = ({
     useFilters,
     useSortBy,
     usePagination,
-    useRowSelect,
-    hooks => {
-      hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
-        {
-          id: "selection",
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    }
+    useRowSelect
+    // hooks => {
+    //   hooks.visibleColumns.push(columns => [
+    //     // Let's make a column for selection
+    //     {
+    //       id: "selection",
+    //       // The header can use the table's getToggleAllRowsSelectedProps method
+    //       // to render a checkbox
+    //       Header: ({ getToggleAllRowsSelectedProps }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    //         </div>
+    //       ),
+    //       // The cell can use the individual row's getToggleRowSelectedProps method
+    //       // to the render a checkbox
+    //       Cell: ({ row }) => (
+    //         <div>
+    //           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //         </div>
+    //       ),
+    //     },
+    //     ...columns,
+    //   ]);
+    // }
   );
 
   return (
     <>
-      {loader ? null : (
+      {
         <div className="h-full">
           {data?.length === 0 ? null : (
             <div className="w-full flex justify-between">
@@ -141,7 +141,7 @@ const MultipleSelectTable = ({
               <div className="flex items-center mb-6 gap-3 relative">
                 <button className="text-sm text-lightPurple border border-lightPurple py-3 px-4 rounded-md flex items-center justify-center">
                   <span style={{ marginRight: "3px", translate: "0 3px" }}>
-                    <Image src={Export} />
+                    <Image src={Export} alt={""} />
                   </span>
                   {list ? (
                     <ActionMenuBase
@@ -160,19 +160,22 @@ const MultipleSelectTable = ({
                   )}
                 </button>
                 {/* {showList && (
-                    
+
                    )} */}
-                {extraButton?.text && (
+                {/* {extraButton?.text && (
                   <button
-                    onClick={() => onClickFunction()}
+                    onClick={onClickFunction}
                     className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
                   >
                     <span style={{ marginRight: "3px", translate: "0 3px" }}>
-                      <Image src={extraButton.img ? extraButton.img : Add} />
+                      <Image
+                        src={extraButton.img ? extraButton.img : Add}
+                        alt=""
+                      />
                     </span>
                     {extraButton.text}
                   </button>
-                )}
+                )} */}
               </div>{" "}
             </div>
           )}
@@ -184,12 +187,16 @@ const MultipleSelectTable = ({
             >
               <thead>
                 {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
+                  <tr
+                    {...headerGroup.getHeaderGroupProps()}
+                    key={headerGroup.id}
+                  >
                     {headerGroup.headers.map(column => (
                       <th
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
                         )}
+                        key={column.id}
                         className="bg-white py-[13px] px-[20px] shadow-tableShadow text-sm text-darkPurple w-[300px]"
                       >
                         {column.render("Header")}
@@ -210,6 +217,7 @@ const MultipleSelectTable = ({
                   prepareRow(row);
                   return (
                     <tr
+                      key={row.id}
                       {...row.getRowProps()}
                       onClick={() => {
                         if (rowClickable === true) {
@@ -223,6 +231,7 @@ const MultipleSelectTable = ({
                       {row?.cells.map((cell: any) => {
                         return (
                           <td
+                            key={cell.id}
                             {...cell.getCellProps()}
                             style={{
                               padding: "20px",
@@ -247,18 +256,18 @@ const MultipleSelectTable = ({
             </table>
 
             {data?.length === 0 && (
-              <div className="flex items-center justify-around flex-col h-[250px] bg-[#f8f8f8]">
-                <Image src={EmptyTable} />
+              <div className="flex items-center justify-around flex-col h-full bg-[#f8f8f8] mt-8">
+                <Image src={EmptyTable} alt="" />
                 <div className="text-sm text-[#adafb0] mb-5">
                   {emptyPlaceHolder}
                 </div>
-                <button
+                {/* <button
                   onClick={onClickFunction}
                   className="text-sm text-white bg-lightPurple py-3 px-9 rounded-md flex items-center justify-center"
                 >
                   {" "}
-                  {extraButton.text}
-                </button>
+                  {extraButton?.text}
+                </button> */}
               </div>
             )}
 
@@ -274,13 +283,13 @@ const MultipleSelectTable = ({
                       onClick={() => previousPage()}
                       style={{ paddingRight: "10px" }}
                     >
-                      <p>
+                      <div>
                         {pageIndex + 1 === 1 && (
                           <div className="text-xs text-softGray cursor-pointer">
                             Previous
                           </div>
                         )}
-                      </p>
+                      </div>
                     </div>
                     <div className="text-base flex items-center text-[#37474f] border border-softGray px-2 py-1">
                       {pageIndex + 1}
@@ -300,7 +309,7 @@ const MultipleSelectTable = ({
             {/* Pagination */}
           </div>{" "}
         </div>
-      )}
+      }
     </>
   );
 };

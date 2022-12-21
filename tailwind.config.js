@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./pages/general/*.{html,js,jsx,tsx}",
-    "./pages/general/users/*.{html,js,jsx,tsx}",
+    "./pages/dashboard/*.{html,js,jsx,tsx}",
+    "./pages/cue/*.{html,js,jsx,tsx}",
+    "./pages/flip/*.{html,js,jsx,tsx}",
+    "./pages/dashboard/users/*.{html,js,jsx,tsx}",
     "./pages/flip/orders/*.{html,js,jsx,tsx}",
+    "./pages/flip/service/*.{html,js,jsx,tsx}",
+    "./pages/flip/merchants/*.{html,js,jsx,tsx}",
     "./pages/cue/drivers/*.{html,js,jsx,tsx}",
     "./pages/*.{html,js,jsx,tsx}",
     "./src/components/*.{html,js,jsx,tsx}",
@@ -14,6 +18,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      zIndex: {
+        100: "10000",
+      },
       boxShadow: {
         "2xl": "3px 5px 15px rgba(0, 0, 0, 0.12)",
         "3xl": "3px 15px 15px rgba(0, 0, 0, 0.12)",
@@ -23,44 +30,23 @@ module.exports = {
       colors: {
         lightGray: "#f5f5f5",
         softGray: "#c1c1c1",
-        darkPurple: "rgba(82, 68, 192, 1) ",
-        lightPurple: "rgba(107, 93, 211, 1) ",
-        faintPurple: "rgba(107, 93, 211, 0.4)",
+        lightPurple: "rgba(18, 38, 68, 1) ",
+        Purple: "rgba(18, 38, 68, 0.9) ",
+        darkPurple: "rgba(24, 160, 251, 1) ",
+        faintPurple: "rgba(24, 160, 251, 0.2)",
         lightDark: "rgba(16,24,40, .6)",
-        primary: "rgba(6, 78, 200, 1)",
+        primary: "rgba(255,187,40, 1)",
         grey: "#101828",
         faintWhite: "rgba(255, 255, 255, .2)",
         offWhite: "rgba(239, 237, 255, .6)",
         text: "rgba(132, 135, 163, 1)",
         textD: "rgba(239, 237, 255, .6)",
+        header: "rgba(6, 78, 200, 1)",
+        grey90: "rgba(16, 24, 40, 1)",
       },
       backgroundImage: "linear-gradient(90deg, #122644 0%, #015FFF 100%)",
     },
   },
-  variants: {
-    display: [
-      "children",
-      "default",
-      "children-first",
-      "children-last",
-      "children-odd",
-      "children-even",
-      "children-not-first",
-      "children-not-last",
-      "children-hover",
-      "hover",
-      "children-focus",
-      "focus",
-      "children-focus-within",
-      "focus-within",
-      "children-active",
-      "active",
-      "children-visited",
-      "visited",
-      "children-disabled",
-      "disabled",
-      "responsive",
-    ],
-  },
+
   plugins: [require("tailwindcss-children")],
 };

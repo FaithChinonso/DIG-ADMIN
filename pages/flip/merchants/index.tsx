@@ -1,160 +1,74 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/filter-table";
-import AddMerchant from "../../../src/components/Forms/AddMerchant";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
-import StatusCell from "../../../src/components/StatusCell";
-import { uiActions } from "../../../src/redux/store/ui-slice";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ParentContainer from "src/components/ParentContainer";
+
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import AddJob from "src/components/Forms/AddJob";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-} from "../../../src/utils/analytics";
+  clearError,
+  clearMessage,
+  deleteuser,
+  edituser,
+  fetchMymerchant,
+  getMymerchant,
+  getMyuser,
+} from "src/redux/store/features/user-slice";
+import UserTable from "src/components/tables/UserTable";
+import { uiActions } from "src/redux/store/ui-slice";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Merchants = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-  const columnDasboard = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "Business Name",
-      accessor: "businessName",
-    },
-    {
-      Header: "Contact Person",
-      accessor: "contactPerson",
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "number",
-    },
+  const dispatch = useAppDispatch();
+  const { merchants, loading, success, message, error } = useAppSelector(
+    (state: any) => state.user
+  );
+  const { token } = useAppSelector((state: any) => state.auth);
+  console.log(token);
 
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    router.push(
-                      `${location.pathname}/${prop?.row.original?.id}`
-                    );
-                  }}
-                />
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      dispatch(fetchMymerchant(token));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
-                <ActionMenuItem
-                  name="Suspend"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Suspend" item="merchant" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
+  useEffect(() => {
+    dispatch(getMymerchant(token));
+  }, [dispatch]);
 
-                <ActionMenuItem
-                  name="Deactivate"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Deactivate" item="merchant" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-
-                <ActionMenuItem
-                  name="Under Review"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action=" Review" item="merchant" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
   return (
-    <>
-      <DrawerCard
-        title="Add Merchants"
-        open={isOpen}
-        toggleDrawer={toggleDrawer}
-      >
-        <AddMerchant />
-      </DrawerCard>
-      <div className=" p-[10px] md:p-[30px]">
-        <MultipleSelectTable
-          columns={columnDasboard}
-          data={tableData}
-          emptyPlaceHolder="No merchants yet!"
-          extraButton={{ text: "Add Merchants" }}
-          onClickFunction={toggleDrawer}
-        />
+    <ParentContainer>
+      <div>
+        <UserTable data={merchants} />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Merchants;

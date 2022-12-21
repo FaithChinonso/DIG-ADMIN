@@ -6,8 +6,11 @@ import { useDispatch } from "react-redux";
 const SuccessfulModal = ({ title, message }: any) => {
   const dispatch = useDispatch();
   return (
-    <div className="w-[90vw] lg:w-[640px] flex flex-col py-[50px] px-[30px] gap-[15px] bg-white rounded-3xl">
-      <Image src={sucessPic} />
+    <div className="w-[90vw] lg:w-[340px] flex flex-col items-center justify-center py-[30px] px-[30px] gap-[15px] bg-white rounded-3xl">
+      <div className="bg-red">
+        <Image src={sucessPic} alt={""} />
+      </div>
+
       <div className="text-[21px] text-darkPurple">{title}</div>
       <div className="text-[12px] text-softGray"> {message}</div>
       <button

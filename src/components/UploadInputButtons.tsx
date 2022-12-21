@@ -1,12 +1,9 @@
 import React from "react";
-
-import OperantLogo from "../assets/operant-transparent.png";
+import Image from "next/image";
 import Button from "@mui/material/Button";
 import OutlineTextInput from "./OutlinedTextInput";
-import DeleteIcon from "../assets/image/delete-icon.svg";
+import deleteIcon from "../assets/image/delete-icon.svg";
 import userPic from "../assets/image/userPic.svg";
-import { useDispatch, useSelector } from "react-redux";
-import Image from "next/image";
 
 const UploadInputButton = ({
   classes,
@@ -22,7 +19,6 @@ const UploadInputButton = ({
   required,
   helpText,
 }: any) => {
-  const dispatch = useDispatch();
   return (
     <>
       <Button variant="text" component="label">
@@ -39,28 +35,36 @@ const UploadInputButton = ({
               required={required}
             />
           </div>
-
-          <Image src={userPic} />
-
-          <div className="text-[10px]">
+          <Image src={userPic} alt={""} />
+          <div className="text-darkPurple capitalize text-xs">
+            Browse for a file to upload.
+          </div>
+          <div className="text-darkPurple text-[8px]">
             {helpText ||
-              "All file types supported: JPEG, JPG, PNG, PDF. Max file size: 2mb"}
+              "Only image files are supported : JPEG, JPG, PNG. Max file size: 2mb"}
           </div>
         </div>
         <input type="file" hidden />
       </Button>
 
       {data ? (
-        <div className="text-md">
-          <object
+        <div className="flex justify-center w-[120px] h-[120px]">
+          {/* <object
             data={data}
             width="200"
             height="200"
             style={{ marginTop: "10px", objectFit: "cover" }}
-          ></object>
+          ></object> */}
+          <Image
+            src={data}
+            width="200"
+            height="200"
+            style={{ marginTop: "10px", objectFit: "cover" }}
+            alt=""
+          />
           {data ? (
-            <div className="text-md" onClick={onDelete}>
-              <Image src={DeleteIcon} />
+            <div onClick={onDelete}>
+              <Image src={deleteIcon} alt="" />
             </div>
           ) : null}
         </div>

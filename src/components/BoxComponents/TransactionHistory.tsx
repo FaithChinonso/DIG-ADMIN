@@ -10,54 +10,31 @@ import {
   transaction,
 } from "../../utils/analytics";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
+import { transactionApi } from "../api";
+import { useEffect, useState } from "react";
+import useHTTPGet from "src/Hooks/use-httpget";
+import TransactionTable from "../tables/TransactionTable";
 
-const transactionHistory = () => {
-  const columnTransaction = [
-    {
-      Header: "Transaction ID",
-      accessor: "id",
-      Filter: false,
-    },
-    {
-      Header: "Amount Paid",
-      accessor: "amountPaid",
-    },
-    {
-      Header: "Payment Type",
-      accessor: "paymentType",
-    },
-    {
-      Header: "Patient Name",
-      accessor: "patientName",
-    },
+const transactionHistory = ({ id }: any) => {
+  const request = useHTTPGet();
+  const [transactions, setTrasactions] = useState([]);
+  const fetchAllTransactions = () => {
+    const url = `${transactionApi}/transactions-by-user/${id}`;
+    const accessToken = sessionStorage.getItem("accessToken");
+    const dataFunction = (res: any) => {
+      console.log(res);
+      setTrasactions(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
 
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem name="View Details" />
-
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
+  useEffect(() => {
+    fetchAllTransactions();
+  }, []);
   return (
     <div>
-      <MultipleSelectTable
-        columns={columnTransaction}
-        data={transaction}
-        emptyPlaceHolder="No Transactions yet!"
-        list
-      />
+      {" "}
+      <TransactionTable data={transactions} type="profile" />
     </div>
   );
 };

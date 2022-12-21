@@ -1,102 +1,66 @@
-import { Router, useRouter } from "next/router";
-import { useState } from "react";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/FilterTable";
-import AddDriver from "../../../src/components/Forms/AddDriver";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
-import StatusCell from "../../../src/components/StatusCell";
+import { useEffect, useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
+import UserTable from "src/components/tables/UserTable";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  driver,
-} from "../../../src/utils/analytics";
+  clearError,
+  clearMessage,
+  fetchMyDriver,
+  getMyDrivers,
+} from "src/redux/store/features/user-slice";
+import { uiActions } from "src/redux/store/ui-slice";
 
 const Drivers = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { drivers, loading, success, message, error } = useAppSelector(
+    (state: any) => state.user
+  );
+  const { token } = useAppSelector((state: any) => state.auth);
+  console.log(token);
 
-  const [id, setId] = useState();
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-  type Data = {
-    driverId: string;
-    serial: Number;
-    dateJoined: string;
-    driverName: string;
-    emailAddress: string;
-    accountStatus: string;
-    tripStatus: string;
-    gender: string;
-  };
-  const formatData = driver
-    ?.slice(0)
-    .reverse()
-    .map((item: any, index: number) => {
-      return {
-        id: item?.id,
-        serial: index + 1,
-        dateJoined: item?.dateJoined,
-        driverName: item?.driverName,
-        emailAddress: item?.emailAddress,
-        accountStatus: item?.accountStatus,
-        tripStatus: item?.tripStatus,
-        gender: item?.gender,
-      };
-    });
-  const columnDasboard = [
-    {
-      Header: "Driver ID",
-      accessor: "id",
-    },
-    {
-      Header: "Driver Name",
-      accessor: "driverName",
-    },
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      dispatch(fetchMyDriver(token));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
 
-    {
-      Header: "Email Address",
-      accessor: "emailAddress",
-    },
-    {
-      Header: "Gender",
-      accessor: "gender",
-    },
+  useEffect(() => {
+    dispatch(getMyDrivers(token));
+  }, [dispatch]);
 
-    {
-      Header: "Date Joined",
-      accessor: "dateJoined",
-    },
-    {
-      Header: "Account Status",
-      accessor: "accountStatus",
-    },
-    {
-      Header: "Trip Status",
-      accessor: "tripStatus",
-    },
-  ];
   return (
-    <>
-      <DrawerCard title="Add Drivers" open={isOpen} toggleDrawer={toggleDrawer}>
-        <AddDriver />
-      </DrawerCard>
-      <div className=" p-[10px] md:p-[30px]">
-        <MultipleSelectTable
-          columns={columnDasboard}
-          data={driver}
-          rowClickable={true}
-          emptyPlaceHolder="No drivers yet!"
-          list
-          extraButton={{ text: "Add Driver" }}
-          onClickFunction={toggleDrawer}
-        />
+    <ParentContainer>
+      <div>
+        <UserTable data={drivers} />
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Drivers;

@@ -1,94 +1,63 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../../src/components/Drawer";
-import FilterTable from "../../../src/components/filter-table";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
-import StatusCell from "../../../src/components/StatusCell";
+import { useEffect, useState } from "react";
+import ParentContainer from "src/components/ParentContainer";
+import TripTable from "src/components/tables/TripTable";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-} from "../../../src/utils/analytics";
+  clearError,
+  clearMessage,
+  fetchMyTrips,
+  getMyTrips,
+} from "src/redux/store/features/trip-slice";
+import { uiActions } from "src/redux/store/ui-slice";
 
 const Trips = () => {
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
-  const columnDasboard = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "Business Name",
-      accessor: "businessName",
-    },
-    {
-      Header: "Contact Person",
-      accessor: "contactPerson",
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-    },
-    {
-      Header: "Phone Number",
-      accessor: "number",
-    },
+  const { token } = useAppSelector((state: any) => state.auth);
+  const { trips, loading, success, error, message } = useAppSelector(
+    state => state.trip
+  );
+  const dispatch = useAppDispatch();
 
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Status",
-      accessor: "status",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    router.push(
-                      `${location.pathname}/${prop?.row.original?.id}`
-                    );
-                  }}
-                />
-
-                <ActionMenuItem name="Edit Details" />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      dispatch(fetchMyTrips(token));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
+  useEffect(() => {
+    dispatch(getMyTrips(token));
+  }, []);
   return (
-    <>
-      <div className=" p-[10px] md:p-[30px]">
-        <MultipleSelectTable
-          columns={columnDasboard}
-          data={tableData}
-          emptyPlaceHolder="No Trips yet!"
-        />
-      </div>
-    </>
+    <ParentContainer>
+      {/* <div className=" p-[10px] md:p-[30px]"> */}
+      <TripTable data={trips} />
+      {/* </div> */}
+    </ParentContainer>
   );
 };
 export default Trips;

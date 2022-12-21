@@ -1,172 +1,124 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import ActionMenuBase from "../../src/components/ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../../src/components/ActionMenu/ActionMenuItem";
-import DrawerCard from "../../src/components/Drawer";
-import FilterTable from "../../src/components/filter-table";
-import CreateProduct from "../../src/components/Forms/CreateProduct";
-import ModalAction from "../../src/components/ModalContent/ModalAction";
-import MultipleSelectTable from "../../src/components/multiple-select-table";
-import ProductDetails from "../../src/components/ProductDetails";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ParentContainer from "src/components/ParentContainer";
 import { uiActions } from "../../src/redux/store/ui-slice";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import { MyProductValue } from "../../src/utils/boxValues";
+import ProductCategory from "src/components/ProductCategory";
+import { useAppSelector } from "src/Hooks/use-redux";
 import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  product,
-} from "../../src/utils/analytics";
+  clearError,
+  clearMessage,
+  fetchProduct,
+  getMyproduct,
+} from "src/redux/store/features/product-slice";
+import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
+import ProductTable from "src/components/tables/ProductTable";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-  const [drawerDetails, setDraweDetails] = useState({
-    title: "",
-    isAdd: false,
-  });
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
+
+  const { products, loading, error, message, success } = useAppSelector(
+    (state: any) => state.product
+  );
+  const { token } = useAppSelector((state: any) => state.auth);
+
+  const [selected, setSelected] = useState(1);
+
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
   };
-
-  const columnProduct = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "product Name",
-      accessor: "productName",
-    },
-    {
-      Header: "product ID",
-      accessor: "productId",
-    },
-    {
-      Header: "product Quantity",
-      accessor: "productQuantity",
-    },
-    {
-      Header: "Price",
-      accessor: "price",
-    },
-    {
-      Header: "Product Weight",
-      accessor: "productWeight",
-    },
-    {
-      Header: "Delivery Tag",
-      accessor: "deliveryTag",
-    },
-
-    {
-      Header: "Action",
-      accessor: "action",
-      Filter: false,
-      Cell: (prop: any) => {
-        return (
-          <ActionMenuBase
-            items={
-              <>
-                <ActionMenuItem
-                  name="View More"
-                  onClickFunction={() => {
-                    setIsOpen(!isOpen);
-                    setDraweDetails({
-                      ...drawerDetails,
-                      title: "Product Details",
-                      isAdd: false,
-                    });
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      dispatch(fetchProduct(token));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
+  useEffect(() => {
+    dispatch(getMyproductCategories(token));
+    dispatch(getMyproduct(token));
+  }, [dispatch]);
+  return (
+    <ParentContainer>
+      <div className=" h-screen">
+        <Box
+          sx={{ width: "100%" }}
+          style={{ background: "white", height: "100vh" }}
+        >
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+              style={{ background: "#edf2f7" }}
+              // classes={{ flexContainer: classes.flexContainer }}
+            >
+              {MyProductValue.map((value: any) => (
+                <Tab
+                  label={value.label}
+                  {...a11yProps(value.id)}
+                  key={value.id}
+                  style={{
+                    backgroundColor:
+                      selected === value.id ? "white" : "transparent",
+                    fontStyle: "normal",
+                    fontWeight: "normal",
+                    fontSize: "12px",
+                    lineHeight: "136.52%",
+                    textAlign: "center",
+                    color: "rgba(132, 135, 163, 1)",
+                    textTransform: "capitalize",
+                  }}
+                  onClick={() => {
+                    setSelected(value.id);
                   }}
                 />
+              ))}
+            </Tabs>
+          </Box>
 
-                <ActionMenuItem
-                  name="Suspend"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Suspend" item="product" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-
-                <ActionMenuItem
-                  name="Deactivate"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Deactivate" item="product" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-
-                <ActionMenuItem
-                  name="Under Review"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction action="Review" item="product" />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
-              </>
-            }
-          />
-        );
-      },
-    },
-  ];
-  const toggleDrawerAdd = () => {
-    setIsOpen(!isOpen);
-    setDraweDetails({
-      ...drawerDetails,
-      title: "Create Product",
-      isAdd: true,
-    });
-  };
-  return (
-    <>
-      <DrawerCard
-        title={drawerDetails.title}
-        open={isOpen}
-        toggleDrawer={toggleDrawer}
-      >
-        {drawerDetails.isAdd ? <CreateProduct /> : <ProductDetails />}
-      </DrawerCard>
-      <div className=" p-[10px] md:p-[30px] h-screen">
-        <MultipleSelectTable
-          columns={columnProduct}
-          data={product}
-          emptyPlaceHolder="No products yet!"
-          extraButton={{ text: "Create Product" }}
-          onClickFunction={toggleDrawerAdd}
-        />
+          <TabPanel value={value} index={0}>
+            <ProductTable data={products} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <ProductCategory />
+          </TabPanel>
+        </Box>
       </div>
-    </>
+    </ParentContainer>
   );
 };
 export default Products;

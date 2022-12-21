@@ -1,173 +1,220 @@
-import { fontSize } from "@mui/system";
 import { useRouter } from "next/router";
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  order,
-} from "../../../src/utils/analytics";
-import profilePic from "../../../src/assets/image/profilePic.svg";
-import verify from "../../../src/assets/image/verify.svg";
-import gender from "../../../src/assets/image/gender.svg";
-import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@mui/material/Box";
-import { MyUserValue } from "../../../src/utils/boxValues";
-import { useState } from "react";
-import Export from "../../../src/assets/image/export.svg";
-import Calender from "../../../src/assets/image/calendar.svg";
 import location from "../../../src/assets/image/location.svg";
 import quantity from "../../../src/assets/image/quantity.svg";
 import cost from "../../../src/assets/image/cost.svg";
 import date from "../../../src/assets/image/date.svg";
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import Image from "next/image";
-import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
-import BankDetails from "../../../src/components/BoxComponents/BankDetails";
-import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
-import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
-import MultipleSelectTable from "../../../src/components/multiple-select-table";
-import StatusCell from "../../../src/components/StatusCell";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import { uiActions } from "../../../src/redux/store/ui-slice";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import { useDispatch } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
+import ParentContainer from "src/components/ParentContainer";
+import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
+import { MyOrderValue } from "src/utils/boxValues";
+import { useEffect, useState } from "react";
+import { orderApi } from "src/components/api";
+import useHTTPGet from "src/Hooks/use-httpget";
+import BuyerDetails from "src/components/BuyerDetails";
+import ProductOrderDetails from "src/components/ProductOrderDetails";
+import OrderList from "src/components/OrderList";
 
-const OneOrder = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const id = router.query.usersId;
+import { uiActions } from "src/redux/store/ui-slice";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 
-  const columnOrders = [
-    {
-      Header: "#",
-      accessor: "serial",
-      Filter: false,
-    },
-    {
-      Header: "Order",
-      accessor: "order",
-    },
-    {
-      Header: "Order Price",
-      accessor: "orderPrice",
-    },
-    {
-      Header: "Quantity",
-      accessor: "quantity",
-    },
-    {
-      Header: "Date Requested",
-      accessor: "dateRequested",
-    },
+import { GetStaticProps } from "next/types";
+import { clearError, clearMessage } from "src/redux/store/features/order-slice";
 
-    {
-      Header: "Client Type",
-      accessor: "clientType",
-    },
-    {
-      Header: "Merchant",
-      accessor: "merchant",
-    },
-    {
-      Header: "Profile Recieved",
-      accessor: "profileRecieved",
-    },
-    {
-      Header: "Delivery Company",
-      accessor: "deliveryCompany",
-    },
-    {
-      Header: "Delivery Tag",
-      accessor: "deliveryTag",
-    },
-    {
-      Header: "Delivery Note",
-      accessor: "deliveryNote",
-    },
-    {
-      Header: "Delivery Status",
-      accessor: "deliveryStatus",
-      Cell: (prop: any) => (
-        <StatusCell status={prop?.value} type="businessService" />
-      ),
-    },
-  ];
+const OneOrder = (props: any) => {
+  const { orders, loading, error, message, success } = useAppSelector(
+    (state: any) => state.order
+  );
+  const request = useHTTPGet();
+  const [order, setOrder] = useState<any>({});
+  const dispatch = useAppDispatch();
+
+  const fetchAnOrder = async (id: any) => {
+    const url = `${orderApi}/single-order/${id}`;
+    const accessToken = sessionStorage.getItem("accessToken");
+    const dataFunction = (res: any) => {
+      console.log(res);
+      setOrder(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  };
+
+  const [selected, setSelected] = useState(1);
+
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+  useEffect(() => {
+    fetchAnOrder(props.orderId);
+  }, [props.orderId]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closeModal());
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      fetchAnOrder(props.orderId);
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
-    <div className=" p-[10px] md:p-[30px]">
-      <ActionList />
-      <div className="bg-darkPurple flex-col rounded-[20px] px-[8px] py-[23px] md:px-[38px] flex gap-5">
-        {" "}
-        <div className="text-offWhite text-lg">Overview</div>
-        <div className="flex flex-col md:flex-row  justify-between  items-center">
-          <div className="flex flex-col gap-[14px]">
-            <h2 className="text-lg text-white font-semibold">
-              OrderId:
-              <span className="text-offWhite text-sm ml-2"> 890099823</span>
-            </h2>
+    <ParentContainer>
+      <div>
+        <OrderList order={order} />
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[23px] md:px-[38px] flex gap-5">
+          {" "}
+          <div className="text-offWhite md:text-left md:text-lg text-center text-2xl">
+            Overview
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+            <div className="flex md:flex-col gap-[14px] w-full md:w-auto items-center justify-center md:items-start md:justify-start">
+              <div className="text-lg text-white font-semibold">
+                OrderId:
+                <span className="text-offWhite text-sm ml-2">
+                  {" "}
+                  {order?.orderID}
+                </span>
+              </div>
+              <div className="flex">
+                <div className="text-offWhite text-sm ">
+                  <Image src={location} alt={""} />
+                </div>
+                <div className="text-offWhite text-sm">
+                  {order?.deliveryAddress}
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={quantity} alt={""} />
+                </div>
+              </div>
 
-            <div className="text-offWhite text-sm">
-              <span style={{ marginRight: "3px" }}>
-                <Image src={location} />
-              </span>
-              Oriental Hotel, Lekki Lagos
+              <div>
+                <div className="text-offWhite text-sm">Quantity Purchased</div>
+                <div className="text-base text-white font-semibold mt-[10px]">
+                  {order?.quantityPurchased}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-6">
-            <div>
-              <Image src={quantity} />
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={cost} alt={""} />
+                </div>
+              </div>
+              <div>
+                <div className="text-offWhite text-sm">Order Cost</div>
+                <div className="text-base text-white font-semibold mt-[10px]">
+                  {" "}
+                  ₦{order?.price}
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="text-offWhite text-sm">Order Quatity</h3>
-              <h4 className="text-base text-white font-semibold mt-[10px]">
-                10
-              </h4>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <div>
-              <Image src={cost} />
-            </div>
-            <div>
-              <h3 className="text-offWhite text-sm">Order Cost</h3>
-              <h4 className="text-base text-white font-semibold mt-[10px]">
-                {" "}
-                ₦ 300,000
-              </h4>
-            </div>
-          </div>
-          <div className="flex gap-6">
-            <div>
-              <Image src={date} />
-            </div>
-            <div>
-              <h3 className="text-offWhite text-sm">Date and Time</h3>
-              <h4 className="text-base text-white font-semibold mt-[10px]">
-                {" "}
-                April 1, 2021
-              </h4>
+            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+              <div className="w-[100px] md:w-auto ">
+                <div>
+                  <Image src={date} alt={""} />
+                </div>
+              </div>
+              <div>
+                <div className="text-offWhite text-sm">Date and Time</div>
+                <div className="text-base text-white font-semibold mt-[10px]">
+                  {" "}
+                  {order?.expectedDeliveryDate}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <Box
+          sx={{ width: "100%" }}
+          style={{ background: "white", height: "100vh" }}
+        >
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+              style={{ background: "#edf2f7" }}
+              // classes={{ flexContainer: classes.flexContainer }}
+            >
+              {MyOrderValue.map(value => (
+                <Tab
+                  label={value.label}
+                  {...a11yProps(value.id)}
+                  key={value.id}
+                  style={{
+                    backgroundColor:
+                      selected === value.id ? "white" : "transparent",
+                    fontStyle: "normal",
+                    fontWeight: "normal",
+                    fontSize: "12px",
+                    lineHeight: "136.52%",
+                    textAlign: "center",
+                    color: "rgba(132, 135, 163, 1)",
+                    textTransform: "capitalize",
+                  }}
+                  onClick={() => {
+                    setSelected(value.id);
+                  }}
+                />
+              ))}
+            </Tabs>
+          </Box>
+
+          <TabPanel value={value} index={0}>
+            <BuyerDetails data={order?.buyer} title="Buyer Profile" />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <ProductOrderDetails data={order?.product?.product} />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <BuyerDetails
+              data={order?.product?.merchant}
+              title="Merchant Information"
+            />
+          </TabPanel>
+        </Box>
       </div>
-      <div className="mt-[30px]">
-        {" "}
-        <MultipleSelectTable
-          columns={columnOrders}
-          data={order}
-          emptyPlaceHolder="No orders yet!"
-          extraButton={{ text: "Filter by Date", img: Calender }}
-          onClickFunction={() => {}}
-        />
-      </div>
-    </div>
+    </ParentContainer>
   );
 };
-
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  const orderId = context.params.orderId;
+  return {
+    props: {
+      orderId,
+    },
+  };
+};
 export default OneOrder;

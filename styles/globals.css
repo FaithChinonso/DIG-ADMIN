@@ -7,12 +7,17 @@
   font-family: ClashDisplayBold;
   src: url("../src/assets/fonts/ClashDisplay/ClashDisplay-Bold.otf");
 }
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: ClashDisplay, sans-serif, Segoe UI, Roboto, Oxygen, Ubuntu,
+    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
@@ -24,8 +29,34 @@ a {
   box-sizing: border-box;
   font-family: ClashDisplay;
 }
-@import "tailwindcss/base";
-
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";
+.rdt_Table {
+  padding-bottom: 150px;
+  position: relative;
+  z-index: 10;
+  max-width: 100%;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+.rdt_TableHeadRow {
+  color: rgba(18, 38, 68, 1);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+.rdt_TableRow {
+  height: 52px;
+  text-align: center;
+}
+.spinner {
+  z-index: 200000000000;
+  color: red;
+}
+.rdt_TableCol {
+  width: 130px;
+  text-align: center;
+}
+.rdt_TableCell {
+  text-align: center;
+  color: rgba(16, 24, 40, 1);
+  font-weight: 200;
+}

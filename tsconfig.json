@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/actions/*": ["components/ActionMenu/*"],
+      "@/box/*": ["components/BoxComponents/*"],
+      "@/forms/*": ["components/Forms/*"],
+      "@/modal/*": ["components/ModalContent/*"]
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

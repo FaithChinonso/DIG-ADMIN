@@ -4,7 +4,7 @@ import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import Image from "next/image";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import { useState } from "react";
-const supportingDocuments = () => {
+const SupportingDocuments = () => {
   const [showModal, setShowModal] = useState({
     show: false,
     value: "",
@@ -27,7 +27,7 @@ const supportingDocuments = () => {
                 </div>
               </div>
             )}
-            <Image src={item.img} className="object-cover w-full" />
+            <Image src={item.img} className="object-cover w-full" alt={""} />
           </div>
           <div className="flex justify-between">
             <div>
@@ -50,4 +50,4 @@ const supportingDocuments = () => {
     </div>
   );
 };
-export default supportingDocuments;
+export default SupportingDocuments;

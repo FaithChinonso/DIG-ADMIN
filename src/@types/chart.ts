@@ -1,5 +1,4 @@
 export interface ChartType {
-  month: string;
   transaction: Transaction[];
 }
 

@@ -1,254 +1,446 @@
 import useInput from "../../Hooks/use-input";
-import MuiPhoneNumber from "material-ui-phone-number";
-import { OutlinedInput } from "@material-ui/core";
-import UploadInputButtons from "../UploadInputButtons";
 import userPic from "../../assets/image/userPic.svg";
 import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
-import { useDispatch } from "react-redux";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
+import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import { useEffect, useState } from "react";
+import useHTTPPost from "src/Hooks/use-httppost";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
+import { addProductCategory } from "src/redux/store/data-slice";
+import useHTTPGet from "src/Hooks/use-httpget";
+import { delivery } from "src/utils/analytics";
+import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
+import DrawerWrapper from "../DrawerWrapper";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import {
+  clearError,
+  clearMessage,
+  createproduct,
+} from "src/redux/store/features/product-slice";
+import SuccessfulModal from "../ModalContent/SuccessfulModal";
+import { productApi } from "../api";
+import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 
-const CreateProduct = ({ toggleDrawer }: any) => {
-  const dispatch = useDispatch();
-  const isNotEmpty = (value: string) => value.trim() !== "";
-  const isEmail = (value: any) =>
-    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-  const productQuantity = [
-    { id: 1, name: "Female" },
-    { id: 2, name: "Male" },
-  ];
-  const {
-    enteredInput: enteredProductName,
-    hasError: productNameHasError,
-    reset: productNameReset,
-    errorMessage: productNameError,
-    inputIsValid: productNameIsValid,
-    updateInputHandler: productNameInputHandler,
-    inputBlurHandler: productNameBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductId,
-    hasError: productIdHasError,
-    reset: productIdReset,
-    errorMessage: productIdError,
-    inputIsValid: productIdIsValid,
-    updateInputHandler: productIdInputHandler,
-    inputBlurHandler: productIdBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductQuantity,
-    hasError: productQuantityHasError,
-    reset: productQuantityReset,
-    errorMessage: productQuantityError,
-    inputIsValid: productQuantityIsValid,
-    updateInputHandler: productQuantityInputHandler,
-    inputBlurHandler: productQuantityBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredProductWeight,
-    hasError: productWeightHasError,
-    reset: productWeightReset,
-    errorMessage: productWeightError,
-    inputIsValid: productWeightIsValid,
-    updateInputHandler: productWeightInputHandler,
-    inputBlurHandler: productWeightBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredDeliveryTag,
-    hasError: deliveryTagHasError,
-    reset: deliveryTagReset,
-    errorMessage: deliveryTagError,
-    inputIsValid: deliveryTagIsValid,
-    updateInputHandler: deliveryTagInputHandler,
-    inputBlurHandler: deliveryTagBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredPrice,
-    hasError: priceHasError,
-    reset: priceReset,
-    errorMessage: priceError,
-    inputIsValid: priceIsValid,
-    updateInputHandler: priceInputHandler,
-    inputBlurHandler: priceBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
-  const {
-    enteredInput: enteredStatus,
-    hasError: statusHasError,
-    reset: statusReset,
-    errorMessage: statusError,
-    inputIsValid: statusIsValid,
-    updateInputHandler: statusInputHandler,
-    inputBlurHandler: statusBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
+const CreateProduct = ({ title, id }: any) => {
+  const dispatch = useAppDispatch();
+  const request = useHTTPGet();
+  const send = useHTTPPost();
+  const { success, loading, error, message } = useAppSelector(
+    (state: any) => state.product
+  );
 
+  const [data, setData] = useState({
+    name: "",
+    description: "",
+    discountAvailable: null,
+    discountPercentage: null,
+    quantity: null,
+    brand: "",
+    price: null,
+    deliveryTag: "",
+    deliveryFee: "",
+    weight: null,
+    warranty: "",
+    category: "",
+  });
+
+  const handleChange = (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const { productCategories } = useSelector(
+    (state: any) => state.productCategory
+  );
+
+  const getAProduct = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${productApi}/single-product/${id}`;
+    const dataFunction = (res: any) => {
+      setData({
+        ...data,
+        name: res.data.data.product.name,
+        description: res.data.data.product.description,
+        discountAvailable: res.data.data.product.discount.isDiscountAvailable,
+        discountPercentage: res.data.data.product.discount.discountPercentage,
+        quantity: res.data.data.product.quantity,
+        brand: res.data.data.product.brand,
+        price: res.data.data.product.price,
+        deliveryTag: res.data.data.product.delivery.freeDelivery,
+        deliveryFee: res.data.data.product.delivery.shippingFee,
+        weight: res.data.data.product.weight,
+        warranty: res.data.data.product.productWarranty,
+        category: res.data.data.category.categoryID,
+      });
+    };
+
+    request({ url, accessToken }, dataFunction);
+  };
+
+  const payload = {
+    name: data.name,
+    brand: data.brand,
+    price: data.price,
+    description: data.description,
+    quantity: data.quantity,
+    free_delivery: data.deliveryTag,
+    shipping_fee: data.deliveryFee,
+    category_id: data.category,
+    product_waranty: data.warranty,
+    discount_available: data.discountAvailable,
+    discount_percentage: data.discountPercentage,
+    weight: data.weight,
+  };
+
+  const createProduct = async () => {
+    dispatch(createproduct({ payload, id }));
+  };
+  const updateProduct = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${productApi}/update-product/${id}`;
+    const dataFunction = (res: any) => {};
+    send({ url, values: payload, accessToken }, dataFunction);
+  };
+
+  const submitFormHandler = (e: any) => {
+    e.preventDefault();
+
+    if (title === "Update Product") {
+      updateProduct();
+    } else {
+      createProduct();
+    }
+  };
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (title === "Update Product") {
+      getAProduct();
+    }
+    dispatch(getMyproductCategories(accessToken));
+  }, [title]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "rgba(24, 160, 251, 1)",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch]);
   return (
-    <form className="w-full h-full flex flex-col">
-      <label htmlFor="resume" className=" text-sm font-medium mx-auto">
-        <Image src={userPic} />
-        <input
-          type="file"
-          name="resume"
-          id="resume"
-          accept="image/png, image/jpg, image/gif, image/jpeg"
-          className="hidden"
-        />{" "}
-      </label>
-
-      <div className="mt-[10px]">
-        <label
-          htmlFor="productName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Name
-        </label>
-        <input
-          type="text"
-          name="productName"
-          value={enteredProductName}
-          id="productName"
-          onBlur={productNameBlurHandler}
-          onChange={productNameInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Name "
-        />
-      </div>
-      <div className="mt-[10px]">
-        <label
-          htmlFor="lastName"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product ID
-        </label>
-        <input
-          type="text"
-          name="lastName"
-          value={enteredProductId}
-          id="productId"
-          onBlur={productIdBlurHandler}
-          onChange={productIdInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product ID"
-        />
-      </div>
-      <div className=" mt-[10px]">
-        <label
-          htmlFor="productQuantity"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Quantity
-        </label>
-
-        <input
-          type="text"
-          name="lastName"
-          value={enteredProductQuantity}
-          id="productQuantity"
-          onBlur={productQuantityBlurHandler}
-          onChange={productQuantityInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Quatity"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="productWeight"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Product Weight
-        </label>
-        <input
-          type="text"
-          name="productWeight"
-          value={enteredProductWeight}
-          id="productWeight"
-          onBlur={productWeightBlurHandler}
-          onChange={productWeightInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Product Weight"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="deliveryTag"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Delivery Tag
-        </label>
-        <input
-          type="text"
-          name="deliveryTag"
-          value={enteredDeliveryTag}
-          id="deliveryTag"
-          onBlur={deliveryTagBlurHandler}
-          onChange={deliveryTagInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Delivery Tag"
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="deliveryTag"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Delivery Tag
-        </label>
-        <NumericFormat
-          name="enteredPrice"
-          value={enteredPrice || ""}
-          allowNegative={false}
-          thousandSeparator={true}
-          required
-          prefix={"₦"}
-          onValueChange={(values: any, sourceInfo: any) => {
-            const { formattedValue, value } = values;
-            const { event, source } = sourceInfo;
-            priceInputHandler(value);
-          }}
-        />
-      </div>
-      <div className=" mt-[30px]">
-        <label
-          htmlFor="listingStatus"
-          className=" text-[10px] text-[#1D2939] bg-white"
-        >
-          Status
-        </label>
-        <input
-          type="text"
-          name="status"
-          value={enteredStatus}
-          id="status"
-          onBlur={statusBlurHandler}
-          onChange={statusInputHandler}
-          className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-          placeholder="Listing Status"
-        />
-      </div>
-      <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto"
-        onClick={(e: any) => {
-          e.preventDefault();
-          toggleDrawer();
-          dispatch(
-            uiActions.openModalAndSetContent({
-              modalStyles: {
-                padding: 0,
-              },
-              modalContent: (
-                <SuccessfulModal
-                  title="User Added Sucessfully"
-                  message="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris commodo orci nisi pulvinar eu massa proin sed. "
-                />
-                // <div>i am here now </div>
-              ),
-            })
-          );
-        }}
+    <DrawerWrapper title={title}>
+      <form
+        className="w-full h-full flex flex-col"
+        onSubmit={submitFormHandler}
       >
-        Create Product
-      </button>
-    </form>
+        <div className="mt-[10px]">
+          <label
+            htmlFor="productName"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Name
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={data.name}
+            id="productName"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Name "
+          />
+        </div>
+
+        <div className="mt-[10px]">
+          <label
+            htmlFor="brand"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Brand
+          </label>
+          <input
+            type="text"
+            name="brand"
+            value={data.brand}
+            id="brand"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Brand"
+          />
+        </div>
+        <div className=" mt-[10px]">
+          <label
+            htmlFor="productQuantity"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Quantity
+          </label>
+
+          <input
+            type="number"
+            name="quantity"
+            value={data.quantity}
+            id="productQuantity"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Quantity"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="productWarranty"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Warranty
+          </label>
+          <input
+            type="text"
+            name="warranty"
+            value={data.warranty}
+            id="productWarranty"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product Warranty"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="productWeight"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Product Weight(in kg)
+          </label>
+          <input
+            type="number"
+            name="weight"
+            value={data.weight}
+            id="productweight"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Product weight"
+          />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="category"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Category
+          </label>
+
+          <select
+            name="category"
+            value={data.category}
+            id="category"
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+              });
+            }}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Category"
+          >
+            {productCategories?.map((item: any) => (
+              <option
+                value={item.categoryID}
+                key={item.categoryID}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="discount"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Discount Available
+          </label>
+
+          <select
+            name="discountAvailable"
+            value={data.discountAvailable}
+            id="discount"
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+                discountPercentage: "0",
+              });
+            }}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="discount"
+          >
+            {delivery?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        {data.discountAvailable === "Yes" && (
+          <div className=" mt-[30px]">
+            <label
+              htmlFor="discountPercentage"
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              Discount Percentege
+            </label>
+            <input
+              type="number"
+              name="discountPercentage"
+              value={data.discountPercentage}
+              id="discountPercentage"
+              onChange={handleChange}
+              className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+              placeholder="Discount Percentege"
+            />
+          </div>
+        )}
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="price"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Price
+          </label>
+          <NumericFormat
+            name="enteredPrice"
+            value={data.price || ""}
+            allowNegative={false}
+            thousandSeparator={true}
+            required
+            prefix={"₦"}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            onValueChange={(values: any, sourceInfo: any) => {
+              const { formattedValue, value } = values;
+              const { event, source } = sourceInfo;
+              console.log(event.target.value);
+              setData({ ...data, price: value });
+            }}
+          />
+        </div>
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="role"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Delivery Tag
+          </label>
+
+          <select
+            name="deliveryTag"
+            value={data.deliveryTag}
+            id="delivery"
+            onChange={(e: any) => {
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+                deliveryFee: "0",
+              });
+            }}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Delivery Tag"
+          >
+            {delivery?.map((item: any) => (
+              <option
+                value={item.name}
+                key={item.id}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {data.deliveryTag === "No" && (
+          <div className=" mt-[30px]">
+            <label
+              htmlFor="deliveryFee"
+              className=" text-[10px] text-[#1D2939] bg-white"
+            >
+              Delivery Fee
+            </label>
+            <NumericFormat
+              name="deliveryFee"
+              value={data.deliveryFee || ""}
+              allowNegative={false}
+              thousandSeparator={true}
+              required
+              prefix={"₦"}
+              className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+              onValueChange={(values: any, sourceInfo: any) => {
+                const { formattedValue, value } = values;
+
+                const { event, source } = sourceInfo;
+
+                setData({ ...data, deliveryFee: value });
+              }}
+            />
+          </div>
+        )}
+
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="description"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            Description
+          </label>
+          <input
+            type="text"
+            name="description"
+            value={data.description}
+            id="description"
+            onChange={handleChange}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="Description"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-4"
+        >
+          {title === "Update Product" ? "Update Product" : "Create Product"}
+        </button>
+      </form>
+    </DrawerWrapper>
   );
 };
 export default CreateProduct;

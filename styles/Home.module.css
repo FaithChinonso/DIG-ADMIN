@@ -3,3 +3,7 @@
   max-width: 100vw;
   overflow: hidden;
 } */
+.spinner {
+  z-index: 200000000000;
+  color: red;
+}
