@@ -136,7 +136,7 @@ const OneTrip = ({ tripId }: any) => {
             </div>
           </div>
         </div>{" "}
-        <TrackRide />
+        <TrackRide trip={trip} refreshHandler={() => fetchATrip(tripId)} />
       </div>
     </ParentContainer>
   );

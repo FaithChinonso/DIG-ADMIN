@@ -7,18 +7,18 @@ import { useAppDispatch } from "src/Hooks/use-redux";
 
 export default function DrawerCard() {
   if (typeof window === "undefined") return;
-  const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
-  const updateMedia = () => {
-    if (typeof window !== "undefined") {
-      setDesktop(window.innerWidth > 600);
-    }
-  };
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", updateMedia);
-      return () => window.removeEventListener("resize", updateMedia);
-    }
-  });
+  // const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
+  // const updateMedia = () => {
+  //   if (typeof window !== "undefined") {
+  //     setDesktop(window.innerWidth > 600);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     window.addEventListener("resize", updateMedia);
+  //     return () => window.removeEventListener("resize", updateMedia);
+  //   }
+  // });
 
   const styles = {
     main: {
@@ -56,7 +56,7 @@ export default function DrawerCard() {
       position: "absolute",
     } as React.CSSProperties,
   };
-  const styled = isDesktop ? styles.desktop : styles.mobile;
+  // const styled = isDesktop ? styles.desktop : styles.mobile;
 
   const dispatch = useAppDispatch();
   const drawerOpened = useSelector((state: any) => state.ui.drawerOpened);
@@ -80,9 +80,9 @@ export default function DrawerCard() {
         >
           <div
             style={{
-              ...styled,
               ...drawerStyles,
             }}
+            className="absolute bg-white overflow-auto w-[95vw] md:w-[483px] h-[70vh] max-h-[70vh] md:h-screen bottom-0 md:bottom-auto md:top-0 md:right-0"
             onClick={e => {
               e.stopPropagation();
             }}

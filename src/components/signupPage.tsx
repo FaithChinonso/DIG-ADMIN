@@ -55,7 +55,7 @@ const SignUp = () => {
   }, [loading, error, message, success, dispatch]);
 
   return (
-    <div className="flex w-screen items-center justify-center md:items-start md:justify-start flex-col md:flex-row max-w-screen overflow-hidden h-screen">
+    <div className="flex w-screen items-center justify-center md:justify-start flex-col md:flex-row max-w-screen overflow-hidden h-screen">
       <div className="hidden md:w-[600px] h-screen md:flex flex-col md:flex-row items-center justify-center relative">
         <div className="w-full hidden md:block">
           <Image

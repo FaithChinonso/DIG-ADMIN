@@ -25,7 +25,7 @@ import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const accessToken = useAppSelector(state => state.auth);
+  const { token } = useAppSelector(state => state.auth);
   const request = useHTTPGet();
   const { users, loading, error, message, success } = useAppSelector(
     state => state.user
@@ -35,18 +35,18 @@ const Home = () => {
   const last10Users = users.slice(users.length - 10);
 
   useEffect(() => {
-    dispatch(getMyuser(accessToken));
-    dispatch(getMyproduct(accessToken));
-    dispatch(getMyservice(accessToken));
-    dispatch(getMywithdrawal(accessToken));
-    dispatch(getMyproposal(accessToken));
-    dispatch(getMyjobs(accessToken));
-    dispatch(getMyserviceCategories(accessToken));
-    dispatch(getMyproductCategories(accessToken));
-    dispatch(getMyTransactions(accessToken));
-    dispatch(getAdminlogs(accessToken));
-    dispatch(getMyOrders(accessToken));
-  }, [dispatch, accessToken]);
+    dispatch(getMyuser(token));
+    dispatch(getMyproduct(token));
+    dispatch(getMyservice(token));
+    dispatch(getMywithdrawal(token));
+    dispatch(getMyproposal(token));
+    dispatch(getMyjobs(token));
+    dispatch(getMyserviceCategories(token));
+    dispatch(getMyproductCategories(token));
+    dispatch(getMyTransactions(token));
+    dispatch(getAdminlogs(token));
+    dispatch(getMyOrders(token));
+  }, [dispatch, token]);
   return (
     <Dashboard
       recentUsers={last10Users}

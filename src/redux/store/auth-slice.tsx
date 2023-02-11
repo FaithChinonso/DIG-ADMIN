@@ -56,6 +56,7 @@ const authSlice = createSlice({
       sessionStorage.removeItem("adminDetails");
       state.token = "";
       state.adminDetails = {};
+      window.location.href = "/";
     },
   },
 });
