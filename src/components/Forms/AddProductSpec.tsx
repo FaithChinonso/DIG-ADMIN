@@ -30,13 +30,6 @@ const AddProductSpec = ({ id, title, existingSpec }: any) => {
   };
   console.log(items);
 
-  const getAProductSpec = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-
-    try {
-      const res = await axios.get("");
-    } catch {}
-  };
   const submitFormHandler = (e: any) => {
     const payload = {
       spec: items,

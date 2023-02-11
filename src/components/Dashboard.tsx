@@ -22,7 +22,7 @@ const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {
         />
         {/* <div className="flex gap-5 flex-col lg:flex-row "> */}
         <div className="w-full flex flex-col md:flex-row gap-8  h-auto md:h-[500px] py-3">
-          <div className="w-full md:w-[65%] overflow-x-auto bg-white p-4 md:p-8 rounded-sm ">
+          <div className="w-full md:w-[65%] overflow-x-auto bg-white p-4 rounded-sm ">
             {" "}
             <DashboardChart transaction={transactions} />
           </div>

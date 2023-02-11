@@ -93,7 +93,7 @@ const DashboardChart = ({ transaction }: any) => {
           </select>
         </div>
       </div>
-      <ResponsiveContainer height={300} width="90%" className="">
+      <ResponsiveContainer height={300} width="100%" className="mx-auto">
         <AreaChart
           width={500}
           height={400}
@@ -101,7 +101,7 @@ const DashboardChart = ({ transaction }: any) => {
           margin={{
             top: 10,
             right: 0,
-            left: 0,
+            left: 20,
             bottom: 0,
           }}
         >
