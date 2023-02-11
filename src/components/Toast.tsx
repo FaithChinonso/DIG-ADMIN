@@ -9,7 +9,7 @@ export default function Toast() {
   if (typeof window === "undefined") return;
   const dispatch = useAppDispatch();
 
-  const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
+  // const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
   const { toastOpened, toastContent, backgroundColor } = useSelector(
     (state: any) => state.ui
   );
@@ -34,29 +34,29 @@ export default function Toast() {
       borderRadius: "4px",
       bgcolor: "#FFFFFF",
     } as React.CSSProperties,
-    messageBox: {
-      width: isDesktop ? "591px" : "90%",
-      height: "50px",
-      overflow: "auto",
-      borderRadius: "5px",
-      color: "white",
-      top: 2,
-      right: 2,
-      textAlign: "center",
-      position: "absolute",
-    } as React.CSSProperties,
+    // messageBox: {
+    //   width: isDesktop ? "591px" : "90%",
+    //   height: "50px",
+    //   overflow: "auto",
+    //   borderRadius: "5px",
+    //   color: "white",
+    //   top: 2,
+    //   right: 2,
+    //   textAlign: "center",
+    //   position: "absolute",
+    // } as React.CSSProperties,
   };
-  const updateMedia = () => {
-    if (typeof window !== "undefined") {
-      setDesktop(window.innerWidth > 600);
-    }
-  };
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", updateMedia);
-      return () => window.removeEventListener("resize", updateMedia);
-    }
-  }, []);
+  // const updateMedia = () => {
+  //   if (typeof window !== "undefined") {
+  //     setDesktop(window.innerWidth > 600);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     window.addEventListener("resize", updateMedia);
+  //     return () => window.removeEventListener("resize", updateMedia);
+  //   }
+  // }, []);
 
   return (
     <>
@@ -72,8 +72,9 @@ export default function Toast() {
           <div
             style={{
               backgroundColor: backgroundColor,
-              ...styles.messageBox,
+              // ...styles.messageBox,
             }}
+            className="w-[90%] md:w-[591px] h-[50px] overflow-auto rounded-[5px] text-white top-2 right-2 absolute text-center"
           >
             <div
               onClick={e => {
