@@ -57,8 +57,8 @@ const JobDetails = ({ data }: any) => {
               Skills Needed
             </div>
             <div className="flex justify-between mt-5 w-full">
-              {data?.skillsNeeded?.map((item: any) => (
-                <div className="mt-5">
+              {data?.skillsNeeded?.map((item: any, index: any) => (
+                <div className="mt-5" key={index}>
                   <div className="text-xs text-text mb-5">{item?.title}</div>
                   <div className="text-base text-[#090F47]">{item?.value}</div>
                 </div>

@@ -76,26 +76,6 @@ const AddService = ({ id, title }: any) => {
     setItems(newItems);
   };
 
-  const getAService = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${serviceApi}/single-service/${id}`;
-    const dataFunction = (res: any) => {
-      setData({
-        ...data,
-        service: res.data.data.service.serviceName,
-        description: res.data.data.service.description,
-        experience: res.data.data.service.yearsOfExperience,
-        amount: res.data.data.service.pricing,
-        location: res.data.data.service.location,
-        phone: res.data.data.service.phoneNumber,
-        category: res.data.data.category.categoryID,
-      });
-      setItems(res.data.data.service.other_details);
-    };
-    console.log(data);
-    request({ url, accessToken }, dataFunction);
-  };
-
   const payload = {
     service_name: data.service,
     category_id: data.category,
@@ -128,10 +108,29 @@ const AddService = ({ id, title }: any) => {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     if (title === "Update Service") {
+      const getAService = async () => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const url = `${serviceApi}/single-service/${id}`;
+        const dataFunction = (res: any) => {
+          setData({
+            ...data,
+            service: res.data.data.service.serviceName,
+            description: res.data.data.service.description,
+            experience: res.data.data.service.yearsOfExperience,
+            amount: res.data.data.service.pricing,
+            location: res.data.data.service.location,
+            phone: res.data.data.service.phoneNumber,
+            category: res.data.data.category.categoryID,
+          });
+          setItems(res.data.data.service.other_details);
+        };
+
+        request({ url, accessToken }, dataFunction);
+      };
       getAService();
     }
     dispatch(getMyserviceCategories(accessToken));
-  }, [title]);
+  }, [title, dispatch, request, data, id]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -317,6 +316,7 @@ const AddService = ({ id, title }: any) => {
         {items?.map((element, index) => (
           <MultipleInput
             index={index}
+            key={index}
             element={element}
             handleChange={handleChange}
             removeFormFields={removeFormFields}

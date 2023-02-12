@@ -18,8 +18,26 @@ import FilterTable from "../filter-table";
 import DataFilterTable from "../DataTable";
 import CreateProduct from "../Forms/CreateProduct";
 import AddService from "../Forms/AddService";
+import {
+  adminType,
+  consumerType,
+  driverType,
+  merchantType,
+  riderType,
+} from "src/@types/data";
 
-const UserTable = ({ data, type = "", action = "" }: any) => {
+type Prop = {
+  data:
+    | driverType[]
+    | riderType[]
+    | merchantType[]
+    | consumerType[]
+    | adminType[];
+  type: string | null;
+  action: string | null;
+};
+
+const UserTable = ({ data, type = "", action = "" }: Prop) => {
   const [userId, setUserId] = useState();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -60,21 +78,33 @@ const UserTable = ({ data, type = "", action = "" }: any) => {
     };
     isActive: boolean;
   };
-  const formatData = data?.slice(0).map((client: Data, index: number) => {
-    return {
-      id: client.userID,
-      serial: index + 1,
-      gender: client.gender,
-      fullName: client.fullName,
-      email: client.email,
-      phone: client.phone,
-      applicationName: client.applicationName,
-      emailVerifiedStatus: client.emailVerifiedStatus,
-      role: client.role,
-      isActive: client.isActive,
-      dateAdded: moment(client.dateAdded).format("ll"),
-    };
-  });
+  const formatData = data
+    ?.slice(0)
+    .map(
+      (
+        client:
+          | driverType
+          | riderType
+          | merchantType
+          | consumerType
+          | adminType,
+        index: number
+      ) => {
+        return {
+          id: client.userID,
+          serial: index + 1,
+          gender: client.gender,
+          fullName: client.fullName,
+          email: client.email,
+          phone: client.phone,
+          applicationName: client.applicationName,
+          emailVerifiedStatus: client.emailVerifiedStatus,
+          role: client.role,
+          isActive: client.isActive,
+          dateAdded: moment(client.dateAdded).format("ll"),
+        };
+      }
+    );
   const columnUsers = [
     {
       name: "Full Name",

@@ -1,16 +1,11 @@
-import useInput from "../../Hooks/use-input";
-import userPic from "../../assets/image/userPic.svg";
-import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { useEffect, useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { ConnectingAirportsOutlined } from "@mui/icons-material";
-import { addProductCategory } from "src/redux/store/data-slice";
+
 import useHTTPGet from "src/Hooks/use-httpget";
 import { delivery } from "src/utils/analytics";
-import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
 import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
@@ -18,7 +13,7 @@ import {
   clearMessage,
   createproduct,
 } from "src/redux/store/features/product-slice";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
+
 import { productApi } from "../api";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 
@@ -33,14 +28,14 @@ const CreateProduct = ({ title, id }: any) => {
   const [data, setData] = useState({
     name: "",
     description: "",
-    discountAvailable: null,
-    discountPercentage: null,
-    quantity: null,
+    discountAvailable: "",
+    discountPercentage: "",
+    quantity: "",
     brand: "",
     price: null,
     deliveryTag: "",
     deliveryFee: "",
-    weight: null,
+    weight: "",
     warranty: "",
     category: "",
   });
@@ -52,30 +47,6 @@ const CreateProduct = ({ title, id }: any) => {
   const { productCategories } = useSelector(
     (state: any) => state.productCategory
   );
-
-  const getAProduct = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${productApi}/single-product/${id}`;
-    const dataFunction = (res: any) => {
-      setData({
-        ...data,
-        name: res.data.data.product.name,
-        description: res.data.data.product.description,
-        discountAvailable: res.data.data.product.discount.isDiscountAvailable,
-        discountPercentage: res.data.data.product.discount.discountPercentage,
-        quantity: res.data.data.product.quantity,
-        brand: res.data.data.product.brand,
-        price: res.data.data.product.price,
-        deliveryTag: res.data.data.product.delivery.freeDelivery,
-        deliveryFee: res.data.data.product.delivery.shippingFee,
-        weight: res.data.data.product.weight,
-        warranty: res.data.data.product.productWarranty,
-        category: res.data.data.category.categoryID,
-      });
-    };
-
-    request({ url, accessToken }, dataFunction);
-  };
 
   const payload = {
     name: data.name,
@@ -114,10 +85,35 @@ const CreateProduct = ({ title, id }: any) => {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     if (title === "Update Product") {
+      const getAProduct = async () => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const url = `${productApi}/single-product/${id}`;
+        const dataFunction = (res: any) => {
+          setData({
+            ...data,
+            name: res.data.data.product.name,
+            description: res.data.data.product.description,
+            discountAvailable:
+              res.data.data.product.discount.isDiscountAvailable,
+            discountPercentage:
+              res.data.data.product.discount.discountPercentage,
+            quantity: res.data.data.product.quantity,
+            brand: res.data.data.product.brand,
+            price: res.data.data.product.price,
+            deliveryTag: res.data.data.product.delivery.freeDelivery,
+            deliveryFee: res.data.data.product.delivery.shippingFee,
+            weight: res.data.data.product.weight,
+            warranty: res.data.data.product.productWarranty,
+            category: res.data.data.category.categoryID,
+          });
+        };
+
+        request({ url, accessToken }, dataFunction);
+      };
       getAProduct();
     }
     dispatch(getMyproductCategories(accessToken));
-  }, [title]);
+  }, [title, dispatch, data, id, request]);
 
   useEffect(() => {
     if (loading === true) {
@@ -204,7 +200,7 @@ const CreateProduct = ({ title, id }: any) => {
           <input
             type="number"
             name="quantity"
-            value={data.quantity}
+            value={data?.quantity}
             id="productQuantity"
             onChange={handleChange}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"

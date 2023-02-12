@@ -1,14 +1,11 @@
 import React from "react";
-import { tableData, transactions } from "src/utils/analytics";
-import ActionMenuBase from "./ActionMenu/ActionMenuBase";
-import ActionMenuItem from "./ActionMenu/ActionMenuItem";
+
 import CardContainer from "./CardContainer";
 import DashboardChart from "./DashboardChart";
-import DashboardPieChart from "./DashboardPieChart";
-import FilterTable from "./filter-table";
+
 import ParentContainer from "./ParentContainer";
 import PieChartDashboard from "./PieChart";
-import SmallTable from "./SmallTable";
+
 import UserTable from "./tables/UserTable";
 
 const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {

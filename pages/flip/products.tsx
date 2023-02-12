@@ -7,7 +7,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyProductValue } from "../../src/utils/boxValues";
 import ProductCategory from "src/components/ProductCategory";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
@@ -20,7 +20,7 @@ import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Products = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { products, loading, error, message, success } = useAppSelector(
     (state: any) => state.product
@@ -66,11 +66,11 @@ const Products = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
   useEffect(() => {
     dispatch(getMyproductCategories(token));
     dispatch(getMyproduct(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
   return (
     <ParentContainer>
       <div className=" h-screen">

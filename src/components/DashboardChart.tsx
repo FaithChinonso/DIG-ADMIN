@@ -101,7 +101,7 @@ const DashboardChart = ({ transaction }: any) => {
           margin={{
             top: 10,
             right: 0,
-            left: 20,
+            left: 40,
             bottom: 0,
           }}
         >

@@ -51,11 +51,11 @@ const Orders = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getMyOrders(token));
-  }, [dispatch]);
+  }, [dispatch,token]);
 
   return (
     <ParentContainer>

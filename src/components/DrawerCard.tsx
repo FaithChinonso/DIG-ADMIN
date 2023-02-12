@@ -1,24 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../redux/store/ui-slice";
-import Cancel from "../assets/cancel.png";
-import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
-import { useAppDispatch } from "src/Hooks/use-redux";
+
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 
 export default function DrawerCard() {
-  if (typeof window === "undefined") return;
-  // const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
-  // const updateMedia = () => {
-  //   if (typeof window !== "undefined") {
-  //     setDesktop(window.innerWidth > 600);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     window.addEventListener("resize", updateMedia);
-  //     return () => window.removeEventListener("resize", updateMedia);
-  //   }
-  // });
+  const dispatch = useAppDispatch();
+  const drawerOpened = useAppSelector((state: any) => state.ui.drawerOpened);
+  const drawerContent = useAppSelector((state: any) => state.ui.drawerContent);
+  const drawerStyles = useAppSelector((state: any) => state.ui.drawerStyles);
+  if (typeof window === "undefined") return <></>;
 
   const styles = {
     main: {
@@ -56,12 +45,6 @@ export default function DrawerCard() {
       position: "absolute",
     } as React.CSSProperties,
   };
-  // const styled = isDesktop ? styles.desktop : styles.mobile;
-
-  const dispatch = useAppDispatch();
-  const drawerOpened = useSelector((state: any) => state.ui.drawerOpened);
-  const drawerContent = useSelector((state: any) => state.ui.drawerContent);
-  const drawerStyles = useSelector((state: any) => state.ui.drawerStyles);
 
   const Close = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -82,7 +65,7 @@ export default function DrawerCard() {
             style={{
               ...drawerStyles,
             }}
-            className="absolute bg-white overflow-auto w-[95vw] md:w-[483px] h-[70vh] max-h-[70vh] md:h-screen bottom-0 md:bottom-auto md:top-0 md:right-0"
+            className="absolute bg-white overflow-auto w-[95vw] md:w-[483px] h-[70vh]  max-h-[70vh] md:max-h-screen md:h-screen bottom-0 md:bottom-auto md:top-0 md:right-0"
             onClick={e => {
               e.stopPropagation();
             }}

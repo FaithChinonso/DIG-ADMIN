@@ -1,39 +1,19 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
-
-import profilePic from "../../../src/assets/image/profilePic.svg";
-import verify from "../../../src/assets/image/verify.svg";
-import gender from "../../../src/assets/image/gender.svg";
-import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+
 import Box from "@mui/material/Box";
 import { MyJobValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
-
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
-import Image from "next/image";
-import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
-import BankDetails from "../../../src/components/BoxComponents/BankDetails";
-import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
-import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
-import Profile from "../../../src/components/Profile";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
 import { uiActions } from "../../../src/redux/store/ui-slice";
-import { useDispatch } from "react-redux";
-import ActionList from "../../../src/components/ActionList";
+
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import ProposalTable from "src/components/tables/ProposalTable";
 import { GetStaticProps } from "next/types";
-import JobList from "src/components/jobList";
 import { clearError, clearMessage } from "src/redux/store/features/job-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import JobList from "src/components/JobList";
 
 const OneMerchant = (props: any) => {
   const { jobs, loading, error, message, success } = useAppSelector(
@@ -120,7 +100,7 @@ const OneMerchant = (props: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, props.jobId]);
   return (
     <ParentContainer>
       <div>
@@ -204,8 +184,8 @@ const OneMerchant = (props: any) => {
                     Skills Needed
                   </div>
                   <div className="flex justify-between mt-5 w-full">
-                    {job?.skillsNeeded?.map((item: any) => (
-                      <div className="mt-5">
+                    {job?.skillsNeeded?.map((item: any, index: any) => (
+                      <div className="mt-5" key={index}>
                         <div className="text-xs text-text mb-5">
                           {item?.title}
                         </div>

@@ -48,10 +48,10 @@ const Trips = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
   useEffect(() => {
     dispatch(getMyTrips(token));
-  }, []);
+  }, [dispatch, token]);
   return (
     <ParentContainer>
       {/* <div className=" p-[10px] md:p-[30px]"> */}

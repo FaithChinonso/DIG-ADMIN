@@ -9,7 +9,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
@@ -26,12 +26,13 @@ import { userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { merchantType } from "src/@types/data";
 
 const OneMerchant = (props: any) => {
   const router = useRouter();
   const request = useHTTPGet();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { users, loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
@@ -42,13 +43,13 @@ const OneMerchant = (props: any) => {
   //   message: messageJob,
   //   error: errorJob,
   // } = useAppSelector((state: any) => state.job);
-  const [user, setUser] = useState<any>({});
+  const [user, setUser] = useState<merchantType>();
   const [orders, setOrders] = useState<any>([]);
   const [job, setJob] = useState<any>();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
 
-  const fetchAMerchant = async (id: any) => {
+  const fetchAMerchant = useCallback(async (id: any) => {
     const url = `${userApi}/single-user/${id}`;
     const accessToken = sessionStorage.getItem("accessToken");
     const dataFunction = (res: any) => {
@@ -56,23 +57,23 @@ const OneMerchant = (props: any) => {
       setUser(res.data.data);
     };
     request({ url, accessToken }, dataFunction);
-  };
-  const fetchAllJobs = (id: any) => {
+  }, [request]);
+  const fetchAllJobs = useCallback((id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
     const dataFunction = (res: any) => {
       setJob(res.data.data);
     };
     request({ url, accessToken }, dataFunction);
-  };
-  const fetchOrdersByAMerchant = (id: any) => {
+  }, [request]);
+  const fetchOrdersByAMerchant = useCallback((id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `https://backendapi.flip.onl/api/admin/order/orders-for-merchant/${id}`;
     const dataFunction = (res: any) => {
       setOrders(res.data.data);
     };
     request({ url, accessToken }, dataFunction);
-  };
+  }, [request]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -81,7 +82,13 @@ const OneMerchant = (props: any) => {
     fetchAMerchant(props.merchantId);
     fetchAllJobs(props.merchantId);
     fetchOrdersByAMerchant(props.merchantId);
-  }, [props.merchantId, dispatch]);
+  }, [
+    props.merchantId,
+    dispatch,
+    fetchAMerchant,
+    fetchAllJobs,
+    fetchOrdersByAMerchant,
+  ]);
 
   useEffect(() => {
     if (loading === true) {
@@ -114,7 +121,15 @@ const OneMerchant = (props: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [
+    loading,
+    error,
+    message,
+    success,
+    dispatch,
+    fetchAMerchant,
+    props.merchantId,
+  ]);
   return (
     <ParentContainer>
       <div>
@@ -190,7 +205,7 @@ const OneMerchant = (props: any) => {
                 <div className="text-white flex flex-col">
                   <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
                   <p className="text-[10px]">
-                    {user?.profile?.merchantCategory}
+                    {user?.profile?.merchantCategory.categoryName}
                   </p>
                 </div>
               </div>
@@ -263,7 +278,7 @@ const OneMerchant = (props: any) => {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              <TransactionHistory id={user.userID} />
+              <TransactionHistory id={user?.userID} />
             </TabPanel>
             <TabPanel value={value} index={4}>
               <div></div>

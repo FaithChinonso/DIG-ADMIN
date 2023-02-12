@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPPost from "src/Hooks/use-httppost";
-import { addServiceCategory } from "src/redux/store/data-slice";
+import { useAppDispatch } from "src/Hooks/use-redux";
+
 import {
   clearError,
   clearMessage,
@@ -16,15 +14,11 @@ import { uiActions } from "src/redux/store/ui-slice";
 import ActionMenuBase from "./ActionMenu/ActionMenuBase";
 import ActionMenuItem from "./ActionMenu/ActionMenuItem";
 import DataFilterTable from "./DataTable";
-import DrawerCard from "./Drawer";
 import AddServiceCategory from "./Forms/AddServiceCategory";
-// import AddServiceCategory from "./Forms/AddServiceCategory";
 import ModalAction from "./ModalContent/ModalAction";
-import SuccessfulModal from "./ModalContent/SuccessfulModal";
-import MultipleSelectTable from "./multiple-select-table";
 
 const ServiceCategory = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { serviceCategories, loading, error, message, success } = useSelector(
     (state: any) => state.serviceCategory
   );
@@ -76,10 +70,10 @@ const ServiceCategory = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
   useEffect(() => {
     dispatch(getMyserviceCategories(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   type Data = {
     categoryID: number;

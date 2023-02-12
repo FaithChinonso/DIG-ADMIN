@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+  adminType,
+  consumerType,
+  driverType,
+  merchantType,
+  riderType,
+} from "src/@types/data";
 import { userApi } from "src/components/api";
 
 interface userData {
@@ -171,8 +178,9 @@ export const getMyDrivers = createAsyncThunk(
 );
 export const fetchMyDriver = createAsyncThunk(
   "user/fetchMyDriver",
-  async (accessToken: any, thunkAPI: any) => {
+  async (thunkAPI: any) => {
     try {
+      let accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(`${userApi}/users-by-role/driver`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -216,11 +224,16 @@ export const deleteuser = createAsyncThunk(
   }
 );
 interface userState {
-  users: any;
-  merchants: any;
-  drivers: any;
-  consumers: any;
-  riders: any;
+  users:
+    | merchantType[]
+    | driverType[]
+    | consumerType[]
+    | riderType[]
+    | adminType[];
+  merchants: merchantType[];
+  drivers: driverType[];
+  consumers: consumerType[];
+  riders: riderType[];
   success: boolean;
   loading: boolean;
   error: string;

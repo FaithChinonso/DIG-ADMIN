@@ -40,7 +40,7 @@ const Home = () => {
     dispatch(getMyservice(token));
     dispatch(getMywithdrawal(token));
     dispatch(getMyproposal(token));
-    dispatch(getMyjobs(token));
+    dispatch(getMyjobs(''));
     dispatch(getMyserviceCategories(token));
     dispatch(getMyproductCategories(token));
     dispatch(getMyTransactions(token));

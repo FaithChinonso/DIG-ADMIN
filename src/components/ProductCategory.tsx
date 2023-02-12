@@ -1,9 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPPost from "src/Hooks/use-httppost";
-import { addProductCategory } from "src/redux/store/data-slice";
+import { useAppDispatch } from "src/Hooks/use-redux";
+
 import {
   clearError,
   clearMessage,
@@ -12,19 +10,15 @@ import {
   fetchProductCategory,
   getMyproductCategories,
 } from "src/redux/store/features/product-category-slice";
-import { editserviceCategory } from "src/redux/store/features/service-category-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import ActionMenuBase from "./ActionMenu/ActionMenuBase";
 import ActionMenuItem from "./ActionMenu/ActionMenuItem";
 import DataFilterTable from "./DataTable";
-import DrawerCard from "./Drawer";
 import AddProductCategory from "./Forms/AddProductCategory";
-import AddServiceCategory from "./Forms/AddServiceCategory";
 import ModalAction from "./ModalContent/ModalAction";
-import MultipleSelectTable from "./multiple-select-table";
 
 const ProductCategory = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { productCategories, loading, error, success, message } = useSelector(
     (state: any) => state.productCategory
@@ -47,7 +41,7 @@ const ProductCategory = () => {
 
   useEffect(() => {
     dispatch(getMyproductCategories(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -80,7 +74,7 @@ const ProductCategory = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
   type Data = {
     categoryID: number;
     serial: number;

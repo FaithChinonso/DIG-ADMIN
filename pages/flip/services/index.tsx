@@ -1,12 +1,9 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
-import moment from "moment";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
 import ServiceCategory from "src/components/ServiceCategory";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { MyServiceValue } from "src/utils/boxValues";
 import { a11yProps, TabPanel } from "src/utils/helperFunctions";
 import { uiActions } from "../../../src/redux/store/ui-slice";
@@ -17,10 +14,9 @@ import {
   getMyservice,
 } from "src/redux/store/features/service-slice";
 import ServiceTable from "src/components/tables/ServiceTable";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Service = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { services, loading, error, message, success } = useAppSelector(
     state => state.service
@@ -77,11 +73,11 @@ const Service = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getMyservice(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
   return (
     <ParentContainer>
       <Box

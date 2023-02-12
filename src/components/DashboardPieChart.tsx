@@ -1,7 +1,6 @@
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { statusData } from "src/utils/analytics";
+import React, { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Months } from "src/utils/months";
 
 const data = [
@@ -82,7 +81,7 @@ const DashboardPieChart = ({ orders }: any) => {
       },
     ]);
     console.log(orders, statusGroup);
-  }, []);
+  }, [filterOrders, orders, statusGroup]);
 
   return (
     <div className="bg-white w-full md:w-[35%] h-[auto] z-4 shadow-3xl rounded-md p-7">

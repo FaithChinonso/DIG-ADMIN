@@ -59,15 +59,6 @@ const AddProductCategory = ({ type, id }: any) => {
   formData.append("image", selectedFile);
   formData.append("name", name);
 
-  const getMyCategory = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${productCategoryApi}/single-product-category/${id}`;
-    const dataFunction = (res: any) => {
-      setName(res.data.data.name);
-      saveProfilePict(res.data.data.image);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
   const updateCategory = async () => {
     const data = {
       payload: formData,
@@ -91,9 +82,18 @@ const AddProductCategory = ({ type, id }: any) => {
   };
   useEffect(() => {
     if (type === "edit") {
+      const getMyCategory = async () => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const url = `${productCategoryApi}/single-product-category/${id}`;
+        const dataFunction = (res: any) => {
+          setName(res.data.data.name);
+          saveProfilePict(res.data.data.image);
+        };
+        request({ url, accessToken }, dataFunction);
+      };
       getMyCategory();
     }
-  }, []);
+  }, [type, id, request]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());

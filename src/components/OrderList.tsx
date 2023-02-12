@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteOrder, editorder } from "src/redux/store/features/order-slice";
 import { uiActions } from "../redux/store/ui-slice";
 import ActionMenuBase from "./ActionMenu/ActionMenuBase";
@@ -7,7 +8,7 @@ import ActionMenuItem from "./ActionMenu/ActionMenuItem";
 import ModalAction from "./ModalContent/ModalAction";
 
 const OrderList = ({ order }: any) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   return (

@@ -1,4 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  AsyncThunkAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  AnyAction,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 import { jobApi } from "src/components/api";
 
@@ -78,8 +84,10 @@ export const editjob = createAsyncThunk(
 
 export const getMyjobs = createAsyncThunk(
   "job/getMyjobs",
+
   async (accessToken: any, thunkAPI: any) => {
     try {
+      // const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(`${jobApi}/all-jobs`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -89,9 +97,22 @@ export const getMyjobs = createAsyncThunk(
     }
   }
 );
+// export const fetchJob = createAsyncThunk(
+//   "job/fetchJob",
+//   async (accessToken: string | null, thunkAPI: any) => {
+//     try {
+//       const response = await axios.get(`${jobApi}/all-jobs`, {
+//         headers: { Authorization: `Bearer ${accessToken}` },
+//       });
+//       return response.data;
+//     } catch (error: any) {
+//       return thunkAPI.rejectWithValue(error);
+//     }
+//   }
+// );
 export const fetchJob = createAsyncThunk(
   "job/fetchJob",
-  async (accessToken: any, thunkAPI: any) => {
+  async (accessToken: any, thunkAPI) => {
     try {
       const response = await axios.get(`${jobApi}/all-jobs`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -172,14 +193,11 @@ const jobSlice = createSlice({
     builder.addCase(getMyjobs.pending, state => {
       state.loading = true;
     });
-    builder.addCase(
-      getMyjobs.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.jobs = action.payload.data;
-      }
-    );
-    builder.addCase(getMyjobs.rejected, (state, action: PayloadAction<any>) => {
+    builder.addCase(getMyjobs.fulfilled, (state, action: AnyAction) => {
+      state.loading = false;
+      state.jobs = action.payload.data;
+    });
+    builder.addCase(getMyjobs.rejected, (state, action: AnyAction) => {
       state.loading = false;
       if (action.payload.response) {
         state.error = action.payload.response.data.message;

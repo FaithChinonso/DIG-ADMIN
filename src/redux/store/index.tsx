@@ -1,6 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import uiSlice from "./ui-slice";
-import dataSlice from "./data-slice";
+
 import authSlice from "./auth-slice";
 import userSlice from "./features/user-slice";
 import productSlice from "./features/product-slice";
@@ -15,27 +15,39 @@ import logSlice from "./features/log-slice";
 import transactionSlice from "./features/transaction-slice";
 import tripSlice from "./features/trip-slice";
 
-const store = configureStore({
-  reducer: {
-    ui: uiSlice.reducer,
-    auth: authSlice.reducer,
-    user: userSlice,
-    product: productSlice,
-    order: orderSlice,
-    service: serviceSlice,
-    proposal: proposalSlice,
-    withdrawal: withdrawalSlice,
-    job: jobSlice,
-    log: logSlice,
-    transaction: transactionSlice,
-    productCategory: productCategorySlice,
-    serviceCategory: serviceCategorySlice,
-    trip: tripSlice,
-  },
-});
+export function makeStore() {
+  return configureStore({
+    reducer: {
+      ui: uiSlice,
+      auth: authSlice,
+      user: userSlice,
+      product: productSlice,
+      order: orderSlice,
+      service: serviceSlice,
+      proposal: proposalSlice,
+      withdrawal: withdrawalSlice,
+      job: jobSlice,
+      log: logSlice,
+      transaction: transactionSlice,
+      productCategory: productCategorySlice,
+      serviceCategory: serviceCategorySlice,
+      trip: tripSlice,
+    },
+  });
+}
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+const store = makeStore();
+
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+
+export type AppState = ReturnType<typeof store.getState>;
+
 export type AppDispatch = typeof store.dispatch;
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  Action<string>
+>;
 export default store;

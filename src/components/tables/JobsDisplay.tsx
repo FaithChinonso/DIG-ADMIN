@@ -1,11 +1,7 @@
 import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { addJobs } from "src/redux/store/data-slice";
 import {
   clearError,
   clearMessage,
@@ -17,11 +13,8 @@ import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
-import DrawerCard from "../Drawer";
 import AddJob from "../Forms/AddJob";
-import JobDetails from "../JobDetails";
 import ModalAction from "../ModalContent/ModalAction";
-import MultipleSelectTable from "../multiple-select-table";
 
 const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();

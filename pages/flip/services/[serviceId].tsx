@@ -35,23 +35,6 @@ const OneMerchant = () => {
   const [service, setService] = useState<any>();
 
   const id = router.query.serviceId;
-  const fetchAService = async () => {
-    console.log(id);
-    const accessToken = sessionStorage.getItem("accessToken");
-    try {
-      const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/service/single-service/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
-      console.log(res?.data.data);
-      setService(res?.data.data);
-    } catch (error: any) {}
-  };
 
   interface TabPanelProps {
     children?: React.ReactNode;
@@ -102,8 +85,24 @@ const OneMerchant = () => {
     setValue(newValue);
   };
   useEffect(() => {
+    const fetchAService = async () => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      try {
+        const res: any = await axios.get(
+          `https://backendapi.flip.onl/api/admin/service/single-service/${id}`,
+          {
+            headers: {
+              authorization: `Bearer ${accessToken}`,
+              authsource: "user",
+            },
+          }
+        );
+        console.log(res?.data.data);
+        setService(res?.data.data);
+      } catch (error: any) {}
+    };
     fetchAService();
-  }, []);
+  }, [id]);
   return (
     <ParentContainer>
       <div>

@@ -44,21 +44,21 @@ const Drivers = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchMyDriver(token));
+      dispatch(fetchMyDriver(""));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getMyDrivers(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>
       <div>
-        <UserTable data={drivers} />
+        <UserTable data={drivers} type="" action="" />
       </div>
     </ParentContainer>
   );

@@ -10,25 +10,29 @@ import TrackRide from "../../../src/components/BoxComponents/TrackRide";
 import ParentContainer from "src/components/ParentContainer";
 import { GetStaticProps } from "next/types";
 import { tripApi } from "src/components/api";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useHTTPGet from "src/Hooks/use-httpget";
 import moment from "moment";
+import { tripType } from "src/@types/data";
 
 const OneTrip = ({ tripId }: any) => {
   const request = useHTTPGet();
-  const [trip, setTrip] = useState();
-  const fetchATrip = async (id: any) => {
-    const url = `${tripApi}/single-trip/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setTrip(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+  const [trip, setTrip] = useState<tripType>();
+  const fetchATrip = useCallback(
+    async (id: any) => {
+      const url = `${tripApi}/single-trip/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        console.log(res);
+        setTrip(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
   useEffect(() => {
     fetchATrip(tripId);
-  }, []);
+  }, [tripId, fetchATrip]);
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">

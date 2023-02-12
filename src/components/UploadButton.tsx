@@ -19,37 +19,37 @@ const UploadButton = (props: any) => {
     if (newFile) {
       const updatedList = [...fileList, newFile];
       setFileList(updatedList as any);
-    props.onHandleChange(newFile);
-  };
+      props.onHandleChange(newFile);
+    }
 
-  //   const fileRemove = (file: any) => {
+    //   const fileRemove = (file: any) => {
 
-  //     props.onFileChange(undefined);
-  //   };
+    //     props.onFileChange(undefined);
+    //   };
 
-  return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    return (
+      <>
         <div
-          className=""
-          //   ref={wrapperRef}
-          //   onDragEnter={onDragEnter}
-          //   onDragLeave={onDragLeave}
-          //   onDrop={onDrop}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <div className="w-full">
-            <Image src={userPic} alt="" width={100} height={100} />
-            <p>Drag & Drop your files here</p>
+          <div
+            className=""
+            //   ref={wrapperRef}
+            //   onDragEnter={onDragEnter}
+            //   onDragLeave={onDragLeave}
+            //   onDrop={onDrop}
+          >
+            <div className="w-full">
+              <Image src={userPic} alt="" width={100} height={100} />
+              <p>Drag & Drop your files here</p>
+            </div>
+            <input type="file" value="" onChange={onFileDrop} />
           </div>
-          <input type="file" value="" onChange={onFileDrop} />
-        </div>
 
-        {/* {fileList.length > 0 ? (
+          {/* {fileList.length > 0 ? (
           <div className={UploadCss.file_preview}>
             <p className={UploadCss.preview_title}>Ready to upload</p>
             {fileList.map((item: any, index) => (
@@ -82,9 +82,10 @@ const UploadButton = (props: any) => {
             ))}
           </div>
         ) : null} */}
-      </div>
-    </>
-  );
+        </div>
+      </>
+    );
+  };
 };
 
 export default UploadButton;

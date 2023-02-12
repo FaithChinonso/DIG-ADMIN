@@ -8,7 +8,7 @@ import ParentContainer from "src/components/ParentContainer";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
   clearMessage,
@@ -20,7 +20,7 @@ import { uiActions } from "src/redux/store/ui-slice";
 
 const Jobs = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { jobs, loading, error, message, success } = useAppSelector(
     state => state.job
@@ -60,10 +60,10 @@ const Jobs = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
   useEffect(() => {
     dispatch(getMyjobs(token));
-  }, []);
+  }, [dispatch, token]);
   return (
     <ParentContainer>
       <div>

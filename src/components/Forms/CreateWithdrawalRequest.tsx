@@ -1,18 +1,9 @@
-import useInput from "../../Hooks/use-input";
-
-import userPic from "../../assets/image/userPic.svg";
-import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
-import { useDispatch, useSelector } from "react-redux";
 
 import { NumericFormat } from "react-number-format";
 import { useEffect, useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { ConnectingAirportsOutlined } from "@mui/icons-material";
-import { addProductCategory } from "src/redux/store/data-slice";
-import useHTTPGet from "src/Hooks/use-httpget";
-import { delivery } from "src/utils/analytics";
-import { isNotEmpty, isNotEmptyNumber } from "src/utils/helperFunctions";
+
 import DrawerWrapper from "../DrawerWrapper";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
@@ -20,7 +11,6 @@ import {
   clearMessage,
   createwithdrawal,
 } from "src/redux/store/features/withdrawal-slice";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
 
 const CreateWithrawalRequest = ({ merchantId, fetchAllProducts }: any) => {
   const dispatch = useAppDispatch();
