@@ -40,7 +40,7 @@ const Audit = () => {
 
   useEffect(() => {
     dispatch(getAdminlogs(token));
-  }, [dispatch]);
+  }, [dispatch,token]);
 
   return (
     <ParentContainer>

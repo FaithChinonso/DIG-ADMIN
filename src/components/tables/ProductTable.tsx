@@ -8,8 +8,6 @@ import {
   editproduct,
 } from "src/redux/store/features/product-slice";
 import { uiActions } from "src/redux/store/ui-slice";
-import { product } from "src/utils/analytics";
-import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
@@ -18,7 +16,6 @@ import AddProductImages from "../Forms/AddProductImages";
 import AddProductSpec from "../Forms/AddProductSpec";
 import CreateProduct from "../Forms/CreateProduct";
 import ModalAction from "../ModalContent/ModalAction";
-import MultipleSelectTable from "../multiple-select-table";
 import ProductDetails from "../ProductDetails";
 
 const ProductTable = ({ data }: any) => {

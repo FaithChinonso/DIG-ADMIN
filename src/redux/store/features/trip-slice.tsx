@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { tripType } from "src/@types/data";
 import { tripApi } from "src/components/api";
 
 export const getMyTrips = createAsyncThunk(
@@ -43,7 +44,7 @@ export const deleteTrip = createAsyncThunk(
   }
 );
 interface tripState {
-  trips: any;
+  trips: tripType[];
   success: boolean;
   loading: boolean;
   error: string;

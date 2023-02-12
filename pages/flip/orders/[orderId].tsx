@@ -4,42 +4,41 @@ import quantity from "../../../src/assets/image/quantity.svg";
 import cost from "../../../src/assets/image/cost.svg";
 import date from "../../../src/assets/image/date.svg";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
-import ActionList from "../../../src/components/ActionList";
-import ParentContainer from "src/components/ParentContainer";
 import { Box, Tab, Tabs } from "@mui/material";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { MyOrderValue } from "src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { orderApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import BuyerDetails from "src/components/BuyerDetails";
 import ProductOrderDetails from "src/components/ProductOrderDetails";
 import OrderList from "src/components/OrderList";
-
 import { uiActions } from "src/redux/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-
 import { GetStaticProps } from "next/types";
 import { clearError, clearMessage } from "src/redux/store/features/order-slice";
+import ParentContainer from "src/components/ParentContainer";
 
 const OneOrder = (props: any) => {
-  const { orders, loading, error, message, success } = useAppSelector(
+  const { loading, error, message, success } = useAppSelector(
     (state: any) => state.order
   );
   const request = useHTTPGet();
   const [order, setOrder] = useState<any>({});
   const dispatch = useAppDispatch();
 
-  const fetchAnOrder = async (id: any) => {
-    const url = `${orderApi}/single-order/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setOrder(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+  const fetchAnOrder = useCallback(
+    (id: any) => {
+      const url = `${orderApi}/single-order/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        console.log(res);
+        setOrder(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
 
   const [selected, setSelected] = useState(1);
 
@@ -50,7 +49,7 @@ const OneOrder = (props: any) => {
   };
   useEffect(() => {
     fetchAnOrder(props.orderId);
-  }, [props.orderId]);
+  }, [props.orderId, fetchAnOrder]);
 
   useEffect(() => {
     if (loading === true) {
@@ -84,7 +83,7 @@ const OneOrder = (props: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, fetchAnOrder, props.orderId]);
   return (
     <ParentContainer>
       <div>

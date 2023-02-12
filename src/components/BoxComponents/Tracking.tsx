@@ -1,14 +1,6 @@
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import MultipleSelectTable from "../multiple-select-table";
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  bank,
-  order,
-  transaction,
-} from "../../utils/analytics";
+
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 
 const Tracking = () => {
@@ -54,7 +46,7 @@ const Tracking = () => {
     <div>
       <MultipleSelectTable
         columns={columnTransaction}
-        data={transaction}
+        data={[]}
         emptyPlaceHolder="No Transactions yet!"
         list
       />

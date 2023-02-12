@@ -70,16 +70,7 @@ const AddServiceCategory = ({ type, id }: any) => {
   const createCategory = () => {
     dispatch(createserviceCategory(formData));
   };
-  const getMyCategory = async () => {
-    const reader = new FileReader();
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${serviceCategoryApi}/single-service-category/${id}`;
-    const dataFunction = (res: any) => {
-      setName(res.data.data.name);
-      // saveProfilePict(res.data.data.image);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+
   const updateCategory = async () => {
     const data = {
       payload: formData,
@@ -99,9 +90,19 @@ const AddServiceCategory = ({ type, id }: any) => {
   };
   useEffect(() => {
     if (type === "edit") {
+      const getMyCategory = async () => {
+        const reader = new FileReader();
+        const accessToken = sessionStorage.getItem("accessToken");
+        const url = `${serviceCategoryApi}/single-service-category/${id}`;
+        const dataFunction = (res: any) => {
+          setName(res.data.data.name);
+          // saveProfilePict(res.data.data.image);
+        };
+        request({ url, accessToken }, dataFunction);
+      };
       getMyCategory();
     }
-  }, []);
+  }, [type,request,id]);
 
   return (
     <DrawerWrapper

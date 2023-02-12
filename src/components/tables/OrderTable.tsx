@@ -1,20 +1,10 @@
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
-import MultipleSelectTable from "../multiple-select-table";
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  bank,
-  order,
-} from "../../utils/analytics";
+
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import { useEffect } from "react";
-import { addOrders } from "src/redux/store/data-slice";
+
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPPost from "src/Hooks/use-httppost";
+
 import moment from "moment";
 import { uiActions } from "src/redux/store/ui-slice";
 import ModalAction from "../ModalContent/ModalAction";
@@ -23,14 +13,12 @@ import {
   clearMessage,
   deleteOrder,
   editorder,
-  getMyOrders,
 } from "src/redux/store/features/order-slice";
 import { useRouter } from "next/router";
 import { DataFilterTable } from "../DataTable";
 
 const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
   const dispatch = useAppDispatch();
-  const accessToken = sessionStorage.getItem("accessToken");
 
   const router = useRouter();
   const { loading, success, message, error } = useAppSelector(
@@ -62,7 +50,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      
+
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

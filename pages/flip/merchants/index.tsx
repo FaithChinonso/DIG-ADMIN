@@ -57,16 +57,16 @@ const Merchants = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getMymerchant(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>
       <div>
-        <UserTable data={merchants} />
+        <UserTable data={merchants} type="" action="" />
       </div>
     </ParentContainer>
   );

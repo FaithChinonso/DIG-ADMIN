@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../redux/store/ui-slice";
-import Cancel from "../assets/cancel.png";
-import CloseIcon from "../assets/images/ant-design_close-circle-outlined.svg";
 import { useAppDispatch } from "src/Hooks/use-redux";
 
-export default function Toast() {
-  if (typeof window === "undefined") return;
-  const dispatch = useAppDispatch();
-
-  // const [isDesktop, setDesktop] = useState(window.innerWidth > 600);
+const Toast = () => {
   const { toastOpened, toastContent, backgroundColor } = useSelector(
     (state: any) => state.ui
   );
+  const dispatch = useAppDispatch();
+  if (typeof window === "undefined") return <></>;
 
   const Close = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -46,17 +42,6 @@ export default function Toast() {
     //   position: "absolute",
     // } as React.CSSProperties,
   };
-  // const updateMedia = () => {
-  //   if (typeof window !== "undefined") {
-  //     setDesktop(window.innerWidth > 600);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     window.addEventListener("resize", updateMedia);
-  //     return () => window.removeEventListener("resize", updateMedia);
-  //   }
-  // }, []);
 
   return (
     <>
@@ -72,7 +57,6 @@ export default function Toast() {
           <div
             style={{
               backgroundColor: backgroundColor,
-              // ...styles.messageBox,
             }}
             className="w-[90%] md:w-[591px] h-[50px] overflow-auto rounded-[5px] text-white top-2 right-2 absolute text-center"
           >
@@ -99,4 +83,5 @@ export default function Toast() {
       )}
     </>
   );
-}
+};
+export default Toast;

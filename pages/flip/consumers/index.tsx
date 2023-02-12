@@ -59,16 +59,16 @@ const Users = () => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getMyConsumers(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>
       <div className="">
-        <UserTable data={consumers} />
+        <UserTable data={consumers} type="" action="" />
       </div>
     </ParentContainer>
   );

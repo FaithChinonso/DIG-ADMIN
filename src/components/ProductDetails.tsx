@@ -1,14 +1,11 @@
 import Image from "next/image";
-import { send } from "process";
 import { useEffect, useState } from "react";
-import { FaTools } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useDispatch } from "react-redux";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { useAppDispatch } from "src/Hooks/use-redux";
 import { getMyproduct } from "src/redux/store/features/product-slice";
 import { uiActions } from "src/redux/store/ui-slice";
-import productPic from "../assets/image/productpic.svg";
 import { productApi } from "./api";
 import DrawerWrapper from "./DrawerWrapper";
 import ModalAction from "./ModalContent/ModalAction";
@@ -16,14 +13,14 @@ import ModalAction from "./ModalContent/ModalAction";
 const ProductDetails = ({ data }: any) => {
   const send = useHTTPPost();
   const remove = useHTTPDelete();
-  const dispatch = useDispatch();
-  const [primary, setPrimary] = useState({});
+  const dispatch = useAppDispatch();
+  const [primary, setPrimary] = useState({} as any);
   const [secondary, setSecondary] = useState([]);
   const [showModal, setShowModal] = useState({
     show: false,
     value: "",
   });
-  console.log(data);
+
   useEffect(() => {
     const primaryImage = data.images.filter((item: any) => {
       return item.isPrimary === true;
@@ -33,7 +30,7 @@ const ProductDetails = ({ data }: any) => {
       return item.isPrimary === false;
     });
     setSecondary(secondaryImages);
-  }, []);
+  }, [data.images]);
 
   const setImageAsPrimary = (imageID: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -187,8 +184,8 @@ const ProductDetails = ({ data }: any) => {
               Product Specification
             </div>
             <div className="flex justify-between mt-3 w-full">
-              {data?.specifications?.map((item: any) => (
-                <div className="mt-5">
+              {data?.specifications?.map((item: any, index: any) => (
+                <div className="mt-5" key={index}>
                   <div className="text-xs text-text mb-5">{item?.title}</div>
                   <div className="text-xs text-[#090F47]">{item?.value}</div>
                 </div>

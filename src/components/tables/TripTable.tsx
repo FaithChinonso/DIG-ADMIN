@@ -1,6 +1,7 @@
 import moment from "moment";
 import { useRouter } from "next/router";
 import React from "react";
+import { tripType } from "src/@types/data";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteTrip } from "src/redux/store/features/trip-slice";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -9,10 +10,15 @@ import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import ModalAction from "../ModalContent/ModalAction";
 
-const TripTable = ({ data }: any) => {
+type Props = {
+  data: tripType[];
+};
+
+const TripTable = ({ data }: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const formatData = data?.slice(0).map((client: any, index: number) => {
+
+  const formatData = data?.slice(0).map((client: tripType, index: number) => {
     return {
       id: client.tripID,
       serial: index + 1,

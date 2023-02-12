@@ -46,14 +46,15 @@ const AddProductSpec = ({ id, title, existingSpec }: any) => {
     if (title === "Edit Product Specification") {
       setItems(existingSpec);
     }
-  }, [title]);
+  }, [title, existingSpec]);
 
   return (
     <DrawerWrapper title={title}>
       <form onSubmit={submitFormHandler}>
-        {items?.map((element, index) => (
+        {items?.map((element, index: any) => (
           <MultipleInput
             index={index}
+            key={index}
             element={element}
             handleChange={handleChange}
             removeFormFields={removeFormFields}

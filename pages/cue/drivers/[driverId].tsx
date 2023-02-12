@@ -6,7 +6,7 @@ import call from "../../../src/assets/image/call.svg";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MyDriversValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
@@ -25,6 +25,7 @@ import { userApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
+import { driverType } from "src/@types/data";
 
 const OneDriver = ({ driverId }: any) => {
   const request = useHTTPGet();
@@ -35,25 +36,31 @@ const OneDriver = ({ driverId }: any) => {
   const { drivers, loading, success, error, message } = useAppSelector(
     state => state.user
   );
-  const [driver, setDriver] = useState();
+  const [driver, setDriver] = useState<driverType>();
   const [trips, setTrips] = useState();
-  const fetchADriver = async (id: any) => {
-    const url = `${userApi}/single-user/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setDriver(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-  const fetchAllTrips = (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-driver/${id}`;
-    const dataFunction = (res: any) => {
-      setTrips(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+  const fetchADriver = useCallback(
+    async (id: any) => {
+      const url = `${userApi}/single-user/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        console.log(res);
+        setDriver(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchAllTrips = useCallback(
+    (id: any) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-driver/${id}`;
+      const dataFunction = (res: any) => {
+        setTrips(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -69,7 +76,7 @@ const OneDriver = ({ driverId }: any) => {
   useEffect(() => {
     fetchADriver(driverId);
     fetchAllTrips(driverId);
-  }, [driverId]);
+  }, [driverId, fetchADriver, fetchAllTrips]);
 
   useEffect(() => {
     if (loading === true) {
@@ -102,7 +109,7 @@ const OneDriver = ({ driverId }: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, driverId, fetchADriver]);
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">

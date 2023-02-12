@@ -1,10 +1,11 @@
 import React from "react";
-import { analytics } from "src/utils/analytics";
+
 import CountUp from "react-countup";
 import Image from "next/image";
 import green from "../assets/image/green.jpeg";
 import orange from "../assets/image/orange.jpeg";
 import blue from "../assets/image/blue.jpeg";
+import Currency from "react-currency-formatter";
 
 const CardContainer = ({ orders, transaction, users }: any) => {
   function sumofArray(sum: any, num: any) {
@@ -22,8 +23,8 @@ const CardContainer = ({ orders, transaction, users }: any) => {
     })
     .reduce(sumofArray, 0);
 
-  const totalOrders = orders.length;
-  const totalUsers = users.length;
+  const totalOrders = orders?.length;
+  const totalUsers = users?.length;
 
   const cardData = [
     {
@@ -69,9 +70,16 @@ const CardContainer = ({ orders, transaction, users }: any) => {
           <div className="flex flex-col h-full justify-center">
             <h3 className="text-sm">{item.name}</h3>
 
-            <div className="md:text-2xl text-lg font-extrabold">
-              <span>{item.type === "number" ? "₦" : ""}</span>
-              {Math.ceil(item.figures)}
+            <div className="md:text-xl text-base font-extrabold">
+              {item.type === "number" ? (
+                <Currency
+                  quantity={item.figures}
+                  currency="NGN"
+                  pattern="! ##,### "
+                />
+              ) : (
+                item.figures
+              )}
             </div>
           </div>
           <div className="hidden md:block">

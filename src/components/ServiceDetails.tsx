@@ -6,6 +6,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { useAppDispatch } from "src/Hooks/use-redux";
 import { getMyproduct } from "src/redux/store/features/product-slice";
 import { getMyservice } from "src/redux/store/features/service-slice";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -17,8 +18,8 @@ import ModalAction from "./ModalContent/ModalAction";
 const ServiceDetails = ({ data }: any) => {
   const send = useHTTPPost();
   const remove = useHTTPDelete();
-  const dispatch = useDispatch();
-  const [primary, setPrimary] = useState({});
+  const dispatch = useAppDispatch();
+  const [primary, setPrimary] = useState({} as any);
   const [secondary, setSecondary] = useState([]);
   const [showModal, setShowModal] = useState({
     show: false,
@@ -34,7 +35,7 @@ const ServiceDetails = ({ data }: any) => {
       return item.isPrimary === false;
     });
     setSecondary(secondaryImages);
-  }, []);
+  }, [data.images]);
 
   const setImageAsPrimary = (imageID: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -166,8 +167,8 @@ const ServiceDetails = ({ data }: any) => {
               Other Details
             </div>
             <div className="flex justify-around mt-5 w-full">
-              {data?.otherDetails?.map((item: any) => (
-                <div className="mt-5">
+              {data?.otherDetails?.map((item: any, index: any) => (
+                <div className="mt-5" key={index}>
                   <div className="text-xs text-text mb-5">{item?.title}</div>
                   <div className="text-sm text-[#090F47]">{item?.value}</div>
                 </div>

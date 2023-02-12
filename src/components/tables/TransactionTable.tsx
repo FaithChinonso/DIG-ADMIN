@@ -1,32 +1,21 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import Transaction from "pages/dashboard/transactions";
+
 import React, { useEffect, useState } from "react";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPPost from "src/Hooks/use-httppost";
+
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { addJobs } from "src/redux/store/data-slice";
-import {
-  clearError,
-  clearMessage,
-  deletejob,
-  editjob,
-} from "src/redux/store/features/job-slice";
+
+import { clearError, clearMessage } from "src/redux/store/features/job-slice";
 import { deleteTransaction } from "src/redux/store/features/transaction-slice";
 import { uiActions } from "src/redux/store/ui-slice";
 import { numberWithCommas } from "src/utils/formatNumber";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
-import DrawerCard from "../Drawer";
-import AddJob from "../Forms/AddJob";
 import ModalAction from "../ModalContent/ModalAction";
-import MultipleSelectTable from "../multiple-select-table";
 import TransactionDetails from "../TransactionDetails";
 
 const TransactionTable = ({ data, type = "" }: any) => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.transaction

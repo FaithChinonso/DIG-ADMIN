@@ -67,18 +67,18 @@ const Transaction = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchPaystackTransactions(token))
-      dispatch(fetchWalletTransactions(token))
+      dispatch(fetchPaystackTransactions(token));
+      dispatch(fetchWalletTransactions(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, token]);
 
   useEffect(() => {
     dispatch(getWalletTransactions(token));
     dispatch(getPaystackTransactions(token));
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>

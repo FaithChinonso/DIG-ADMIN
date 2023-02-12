@@ -1,17 +1,11 @@
-import useInput from "../../Hooks/use-input";
-import MuiPhoneNumber from "material-ui-phone-number";
-import userPic from "../../assets/image/userPic.svg";
-import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
-import { useDispatch } from "react-redux";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { NumericFormat } from "react-number-format";
-import { isNotEmpty } from "src/utils/helperFunctions";
+
 import { useEffect, useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
-import { useAppSelector } from "src/Hooks/use-redux";
-import { delivery, negotiable, productLevel } from "../../utils/analytics";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { negotiable, productLevel } from "../../utils/analytics";
 import DrawerWrapper from "../DrawerWrapper";
 import {
   clearError,
@@ -22,7 +16,7 @@ import { jobApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
 
 const AddJob = ({ id, title }: any) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const request = useHTTPGet();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.job
@@ -75,26 +69,6 @@ const AddJob = ({ id, title }: any) => {
     description: datas.description,
   };
 
-  const getJobDetail = () => {
-    const url = `${jobApi}/single-job/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setData({
-        ...datas,
-        headline: res.data.data.headline,
-        description: res.data.data.description,
-        duration: res.data.data.jobDuration,
-        scope: res.data.data.jobScope,
-        negotiate: res.data.data.isBudgetNegotiable === "true" ? "1" : "0",
-        budget: res.data.data.budget,
-        level: res.data.data.experienceLevel,
-      });
-      setItems(res.data.data.skillsNeeded);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-
   const updateJobPosting = async () => {
     const url = `${jobApi}/update-job/${id}`;
     const accessToken = sessionStorage.getItem("accessToken");
@@ -120,9 +94,28 @@ const AddJob = ({ id, title }: any) => {
 
   useEffect(() => {
     if (title === "Update Job Posting") {
+      const getJobDetail = () => {
+        const url = `${jobApi}/single-job/${id}`;
+        const accessToken = sessionStorage.getItem("accessToken");
+        const dataFunction = (res: any) => {
+          console.log(res);
+          setData({
+            ...datas,
+            headline: res.data.data.headline,
+            description: res.data.data.description,
+            duration: res.data.data.jobDuration,
+            scope: res.data.data.jobScope,
+            negotiate: res.data.data.isBudgetNegotiable === "true" ? "1" : "0",
+            budget: res.data.data.budget,
+            level: res.data.data.experienceLevel,
+          });
+          setItems(res.data.data.skillsNeeded);
+        };
+        request({ url, accessToken }, dataFunction);
+      };
       getJobDetail();
     }
-  }, []);
+  }, [title, datas, id, request]);
 
   useEffect(() => {
     if (loading === true) {
@@ -318,6 +311,7 @@ const AddJob = ({ id, title }: any) => {
         {items?.map((element, index) => (
           <MultipleInput
             index={index}
+            key={index}
             element={element}
             handleChange={handleChange}
             removeFormFields={removeFormFields}

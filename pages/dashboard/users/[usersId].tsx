@@ -1,7 +1,3 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
-
-import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
 import birth from "../../../src/assets/image/birth.svg";
@@ -10,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
@@ -23,7 +19,7 @@ import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { userApi } from "src/components/api";
+import { transactionApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -32,8 +28,9 @@ import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 const OneUser = (props: any) => {
   const request = useHTTPGet();
   const dispatch = useDispatch();
-  const [user, setUser] = useState<any>({});
+  const [user, setUser] = useState<any>();
   const [orders, setOrders] = useState<any>([]);
+  const [transactions, setTrasactions] = useState<any>([]);
   const [job, setJob] = useState<any>();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
@@ -41,32 +38,53 @@ const OneUser = (props: any) => {
     (state: any) => state.user
   );
 
-  const fetchAUser = async (id: any) => {
-    const url = `${userApi}/single-user/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setUser(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-  const fetchAllJobs = (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
-    const dataFunction = (res: any) => {
-      setJob(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
-  const fetchOrdersByAUser = (id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
-    const dataFunction = (res: any) => {
-      setOrders(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  };
+  const fetchAUser = useCallback(
+    async (id: any) => {
+      const url = `${userApi}/single-user/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        setUser(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchAllJobs = useCallback(
+    (id: any) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+      const dataFunction = (res: any) => {
+        setJob(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchOrdersByAUser = useCallback(
+    (id: any) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
+      const dataFunction = (res: any) => {
+        setOrders(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchAllTransactions = useCallback(
+    (id: string) => {
+      const url = `${transactionApi}/transactions-by-user/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        console.log(res);
+        setTrasactions(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
 
+  useEffect(() => {}, []);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -74,7 +92,15 @@ const OneUser = (props: any) => {
     fetchAUser(props.userId);
     fetchAllJobs(props.userId);
     fetchOrdersByAUser(props.userId);
-  }, [props.userId, dispatch]);
+    fetchAllTransactions(props.userId);
+  }, [
+    props.userId,
+    dispatch,
+    fetchAUser,
+    fetchAllJobs,
+    fetchAllTransactions,
+    fetchOrdersByAUser,
+  ]);
 
   useEffect(() => {
     if (loading === true) {
@@ -106,17 +132,27 @@ const OneUser = (props: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [
+    loading,
+    error,
+    message,
+    success,
+    dispatch,
+    fetchAUser,
+    fetchAllJobs,
+    fetchAllTransactions,
+    fetchOrdersByAUser,
+  ]);
   return (
     <ParentContainer>
-      {user !== {} && (
+      {user && (
         <div className="">
           <ActionList user={user} />
           <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
             <div className="flex gap-[30px] items-start text-white ">
-              {user.image && (
+              {user?.image && (
                 <div>
-                  <Image src={user.image} alt={""} />
+                  <Image src={user?.image} alt={""} />
                 </div>
               )}
               <div className="flex flex-col gap-[14px]">
@@ -266,7 +302,10 @@ const OneUser = (props: any) => {
               </TabPanel>
 
               <TabPanel value={value} index={3}>
-                <TransactionHistory id={user.userID} />
+                <TransactionHistory
+                  id={user.userID}
+                  transactions={transactions}
+                />
               </TabPanel>
               <TabPanel value={value} index={4}>
                 <div></div>

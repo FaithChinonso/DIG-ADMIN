@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
 import useHTTPGet from "src/Hooks/use-httpget";
+import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteuser, edituser } from "src/redux/store/features/user-slice";
 import { uiActions } from "../redux/store/ui-slice";
 import ActionMenuBase from "./ActionMenu/ActionMenuBase";
@@ -11,7 +12,7 @@ import CreateProduct from "./Forms/CreateProduct";
 import ModalAction from "./ModalContent/ModalAction";
 
 const ActionList = ({ user, type, setIsOpen }: any) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   return (

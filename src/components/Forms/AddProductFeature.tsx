@@ -43,7 +43,7 @@ const AddProductFeature = ({ id, title, existingFeature }: any) => {
     if (title === "Edit Product Feature") {
       setItems(newFeature);
     }
-  }, [title]);
+  }, [title, newFeature]);
 
   return (
     <DrawerWrapper title={title}>

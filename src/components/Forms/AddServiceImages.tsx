@@ -121,7 +121,7 @@ const AddServiceImages = ({ id }: any) => {
         <div className="flex flex-wrap gap-1 w-full  overflow-y-auto">
           {" "}
           {profilePic.map((data: any, index: any) => (
-            <div className="">
+            <div className="" key={index}>
               <object
                 data={data}
                 width="100"

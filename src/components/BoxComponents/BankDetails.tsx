@@ -1,16 +1,3 @@
-import FilterTable from "../multiple-select-table";
-
-import MultipleSelectTable from "../multiple-select-table";
-import {
-  analytics,
-  statusData,
-  tableData,
-  tableLoad,
-  bank,
-} from "../../utils/analytics";
-import ActionMenuBase from "../ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../ActionMenu/ActionMenuItem";
-
 const BankDetails = ({ data }: any) => {
   console.log(data);
   return (
