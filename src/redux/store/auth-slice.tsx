@@ -43,7 +43,7 @@ const authSlice = createSlice({
       if (action.payload.response) {
         state.error = action.payload.response.data.message;
       } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
+        state.error = "An Error occured on our end, please reload";
       } else {
         state.error = "An Error";
       }
