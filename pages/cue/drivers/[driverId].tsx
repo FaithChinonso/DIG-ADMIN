@@ -1,5 +1,5 @@
 import GoogleMapReact from "google-map-react";
-import driverPic from "../../../src/assets/image/driverPic.svg";
+import driverPic from "../../../src/assets/image/driverPic.png";
 import message from "../../../src/assets/image/message.svg";
 import call from "../../../src/assets/image/call.svg";
 
