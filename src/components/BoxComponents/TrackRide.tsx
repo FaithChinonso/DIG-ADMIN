@@ -9,6 +9,7 @@ import { trackRide } from "../../utils/analytics";
 import moment from "moment";
 
 const TrackRide = ({ trip, refreshHandler }: any) => {
+  console.log(trip);
   const imageSort = (name: any) => {
     if (name === "Booking Confirmed") {
       return book;
@@ -67,7 +68,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           <div className="text-[10px] mb-3">Time</div>
           <div className="text-sm">{trip?.tripDuration} minutes</div>
         </div>
-        <div className="bg-darkPurple text-white text-[8px]  w-[78px] h-[28px] flex items-center justify-center rounded-md">
+        <div className="bg-darkPurple text-white text-[8px]  w-[78px] h-[28px] flex items-center justify-center rounded-md cursor-pointer">
           <span className="mr-1">
             <Image src={map} alt={""} />
           </span>
@@ -79,7 +80,10 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           <div className="text-sm text-grey">Timeline</div>
           <div className="text-text text-[10px]">Updated 5 mins ago</div>
         </div>
-        <div className="text-darkPurple text-[10px]" onClick={refreshHandler}>
+        <div
+          className="text-darkPurple text-[10px] cursor-pointer"
+          onClick={refreshHandler}
+        >
           <span style={{ translate: "0 5px" }}>
             <Image src={refresh} alt={""} />
           </span>
@@ -87,35 +91,98 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
         </div>
       </div>
       <div className="flex flex-col mt-6">
-        {trackRide.map((item: any) => (
-          <div
-            className={`justify-start ${
-              item.validation === null ? "hidden" : "flex"
-            } `}
-            key={item.id}
-          >
+        {trip?.requestAcceptanceTime && (
+          <div className={`justify-start flex `}>
             <div className="flex flex-col mr-1">
               <div className="flex w-[150px] ">
-                <Image src={imageSort(item.name)} alt={""} />
+                <Image src={imageSort("Booking Confirmed")} alt={""} />
                 <div className="text-grey text-[10px] ">
-                  {item.name === "Booking Confirmed" && "Now"}
-                  <span className="text-text ml-2">{item.time}</span>
+                  Now
+                  <span className="text-text ml-2">
+                    {moment(trip?.requestAcceptanceTime).calendar()}
+                  </span>
                 </div>
               </div>
-              {item.name !== "Trip Completed" && (
-                <div className="h-[84px] w-[1px] bg-darkPurple"></div>
-              )}
             </div>
 
             <div className=" flex flex-col gap-2">
-              <div className="text-grey text-[10px]">{item.name}</div>
-              <div className="text-text text-[10px]">{item.address}</div>
+              <div className="text-grey text-[10px]">Booking Confirmed</div>
+              <div className="text-text text-[10px]">
+                {trip?.requestLocation}
+              </div>
               <div className="text-[10px] text-lightPurple ">
-                {item.duration} <span className="mr-2">{item.distance}</span>
+                {trip?.tripDuration}{" "}
+                <span className="mr-2">{trip?.totalDistanceCovered}</span>
               </div>
             </div>
           </div>
-        ))}
+        )}
+        {trip?.startTime && (
+          <div className={`justify-start flex `}>
+            <div className="flex flex-col mr-1">
+              <div className="flex w-[150px] ">
+                <Image src={imageSort("Trip Started")} alt={""} />
+                <div className="text-grey text-[10px] ">
+                  Now
+                  <span className="text-text ml-2">
+                    {moment(trip?.startTime).format("LT")}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className=" flex flex-col gap-2">
+              <div className="text-grey text-[10px]">Trip Started</div>
+              <div className="text-text text-[10px]">
+                {trip?.startTripLocation}
+              </div>
+            </div>
+          </div>
+        )}
+        {trip?.cancelDateTime && (
+          <div className={`justify-start flex `}>
+            <div className="flex flex-col mr-1">
+              <div className="flex w-[150px] ">
+                <Image src={imageSort("Trip Cancelled")} alt={""} />
+                <div className="text-grey text-[10px] ">
+                  Now
+                  <span className="text-text ml-2">
+                    {moment(trip?.cancelDateTime).format("LT")}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className=" flex flex-col gap-2">
+              <div className="text-grey text-[10px]">Trip Cancelled</div>
+              <div className="text-text text-[10px]">
+                {trip?.cancelLocation}
+              </div>
+            </div>
+          </div>
+        )}
+        {trip?.endTime && (
+          <div className={`justify-start flex `}>
+            <div className="flex flex-col mr-1">
+              <div className="flex w-[150px] ">
+                <Image src={imageSort("Trip Completed")} alt={""} />
+                <div className="text-grey text-[10px] ">
+                  Now
+                  <span className="text-text ml-2">
+                    {moment(trip?.endTime).format("LT")}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className=" flex flex-col gap-2">
+              <div className="text-grey text-[10px]">Trip Completed</div>
+              <div className="text-text text-[10px]">
+                {trip?.dropoffLocation}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
@@ -38,31 +37,40 @@ const OneMerchant = (props: any) => {
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
 
-  const fetchAMerchant = useCallback(async (id: any) => {
-    const url = `${userApi}/single-user/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setUser(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  }, [request]);
-  const fetchAllJobs = useCallback((id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${jobApi}/jobs-by-user/${id}`;
-    const dataFunction = (res: any) => {
-      setJob(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  }, [request]);
-  const fetchOrdersByAMerchant = useCallback((id: any) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${orderApi}/orders-for-merchant/${id}`;
-    const dataFunction = (res: any) => {
-      setOrders(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  }, [request]);
+  const fetchAMerchant = useCallback(
+    async (id: any) => {
+      const url = `${userApi}/single-user/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        console.log(res);
+        setUser(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchAllJobs = useCallback(
+    (id: any) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `${jobApi}/jobs-by-user/${id}`;
+      const dataFunction = (res: any) => {
+        setJob(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
+  const fetchOrdersByAMerchant = useCallback(
+    (id: any) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `${orderApi}/orders-for-merchant/${id}`;
+      const dataFunction = (res: any) => {
+        setOrders(res.data.data);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -123,16 +131,17 @@ const OneMerchant = (props: any) => {
     <ParentContainer>
       <div>
         <ActionList user={user} />
-        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-          <div className="flex gap-[30px] items-start text-white ">
-            {" "}
-            <div>
-              <Image src={profilePic} alt={""} />
-            </div>
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+          <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
+            {user?.image && (
+              <div>
+                <Image src={user?.image} alt={""} />
+              </div>
+            )}
             <div className="flex flex-col gap-[14px]">
               <h2 className="text-[16px]">
                 {user?.fullName}
-                <span>
+                <span className="">
                   {" "}
                   {user?.emailVerifiedStatus === "verified" && (
                     <Image src={verify} alt={""} />
@@ -145,28 +154,33 @@ const OneMerchant = (props: any) => {
                 <div className="text-[10px]">{user?.email}</div>
               </div>
               <div className="flex justify-between gap-[9px] items-center">
-                <h4 className="text-[10px]">
-                  {" "}
-                  <span>
+                {user?.gender && (
+                  <h4 className="text-[10px]">
                     {" "}
-                    <Image src={gender} alt={""} />
-                  </span>
-                  {user?.gender}
-                </h4>
-                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                <div className="text-[10px]">
-                  {" "}
-                  <span>
+                    <span>
+                      {" "}
+                      <Image src={gender} alt={""} />
+                    </span>
+                    {user?.gender}
+                  </h4>
+                )}
+                {user?.phone && user?.gender && (
+                  <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                )}
+
+                {user?.phone && (
+                  <div className="text-[10px]">
                     {" "}
-                    <Image src={birth} alt={""} />
-                  </span>
-                  {user?.phone}
-                </div>
+                    <span>
+                      {" "}
+                      <Image src={birth} alt={""} />
+                    </span>
+                    {user?.phone}
+                  </div>
+                )}
               </div>
-              <div>
-                <Image src={rating} alt={""} />
-              </div>
-              <div className="w-full md:w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
+
+              <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px]">Escrow Balance</div>
                   <div className="text-xs font-[500]">
@@ -184,37 +198,39 @@ const OneMerchant = (props: any) => {
             </div>
           </div>
 
-          {user?.role === "merchant" && (
-            <div className="flex flex-col items-center justify-around text-white">
-              <div className="flex flex-row gap-3 text-white">
-                <div className="text-white flex flex-col">
-                  <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
-                  <p className="text-[10px]">{user?.profile?.merchantType}</p>
-                </div>
-                <div className="text-white flex flex-col">
-                  <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
-                  <p className="text-[10px]">
-                    {user?.profile?.merchantCategory.categoryName}
-                  </p>
-                </div>
+          <div className="flex flex-col items-center justify-around text-white w-full">
+            <div className="flex md:flex-col gap-3 text-white">
+              <div className="text-white flex flex-col">
+                <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
+                <p className="text-[10px]">{user?.profile?.merchantType}</p>
               </div>
-
-              <div className="text-white flex flex-col ">
-                <h3 className="text-[13px] mt-[28px]">About</h3>
-                <p className="text-[10px]">{user?.profile?.bio}</p>
+              <div className="text-white flex flex-col">
+                <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
+                <p className="text-[10px]">
+                  {user?.profile?.merchantCategory.categoryName}
+                </p>
               </div>
             </div>
-          )}
 
-          <div className="flex flex-col items-center justify-around text-white">
-            <div className="text-white text-[13px]">Total Orders</div>
-            <div className="bg-faintWhite p-[11px] w-full md:w-[97px] rounded-md mb-2">
-              <div className="text-[8px] ">Successful</div>
-              <div className="text-sm font-semibold">100</div>
+            <div className="text-white flex flex-col ">
+              <h3 className="text-[13px] mt-[28px]">About</h3>
+              <p className="text-[10px]">{user?.profile?.bio}</p>
             </div>
-            <div className="bg-faintWhite p-[11px] w-full  md:w-[97px] rounded-md ">
-              <div className="text-[8px] ">Cancelled</div>
-              <div className="text-sm font-semibold">100</div>
+          </div>
+
+          <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+            <div className="text-white text-[13px] my-2 md:text-center">
+              Total Orders
+            </div>
+            <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
+                <div className="text-[8px] ">Successful</div>
+                <div className="text-sm font-semibold">100</div>
+              </div>
+              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
+                <div className="text-[8px] ">Cancelled</div>
+                <div className="text-sm font-semibold">100</div>
+              </div>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
@@ -29,16 +29,16 @@ const OneUser = (props: any) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>();
   const [orders, setOrders] = useState<any>([]);
-  const [transactions, setTrasactions] = useState<any>([]);
+  const [transactions, setTransactions] = useState<any>([]);
   const [job, setJob] = useState<any>();
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState<any>(1);
   const [value, setValue] = useState(0);
   const { users, loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
 
   const fetchAUser = useCallback(
-    async (id: any) => {
+    (id: any) => {
       const url = `${userApi}/single-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
@@ -76,14 +76,12 @@ const OneUser = (props: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
         console.log(res);
-        setTrasactions(res.data.data);
+        setTransactions(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
     },
     [request]
   );
-
-  useEffect(() => {}, []);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -92,14 +90,7 @@ const OneUser = (props: any) => {
     fetchAllJobs(props.userId);
     fetchOrdersByAUser(props.userId);
     fetchAllTransactions(props.userId);
-  }, [
-    props.userId,
-    dispatch,
-    fetchAUser,
-    fetchAllJobs,
-    fetchAllTransactions,
-    fetchOrdersByAUser,
-  ]);
+  }, [props.userId]);
 
   useEffect(() => {
     if (loading === true) {
@@ -131,24 +122,14 @@ const OneUser = (props: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [
-    loading,
-    error,
-    message,
-    success,
-    dispatch,
-    fetchAUser,
-    fetchAllJobs,
-    fetchAllTransactions,
-    fetchOrdersByAUser,
-  ]);
+  }, [loading, error, message, success, dispatch]);
   return (
     <ParentContainer>
       {user && (
         <div className="">
           <ActionList user={user} />
-          <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-            <div className="flex gap-[30px] items-start text-white ">
+          <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+            <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
               {user?.image && (
                 <div>
                   <Image src={user?.image} alt={""} />
@@ -157,7 +138,7 @@ const OneUser = (props: any) => {
               <div className="flex flex-col gap-[14px]">
                 <h2 className="text-[16px]">
                   {user?.fullName}
-                  <span className="left-1">
+                  <span className="">
                     {" "}
                     {user?.emailVerifiedStatus === "verified" && (
                       <Image src={verify} alt={""} />
@@ -196,7 +177,7 @@ const OneUser = (props: any) => {
                   )}
                 </div>
 
-                <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
+                <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                   <div className="flex flex-col justify-between">
                     <div className="text-[8px]">Escrow Balance</div>
                     <div className="text-xs font-[500]">
@@ -214,9 +195,73 @@ const OneUser = (props: any) => {
               </div>
             </div>
 
-            {user?.role === "merchant" && (
-              <div className="flex flex-col items-center justify-around text-white">
+            {user?.role === "driver" ? (
+              <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full ">
                 <div className="flex flex-row gap-3 text-white">
+                  {user?.profile?.driversLicenceFront ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px]">
+                        {" "}
+                        Driver's Licence Front
+                      </h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.driversLicenceFront}
+                      </p>
+                    </div>
+                  ) : null}
+                  {user?.profile?.driversLicenceBack ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px]">
+                        Driver's Licence Back
+                      </h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.driversLicenceBack}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+                <div className="flex flex-row gap-3 text-white">
+                  <div className="text-white flex flex-col">
+                    <h3 className="text-[13px] mt-[28px]"> Completed Rides</h3>
+                    <p className="text-[10px]">
+                      {user?.profile?.numOfCompletedRides}
+                    </p>
+                  </div>
+                  {user?.profile?.vehicle?.length === 0 ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px]">Vehicle Details</h3>
+                      <p className="text-[10px]"></p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {user?.role === "rider" ? (
+              <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
+                <div className="flex flex-row gap-3 text-white">
+                  <div className="text-white flex flex-col">
+                    <h3 className="text-[13px] mt-[28px]"> House Address</h3>
+                    <p className="text-[10px]">{user?.profile?.homeLocation}</p>
+                  </div>
+                  {user?.profile?.workLocation ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px]">Work Location</h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.workLocation}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="text-white flex flex-col ">
+                  <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
+                  <p className="text-[10px]">{user?.profile?.completedRides}</p>
+                </div>
+              </div>
+            ) : null}
+            {user?.role === "merchant" ? (
+              <div className="flex flex-col items-center justify-around text-white w-full">
+                <div className="flex md:flex-col gap-3 text-white">
                   <div className="text-white flex flex-col">
                     <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
                     <p className="text-[10px]">{user?.profile?.merchantType}</p>
@@ -224,7 +269,7 @@ const OneUser = (props: any) => {
                   <div className="text-white flex flex-col">
                     <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
                     <p className="text-[10px]">
-                      {user?.profile?.merchantCategory}
+                      {user?.profile?.merchantCategory.categoryName}
                     </p>
                   </div>
                 </div>
@@ -234,17 +279,21 @@ const OneUser = (props: any) => {
                   <p className="text-[10px]">{user?.profile?.bio}</p>
                 </div>
               </div>
-            )}
+            ) : null}
 
-            <div className="flex flex-col items-center justify-around text-white">
-              <div className="text-white text-[13px]">Total Orders</div>
-              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-                <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+            <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+              <div className="text-white text-[13px] my-2 md:text-center">
+                Total Orders
               </div>
-              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-                <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+              <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+                <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
+                  <div className="text-[8px] ">Successful</div>
+                  <div className="text-sm font-semibold">100</div>
+                </div>
+                <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
+                  <div className="text-[8px] ">Cancelled</div>
+                  <div className="text-sm font-semibold">100</div>
+                </div>
               </div>
             </div>
           </div>
@@ -327,4 +376,4 @@ export const getServerSideProps: GetStaticProps = async (context: any) => {
     },
   };
 };
-export default OneUser;
+export default memo(OneUser);

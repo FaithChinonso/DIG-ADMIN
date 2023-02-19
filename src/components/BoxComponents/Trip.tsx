@@ -9,10 +9,14 @@ import complete from "../../../src/assets/image/complete.svg";
 import { ridersFeedback, tripHistory } from "../../utils/analytics";
 
 const Trip = ({ data, type }: any) => {
+  console.log(data);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full md:w-[400px]">
       {data?.map((item: any) => (
-        <div className="shadow-tableShadow w-full p-[20px]" key={item.id}>
+        <div
+          className="shadow-tableShadow w-full p-[10px] md:p-[20px]"
+          key={item.id}
+        >
           <div className="flex justify-between items-start mb-5">
             <div>
               <div className="text-text text-[10px] mt-[10px]">Distance</div>
@@ -20,6 +24,7 @@ const Trip = ({ data, type }: any) => {
                 {item.totalDistanceCovered}
               </div>
             </div>
+
             <div className="flex flex-col gap-1">
               <Image src={point} alt={""} />
               <Image src={line} alt={""} />
@@ -33,11 +38,15 @@ const Trip = ({ data, type }: any) => {
                 <div className="text-text text-[10px] mt-[10px]">
                   Pickup Location
                 </div>
-                <div className="text-grey text-xs">{item.pickupLocation} </div>
+                <div className="text-grey text-[10px] md:text-xs w-[200px]">
+                  {item.pickupLocation}{" "}
+                </div>
               </div>
               <div>
                 <div className="text-text text-[10px] mt-[10px]">Drop-Off</div>
-                <div className="text-grey text-xs">{item.dropoffLocation} </div>
+                <div className="text-grey text-[10px] md:text-xs ">
+                  {item.dropoffLocation}{" "}
+                </div>
               </div>
             </div>
           </div>
@@ -45,7 +54,7 @@ const Trip = ({ data, type }: any) => {
             <div className="flex gap-2">
               <Image src={profileDriv} alt={""} />
               <div className="flex flex-col gap-2">
-                <div className="text-grey text-xs">
+                <div className="text-grey text-[10px] md:text-xs ">
                   {type === "rider"
                     ? item?.driver?.fullName
                     : item.rider.fullName}{" "}

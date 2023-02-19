@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // Define a type for the slice state
 interface AuthState {
   token: string | null;
-  adminDetails: any;
+  adminDetails: {} | null;
   loading: boolean;
   error: string;
   success: boolean;
@@ -15,7 +15,10 @@ const initialState: AuthState = {
     typeof window !== "undefined"
       ? sessionStorage.getItem("accessToken")
       : null,
-  adminDetails: null,
+  adminDetails:
+    typeof window !== "undefined"
+      ? JSON.parse(sessionStorage.getItem("adminDetails"))
+      : null,
   loading: false,
   error: "",
   success: false,
@@ -31,7 +34,10 @@ const authSlice = createSlice({
       state.message = action.payload.message;
       sessionStorage.setItem("accessToken", action.payload.token);
       state.token = action.payload.token;
-      // sessionStorage.setItem("adminDetails", action.payload.data);
+      sessionStorage.setItem(
+        "adminDetails",
+        JSON.stringify(action.payload.data)
+      );
       state.adminDetails = action.payload.data;
 
       window.location.href = "/dashboard";

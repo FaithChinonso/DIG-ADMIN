@@ -114,9 +114,8 @@ const OneUser = ({ consumerID }: any) => {
     <ParentContainer>
       <div className="">
         <ActionList user={user} />
-        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-          <div className="flex gap-[30px] items-start text-white ">
-            {" "}
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+          <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
                 <Image src={user?.image} alt={""} />
@@ -125,7 +124,7 @@ const OneUser = ({ consumerID }: any) => {
             <div className="flex flex-col gap-[14px]">
               <h2 className="text-[16px]">
                 {user?.fullName}
-                <span className="left-1">
+                <span className="">
                   {" "}
                   {user?.emailVerifiedStatus === "verified" && (
                     <Image src={verify} alt={""} />
@@ -164,7 +163,7 @@ const OneUser = ({ consumerID }: any) => {
                 )}
               </div>
 
-              <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
+              <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px]">Escrow Balance</div>
                   <div className="text-xs font-[500]">
@@ -182,15 +181,19 @@ const OneUser = ({ consumerID }: any) => {
             </div>
           </div>
 
-          <div className="flex md:flex-col items-center justify-around text-white mt-4">
-            <div className="text-white text-[13px]">Total Orders</div>
-            <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-              <div className="text-[8px] ">Successful</div>
-              <div className="text-sm font-semibold">100</div>
+          <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+            <div className="text-white text-[13px] my-2 md:text-center">
+              Total Orders
             </div>
-            <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-              <div className="text-[8px] ">Cancelled</div>
-              <div className="text-sm font-semibold">100</div>
+            <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
+                <div className="text-[8px] ">Successful</div>
+                <div className="text-sm font-semibold">100</div>
+              </div>
+              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
+                <div className="text-[8px] ">Cancelled</div>
+                <div className="text-sm font-semibold">100</div>
+              </div>
             </div>
           </div>
         </div>

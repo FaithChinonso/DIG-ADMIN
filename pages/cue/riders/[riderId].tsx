@@ -5,7 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyRidersValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,8 +35,8 @@ const OneUser = ({ riderID }: any) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    const fetchAUser = async (id: any) => {
+  const fetchAUser = useCallback(
+    async (id: any) => {
       const url = `${userApi}/single-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
@@ -44,18 +44,24 @@ const OneUser = ({ riderID }: any) => {
         setUser(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
-    const fetchAllTrips = (id: any) => {
+    },
+    [request]
+  );
+  const fetchAllTrips = useCallback(
+    (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
       const url = `${tripApi}/trips-by-rider/${id}`;
       const dataFunction = (res: any) => {
         setTrips(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
+    },
+    [request]
+  );
+  useEffect(() => {
     fetchAUser(riderID);
     fetchAllTrips(riderID);
-  }, [riderID, dispatch, request]);
+  }, [riderID]);
 
   useEffect(() => {
     if (loading === true) {
@@ -92,18 +98,17 @@ const OneUser = ({ riderID }: any) => {
     <ParentContainer>
       <div className="">
         <ActionList user={user} />
-        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-          <div className="flex gap-[30px] items-start text-white ">
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+          <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
                 <Image src={user?.image} alt={""} />
               </div>
             )}
-
             <div className="flex flex-col gap-[14px]">
               <h2 className="text-[16px]">
                 {user?.fullName}
-                <span className="left-1">
+                <span className="">
                   {" "}
                   {user?.emailVerifiedStatus === "verified" && (
                     <Image src={verify} alt={""} />
@@ -115,7 +120,6 @@ const OneUser = ({ riderID }: any) => {
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[10px]">{user?.email}</div>
               </div>
-
               <div className="flex justify-between gap-[9px] items-center">
                 {user?.gender && (
                   <h4 className="text-[10px]">
@@ -142,15 +146,8 @@ const OneUser = ({ riderID }: any) => {
                   </div>
                 )}
               </div>
-              {user?.address && (
-                <div className="flex justify-between gap-[9px] items-center">
-                  <h4 className="text-[10px]">Address</h4>
-                  <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                  <div className="text-[10px]">{user?.address}</div>
-                </div>
-              )}
 
-              <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-2">
+              <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px]">Escrow Balance</div>
                   <div className="text-xs font-[500]">
@@ -168,18 +165,38 @@ const OneUser = ({ riderID }: any) => {
             </div>
           </div>
 
-          <div className="flex md:flex-col  items-center justify-around text-white mt-4">
-            <div className="text-white text-[13px]">Total Rides</div>
-            <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-              <div className="text-[8px] ">Successful</div>
-              <div className="text-sm font-semibold">
-                {user?.profile?.completedRides}
+          <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
+            <div className="flex flex-row gap-3 text-white">
+              <div className="text-white flex flex-col">
+                <h3 className="text-[13px] mt-[28px]"> House Address</h3>
+                <p className="text-[10px]">{user?.profile?.homeLocation}</p>
               </div>
+              {user?.profile?.workLocation ? (
+                <div className="text-white flex flex-col">
+                  <h3 className="text-[13px] mt-[28px]">Work Location</h3>
+                  <p className="text-[10px]">{user?.profile?.workLocation}</p>
+                </div>
+              ) : null}
             </div>
-            <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-              <div className="text-[8px] ">Cancelled</div>
-              <div className="text-sm font-semibold">
-                {user?.profile?.completedRides}
+
+            <div className="text-white flex flex-col ">
+              <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
+              <p className="text-[10px]">{user?.profile?.completedRides}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+            <div className="text-white text-[13px] my-2 md:text-center">
+              Total Orders
+            </div>
+            <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
+                <div className="text-[8px] ">Successful</div>
+                <div className="text-sm font-semibold">100</div>
+              </div>
+              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
+                <div className="text-[8px] ">Cancelled</div>
+                <div className="text-sm font-semibold">100</div>
               </div>
             </div>
           </div>

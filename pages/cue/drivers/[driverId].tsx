@@ -60,17 +60,10 @@ const OneDriver = ({ driverId }: any) => {
     setValue(newValue);
   };
 
-  const defaultProps = {
-    center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
-    },
-    zoom: 11,
-  };
   useEffect(() => {
     fetchADriver(driverId);
     fetchAllTrips(driverId);
-  }, [driverId, fetchADriver, fetchAllTrips]);
+  }, [driverId]);
 
   useEffect(() => {
     if (loading === true) {
@@ -164,7 +157,7 @@ const OneDriver = ({ driverId }: any) => {
               </div>
             )}
           </div>
-          <div className="rounded-[20px] bg-white w-[435px] p-5 mt-[23px]">
+          <div className="rounded-[20px] bg-white w-[435px] p-2  md:p-5 mt-[23px]">
             <Box
               sx={{ width: "100%" }}
               style={{
@@ -215,7 +208,7 @@ const OneDriver = ({ driverId }: any) => {
                 <Trip data={trips} />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                <TrackRide />
+                {trips && <TrackRide trip={trips[0]} />}
               </TabPanel>
             </Box>
           </div>

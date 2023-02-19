@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
+import { memo } from "react";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteuser, edituser } from "src/redux/store/features/user-slice";
 import { uiActions } from "../redux/store/ui-slice";
@@ -228,4 +226,4 @@ const ActionList = ({ user, type, setIsOpen }: any) => {
     </div>
   );
 };
-export default ActionList;
+export default memo(ActionList);

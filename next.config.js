@@ -13,6 +13,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "backendapi.flip.onl",
+        port: "",
+        pathname: "/storage/**",
+      },
+      {
+        protocol: "https",
         hostname: "afri-health-bucket.s3.us-east-2.amazonaws.com",
         port: "",
         pathname: "/product-category/**",
