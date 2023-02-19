@@ -1,13 +1,7 @@
-import moment from "moment";
 import { useRouter } from "next/router";
-import { memo, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import AddService from "src/components/Forms/AddService";
+import { useEffect } from "react";
 import JobsDisplay from "src/components/tables/JobsDisplay";
 import ParentContainer from "src/components/ParentContainer";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
-import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import {
   clearError,
@@ -15,18 +9,15 @@ import {
   fetchJob,
   getMyjobs,
 } from "src/redux/store/features/job-slice";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import { uiActions } from "src/redux/store/ui-slice";
 
 const Jobs = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
   const { jobs, loading, error, message, success } = useAppSelector(
     state => state.job
   );
   const { token } = useAppSelector(state => state.auth);
-
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());

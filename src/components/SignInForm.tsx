@@ -60,7 +60,7 @@ const SignInForm = ({ login }: any) => {
       const loginHandler = async () => {
         try {
           const res = await axios.post(
-            "https://backendapi.flip.onl/api/auth/login/admin",
+            "https://easy.unikmarketing.org/api/auth/login/admin",
             payload,
             {
               headers: {

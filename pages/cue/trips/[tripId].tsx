@@ -1,11 +1,5 @@
-import ActionList from "../../../src/components/ActionList";
-import Trip from "../../../src/components/BoxComponents/Trip";
 import Image from "next/image";
-import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
-import gender from "../../../src/assets/image/gender.svg";
-import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
 import ParentContainer from "src/components/ParentContainer";
 import { GetStaticProps } from "next/types";

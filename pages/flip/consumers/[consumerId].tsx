@@ -1,16 +1,11 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
-
-import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
 import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
@@ -19,11 +14,10 @@ import TransactionHistory from "../../../src/components/BoxComponents/Transactio
 import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { userApi } from "src/components/api";
+import { jobApi, orderApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -45,8 +39,8 @@ const OneUser = ({ consumerID }: any) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    const fetchAUser = async (id: any) => {
+  const fetchAUser = useCallback(
+    async (id: any) => {
       const url = `${userApi}/single-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
@@ -54,27 +48,36 @@ const OneUser = ({ consumerID }: any) => {
         setUser(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
-    const fetchAllJobs = (id: any) => {
+    },
+    [request]
+  );
+  const fetchAllJobs = useCallback(
+    (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+      const url = `${jobApi}/jobs-by-user/${id}`;
       const dataFunction = (res: any) => {
         setJob(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
-    const fetchOrdersByAUser = (id: any) => {
+    },
+    [request]
+  );
+  const fetchOrdersByAUser = useCallback(
+    (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
+      const url = `${orderApi}/orders-by-user/${id}`;
       const dataFunction = (res: any) => {
         setOrders(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
+    },
+    [request]
+  );
+  useEffect(() => {
     fetchAUser(consumerID);
     fetchAllJobs(consumerID);
     fetchOrdersByAUser(consumerID);
-  }, [consumerID, dispatch,request]);
+  }, [consumerID]);
 
   useEffect(() => {
     if (loading === true) {

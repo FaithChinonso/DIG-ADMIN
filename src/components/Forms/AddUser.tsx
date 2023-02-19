@@ -18,7 +18,7 @@ import {
 import { is8Chars, isEmail, isNotEmpty } from "src/utils/helperFunctions";
 import { category, gender, merchantType, role } from "src/utils/analytics";
 
-const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
+const AddUser = ({ applicationName }: any) => {
   const dispatch = useAppDispatch();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.user
@@ -75,15 +75,6 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
     inputBlurHandler: emailBlurHandler,
   } = useInput(isEmail, "Email is not valid");
 
-  const {
-    enteredInput: enteredPhoneNumber,
-    hasError: phoneNumberHasError,
-    reset: phoneNumberReset,
-    errorMessage: phoneNumberError,
-    inputIsValid: phoneNumberIsValid,
-    updateInputHandler: phoneNumberInputHandler,
-    inputBlurHandler: phoneNumberBlurHandler,
-  } = useInput(isNotEmpty, "This field cannot be empty");
   const {
     enteredInput: enteredPassword,
     hasError: passwordHasError,
@@ -381,7 +372,7 @@ const AddUser = ({ toggleDrawer, applicationName, fetchAllUsers }: any) => {
           >
             {category?.map((item: any) => (
               <option
-                value={item.name}
+                value={item.id}
                 key={item.id}
                 className=" text-[10px] text-[#1D2939] bg-white"
               >

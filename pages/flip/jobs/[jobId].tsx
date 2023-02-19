@@ -1,11 +1,9 @@
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
 import Box from "@mui/material/Box";
 import { MyJobValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
 import { uiActions } from "../../../src/redux/store/ui-slice";
-
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
@@ -14,6 +12,7 @@ import { GetStaticProps } from "next/types";
 import { clearError, clearMessage } from "src/redux/store/features/job-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import JobList from "src/components/JobList";
+import { jobApi, proposalApi } from "src/components/api";
 
 const OneMerchant = (props: any) => {
   const { jobs, loading, error, message, success } = useAppSelector(
@@ -27,15 +26,12 @@ const OneMerchant = (props: any) => {
     console.log(id);
     const accessToken = sessionStorage.getItem("accessToken");
     try {
-      const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/job/single-job/${id}`,
-        {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-            authsource: "user",
-          },
-        }
-      );
+      const res: any = await axios.get(`${jobApi}/single-job/${id}`, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+          authsource: "user",
+        },
+      });
       console.log(res?.data.data);
       setJob(res?.data.data);
     } catch (error: any) {}
@@ -45,7 +41,7 @@ const OneMerchant = (props: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
     try {
       const res: any = await axios.get(
-        `https://backendapi.flip.onl/api/admin/proposal/proposals-for-job/${id}`,
+        `${proposalApi}/proposals-for-job/${id}`,
         {
           headers: {
             authorization: `Bearer ${accessToken}`,

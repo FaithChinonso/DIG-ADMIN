@@ -1,5 +1,4 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
+
 import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
@@ -15,14 +14,12 @@ import SupportingDocuments from "../../../src/components/BoxComponents/Supportin
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
 import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
 import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
-import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { userApi } from "src/components/api";
+import { jobApi, orderApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
@@ -30,19 +27,11 @@ import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { merchantType } from "src/@types/data";
 
 const OneMerchant = (props: any) => {
-  const router = useRouter();
   const request = useHTTPGet();
   const dispatch = useAppDispatch();
   const { users, loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
-  // const {
-  //   jobs,
-  //   loading: loadJob,
-  //   success: successJob,
-  //   message: messageJob,
-  //   error: errorJob,
-  // } = useAppSelector((state: any) => state.job);
   const [user, setUser] = useState<merchantType>();
   const [orders, setOrders] = useState<any>([]);
   const [job, setJob] = useState<any>();
@@ -60,7 +49,7 @@ const OneMerchant = (props: any) => {
   }, [request]);
   const fetchAllJobs = useCallback((id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+    const url = `${jobApi}/jobs-by-user/${id}`;
     const dataFunction = (res: any) => {
       setJob(res.data.data);
     };
@@ -68,7 +57,7 @@ const OneMerchant = (props: any) => {
   }, [request]);
   const fetchOrdersByAMerchant = useCallback((id: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/order/orders-for-merchant/${id}`;
+    const url = `${orderApi}/orders-for-merchant/${id}`;
     const dataFunction = (res: any) => {
       setOrders(res.data.data);
     };

@@ -140,7 +140,7 @@ const ActionList = ({ user, type, setIsOpen }: any) => {
                   }
                 />
               )}
-              {user.role === "merchant" && (
+              {user?.role === "merchant" && (
                 <ActionMenuItem
                   name="Create Product"
                   onClickFunction={() => {

@@ -179,7 +179,7 @@ const serviceCategorySlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -208,7 +208,7 @@ const serviceCategorySlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -232,7 +232,7 @@ const serviceCategorySlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -253,7 +253,7 @@ const serviceCategorySlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -274,7 +274,7 @@ const serviceCategorySlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );

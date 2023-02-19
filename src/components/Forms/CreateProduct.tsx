@@ -1,7 +1,7 @@
 import { uiActions } from "../../redux/store/ui-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
 
 import useHTTPGet from "src/Hooks/use-httpget";
@@ -24,7 +24,7 @@ const CreateProduct = ({ title, id }: any) => {
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.product
   );
-
+  const accessToken = sessionStorage.getItem("accessToken");
   const [data, setData] = useState({
     name: "",
     description: "",
@@ -67,7 +67,6 @@ const CreateProduct = ({ title, id }: any) => {
     dispatch(createproduct({ payload, id }));
   };
   const updateProduct = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
     const url = `${productApi}/update-product/${id}`;
     const dataFunction = (res: any) => {};
     send({ url, values: payload, accessToken }, dataFunction);
@@ -82,39 +81,37 @@ const CreateProduct = ({ title, id }: any) => {
       createProduct();
     }
   };
-  useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    if (title === "Update Product") {
-      const getAProduct = async () => {
-        const accessToken = sessionStorage.getItem("accessToken");
-        const url = `${productApi}/single-product/${id}`;
-        const dataFunction = (res: any) => {
-          setData({
-            ...data,
-            name: res.data.data.product.name,
-            description: res.data.data.product.description,
-            discountAvailable:
-              res.data.data.product.discount.isDiscountAvailable,
-            discountPercentage:
-              res.data.data.product.discount.discountPercentage,
-            quantity: res.data.data.product.quantity,
-            brand: res.data.data.product.brand,
-            price: res.data.data.product.price,
-            deliveryTag: res.data.data.product.delivery.freeDelivery,
-            deliveryFee: res.data.data.product.delivery.shippingFee,
-            weight: res.data.data.product.weight,
-            warranty: res.data.data.product.productWarranty,
-            category: res.data.data.category.categoryID,
-          });
-        };
+  const getAProduct = useCallback(async () => {
+    const url = `${productApi}/single-product/${id}`;
+    const dataFunction = (res: any) => {
+      setData({
+        ...data,
+        name: res.data.data.product.name,
+        description: res.data.data.product.description,
+        discountAvailable: res.data.data.product.discount.isDiscountAvailable,
+        discountPercentage: res.data.data.product.discount.discountPercentage,
+        quantity: res.data.data.product.quantity,
+        brand: res.data.data.product.brand,
+        price: res.data.data.product.price,
+        deliveryTag: res.data.data.product.delivery.freeDelivery,
+        deliveryFee: res.data.data.product.delivery.shippingFee,
+        weight: res.data.data.product.weight,
+        warranty: res.data.data.product.productWarranty,
+        category: res.data.data.category.categoryID,
+      });
+    };
 
-        request({ url, accessToken }, dataFunction);
-      };
+    request({ url, accessToken }, dataFunction);
+  }, [request]);
+  useEffect(() => {
+    if (title === "Update Product") {
       getAProduct();
     }
-    dispatch(getMyproductCategories(accessToken));
-  }, [title, dispatch, data, id, request]);
+  }, [title]);
 
+  useEffect(() => {
+    dispatch(getMyproductCategories(accessToken));
+  }, [dispatch, getMyproductCategories, accessToken]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -344,7 +341,7 @@ const CreateProduct = ({ title, id }: any) => {
             onValueChange={(values: any, sourceInfo: any) => {
               const { formattedValue, value } = values;
               const { event, source } = sourceInfo;
-              console.log(event.target.value);
+
               setData({ ...data, price: value });
             }}
           />

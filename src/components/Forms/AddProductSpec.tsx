@@ -2,18 +2,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { RiAddCircleLine } from "react-icons/ri";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { productApi } from "../api";
 import DrawerWrapper from "../DrawerWrapper";
 import MultipleInput from "../MultipleInput";
 
 const AddProductSpec = ({ id, title, existingSpec }: any) => {
-  const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
+  const [items, setItems] = useState<any[]>([]);
   const send = useHTTPPost();
 
   let handleChange = (index: any, e: any) => {
+    if (items.length === 0) return;
     let newItems = [...items];
 
     if (e?.target?.name.startsWith("title")) {
-      newItems[index].title = e.target?.value;
+      newItems[index].title = e?.target?.value;
     } else if (e?.target?.name.startsWith("value")) {
       newItems[index].value = e?.target?.value;
     }
@@ -36,17 +38,27 @@ const AddProductSpec = ({ id, title, existingSpec }: any) => {
     };
     console.log(payload);
     e.preventDefault();
-    const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/product/add-product-specs/${id}`;
-    const dataFunction = (res: any) => {};
-    send({ url, values: payload, accessToken }, dataFunction);
+
+    if (title === "Add Product Specification") {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `${productApi}/add-product-specs/${id}`;
+      const dataFunction = (res: any) => {};
+      send({ url, values: payload, accessToken }, dataFunction);
+    }
+
+    if (title === "Edit Product Specification") {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const url = `${productApi}/edit-product-spec/${id}`;
+      const dataFunction = (res: any) => {};
+      send({ url, values: payload, accessToken }, dataFunction);
+    }
   };
 
   useEffect(() => {
     if (title === "Edit Product Specification") {
-      setItems(existingSpec);
+      setItems([...existingSpec]);
     }
-  }, [title, existingSpec]);
+  }, [title]);
 
   return (
     <DrawerWrapper title={title}>

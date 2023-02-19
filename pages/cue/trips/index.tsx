@@ -54,9 +54,7 @@ const Trips = () => {
   }, [dispatch, token]);
   return (
     <ParentContainer>
-      {/* <div className=" p-[10px] md:p-[30px]"> */}
       <TripTable data={trips} />
-      {/* </div> */}
     </ParentContainer>
   );
 };

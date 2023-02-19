@@ -7,7 +7,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "backendapi.flip.onl",
+        hostname: "easy.unikmarketing.org",
         port: "",
         pathname: "/storage/**",
       },

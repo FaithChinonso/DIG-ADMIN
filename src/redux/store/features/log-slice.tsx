@@ -9,6 +9,7 @@ export const getAdminlogs = createAsyncThunk(
       const response = await axios.get(`${logApi}/logs-by-admin/1`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
@@ -66,7 +67,7 @@ const logSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );

@@ -15,11 +15,10 @@ import TransactionHistory from "../../../src/components/BoxComponents/Transactio
 import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { transactionApi, userApi } from "src/components/api";
+import { jobApi, orderApi, transactionApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -52,7 +51,7 @@ const OneUser = (props: any) => {
   const fetchAllJobs = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+      const url = `${jobApi}/jobs-by-user/${id}`;
       const dataFunction = (res: any) => {
         setJob(res.data.data);
       };
@@ -63,7 +62,7 @@ const OneUser = (props: any) => {
   const fetchOrdersByAUser = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
+      const url = `${orderApi}/orders-by-user/${id}`;
       const dataFunction = (res: any) => {
         setOrders(res.data.data);
       };

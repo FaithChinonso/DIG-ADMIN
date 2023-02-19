@@ -50,12 +50,11 @@ const PieChartDashboard = ({ orders }: any) => {
     },
   ]);
 
-  const filterOrders = orders?.filter((tr: any) => {
-    const formDate = moment(tr?.orderDate).format("MMM");
-    return formDate === month;
-  });
-
   useEffect(() => {
+    const filterOrders = orders?.filter((tr: any) => {
+      const formDate = moment(tr?.orderDate).format("MMM");
+      return formDate === month;
+    });
     let pending = 0;
     let rejected = 0;
     let completed = 0;
@@ -79,7 +78,7 @@ const PieChartDashboard = ({ orders }: any) => {
         value: completed,
       },
     ]);
-  }, [filterOrders, setStatusGroup]);
+  }, [orders]);
   useEffect(() => {
     setMonth(moment().format("MMM"));
   }, []);

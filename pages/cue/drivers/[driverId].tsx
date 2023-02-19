@@ -1,27 +1,21 @@
-import GoogleMapReact from "google-map-react";
 import driverPic from "../../../src/assets/image/driverPic.png";
-import message from "../../../src/assets/image/message.svg";
 import call from "../../../src/assets/image/call.svg";
-
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MyDriversValue } from "../../../src/utils/boxValues";
 import { useCallback, useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
 import Trip from "../../../src/components/BoxComponents/Trip";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
-import ActionList from "../../../src/components/ActionList";
 import maps from "src/assets/image/maps.png";
 import ParentContainer from "src/components/ParentContainer";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { GetStaticProps } from "next/types";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { userApi } from "src/components/api";
+import { tripApi, userApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
@@ -53,7 +47,7 @@ const OneDriver = ({ driverId }: any) => {
   const fetchAllTrips = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-driver/${id}`;
+      const url = `${tripApi}/trips-by-driver/${id}`;
       const dataFunction = (res: any) => {
         setTrips(res.data.data);
       };

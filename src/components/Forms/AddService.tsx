@@ -1,12 +1,6 @@
-import useInput from "../../Hooks/use-input";
 import MuiPhoneNumber from "material-ui-phone-number";
-import userPic from "../../assets/image/userPic.svg";
-import Image from "next/image";
 import { uiActions } from "../../redux/store/ui-slice";
-import { useDispatch } from "react-redux";
-import SuccessfulModal from "../ModalContent/SuccessfulModal";
 import { NumericFormat } from "react-number-format";
-import { isNotEmpty } from "src/utils/helperFunctions";
 import { useEffect, useState } from "react";
 import MultipleInput from "../MultipleInput";
 import useHTTPPost from "src/Hooks/use-httppost";
@@ -16,14 +10,10 @@ import {
   clearError,
   clearMessage,
   createservice,
-  updateservice,
 } from "src/redux/store/features/service-slice";
 import { serviceApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
-import {
-  getMyserviceCategories,
-  updateserviceCategory,
-} from "src/redux/store/features/service-category-slice";
+import { getMyserviceCategories } from "src/redux/store/features/service-category-slice";
 
 const AddService = ({ id, title }: any) => {
   const dispatch = useAppDispatch();
@@ -32,16 +22,11 @@ const AddService = ({ id, title }: any) => {
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.service
   );
-  const {
-    serviceCategories,
-    success: scsuccess,
-    loading: scloading,
-    error: scerror,
-    message: scmessage,
-  } = useAppSelector((state: any) => state.serviceCategory);
-
+  const accessToken = sessionStorage.getItem("accessToken");
+  const { serviceCategories } = useAppSelector(
+    (state: any) => state.serviceCategory
+  );
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
-
   const [data, setData] = useState({
     service: "",
     description: "",
@@ -51,11 +36,12 @@ const AddService = ({ id, title }: any) => {
     phone: 0,
     category: "",
   });
-
   const inputChange = (e: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-
+  const phoneInputChange = (value: any) => {
+    setData({ ...data, phone: value });
+  };
   let handleChange = (index: any, e: any) => {
     let newItems = [...items];
 
@@ -85,13 +71,14 @@ const AddService = ({ id, title }: any) => {
     phone_number: data.phone,
     other_details: JSON.stringify(items),
     description: data.description,
+    lga: 1,
+    state: 1,
   };
 
   const createService = () => {
     dispatch(createservice({ payload, id }));
   };
   const updateService = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
     const url = `${serviceApi}/update-service/${id}`;
     const dataFunction = (res: any) => {};
     send({ url, values: payload, accessToken }, dataFunction);
@@ -106,10 +93,8 @@ const AddService = ({ id, title }: any) => {
   };
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
     if (title === "Update Service") {
       const getAService = async () => {
-        const accessToken = sessionStorage.getItem("accessToken");
         const url = `${serviceApi}/single-service/${id}`;
         const dataFunction = (res: any) => {
           setData({
@@ -129,7 +114,6 @@ const AddService = ({ id, title }: any) => {
       };
       getAService();
     }
-    dispatch(getMyserviceCategories(accessToken));
   }, [title, dispatch, request, data, id]);
   useEffect(() => {
     if (loading === true) {
@@ -164,6 +148,10 @@ const AddService = ({ id, title }: any) => {
       }, 10000);
     }
   }, [loading, error, message, success, dispatch]);
+  useEffect(() => {
+    dispatch(getMyserviceCategories(accessToken));
+  }, [dispatch, getMyserviceCategories, accessToken]);
+
   return (
     <DrawerWrapper title={title}>
       <form
@@ -247,7 +235,7 @@ const AddService = ({ id, title }: any) => {
               },
             }}
             value={data.phone}
-            onChange={inputChange}
+            onChange={phoneInputChange}
             autoComplete="off"
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
             required

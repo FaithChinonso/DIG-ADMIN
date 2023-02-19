@@ -17,26 +17,12 @@ import ServiceTable from "src/components/tables/ServiceTable";
 
 const Service = () => {
   const dispatch = useAppDispatch();
-
   const { services, loading, error, message, success } = useAppSelector(
     state => state.service
   );
   const { token } = useAppSelector(state => state.auth);
-
   const [selected, setSelected] = useState(1);
-
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
-
   const [value, setValue] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };

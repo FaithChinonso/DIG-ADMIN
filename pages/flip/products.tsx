@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
 import { uiActions } from "../../src/redux/store/ui-slice";
 import Tabs from "@mui/material/Tabs";
@@ -17,20 +16,15 @@ import {
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 import ProductTable from "src/components/tables/ProductTable";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Products = () => {
   const dispatch = useAppDispatch();
-
   const { products, loading, error, message, success } = useAppSelector(
     (state: any) => state.product
   );
   const { token } = useAppSelector((state: any) => state.auth);
-
   const [selected, setSelected] = useState(1);
-
   const [value, setValue] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };

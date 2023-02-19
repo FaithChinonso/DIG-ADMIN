@@ -2,15 +2,7 @@ import ParentContainer from "src/components/ParentContainer";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { clearError, getAdminlogs } from "src/redux/store/features/log-slice";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@mui/material/Box";
-
 import LogTable from "src/components/tables/LogTable";
-import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { MyLogsValue } from "src/utils/boxValues";
 import { uiActions } from "src/redux/store/ui-slice";
 
 const Audit = () => {
@@ -40,7 +32,7 @@ const Audit = () => {
 
   useEffect(() => {
     dispatch(getAdminlogs(token));
-  }, [dispatch,token]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>

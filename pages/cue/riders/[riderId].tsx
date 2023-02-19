@@ -1,29 +1,19 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
-
-import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
 import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { MyRidersValue, MyUserValue } from "../../../src/utils/boxValues";
+import { MyRidersValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
-import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
-import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
 import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
-import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { userApi } from "src/components/api";
+import { tripApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -36,11 +26,9 @@ const OneUser = ({ riderID }: any) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState<riderType>();
   const [trips, setTrips] = useState<tripType[]>([]);
-  const [orders, setOrders] = useState<any>([]);
-  const [job, setJob] = useState<any>();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { users, loading, success, message, error } = useAppSelector(
+  const { loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
 
@@ -59,7 +47,7 @@ const OneUser = ({ riderID }: any) => {
     };
     const fetchAllTrips = (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-rider/${id}`;
+      const url = `${tripApi}/trips-by-rider/${id}`;
       const dataFunction = (res: any) => {
         setTrips(res.data.data);
       };

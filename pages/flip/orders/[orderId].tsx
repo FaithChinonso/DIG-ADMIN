@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import location from "../../../src/assets/image/location.svg";
 import quantity from "../../../src/assets/image/quantity.svg";
 import cost from "../../../src/assets/image/cost.svg";
@@ -49,7 +48,7 @@ const OneOrder = (props: any) => {
   };
   useEffect(() => {
     fetchAnOrder(props.orderId);
-  }, [props.orderId, fetchAnOrder]);
+  }, [props.orderId]);
 
   useEffect(() => {
     if (loading === true) {

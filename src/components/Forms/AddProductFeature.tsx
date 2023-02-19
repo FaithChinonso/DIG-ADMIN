@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
 import DrawerWrapper from "../DrawerWrapper";
 import { RiAddCircleLine } from "react-icons/ri";
+import { productApi } from "../api";
 
 const AddProductFeature = ({ id, title, existingFeature }: any) => {
   const [feature, setFeature] = useState<string>();
@@ -34,7 +35,7 @@ const AddProductFeature = ({ id, title, existingFeature }: any) => {
     console.log(payload);
     e.preventDefault();
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `https://backendapi.flip.onl/api/admin/product/add-product-feature/${id}`;
+    const url = `${productApi}/add-product-feature/${id}`;
     const dataFunction = (res: any) => {};
     send({ url, values: payload, accessToken }, dataFunction);
   };
@@ -43,7 +44,7 @@ const AddProductFeature = ({ id, title, existingFeature }: any) => {
     if (title === "Edit Product Feature") {
       setItems(newFeature);
     }
-  }, [title, newFeature]);
+  }, [title]);
 
   return (
     <DrawerWrapper title={title}>

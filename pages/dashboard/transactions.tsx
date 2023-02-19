@@ -13,12 +13,9 @@ import {
 } from "src/redux/store/features/transaction-slice";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { MyTransactionValue } from "src/utils/boxValues";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 import { uiActions } from "src/redux/store/ui-slice";
 
 const Transaction = () => {
@@ -32,11 +29,8 @@ const Transaction = () => {
   } = useAppSelector(state => state.transaction);
   const { token } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
-
   const [selected, setSelected] = useState(1);
-
   const [value, setValue] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
