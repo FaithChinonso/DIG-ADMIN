@@ -7,6 +7,7 @@ import {
   clearMessage,
   fetchMyuser,
   getMyuser,
+  getStates,
 } from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -55,6 +56,7 @@ const Users = () => {
 
   useEffect(() => {
     dispatch(getMyuser(token));
+    dispatch(getStates(token));
   }, [dispatch, token]);
 
   return (

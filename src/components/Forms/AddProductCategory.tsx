@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Notify, NotifyType } from "../HotToast";
 import axios from "axios";
 import UploadInputButton from "../UploadInputButtons";
@@ -16,11 +16,13 @@ import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { productCategoryApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { fetchProduct } from "src/redux/store/features/product-slice";
 
 const AddProductCategory = ({ type, id }: any) => {
   const request = useHTTPGet();
   const send = useHTTPPost();
   const [name, setName] = React.useState("");
+  const accessToken = sessionStorage.getItem("accessToken");
   const [profilePic, setProfilePic] = React.useState<any>("");
   const [profilePict, saveProfilePict] = React.useState<any>("");
   const [selectedFile, setSelectedFile] = useState<any>("");
@@ -49,6 +51,7 @@ const AddProductCategory = ({ type, id }: any) => {
         saveProfilePict(fileString);
         setSelectedFile(event.target.files[0]);
         console.log(selectedFile);
+        console.log(fileString);
       }
     };
     setProfilePic(newValue);
@@ -56,20 +59,40 @@ const AddProductCategory = ({ type, id }: any) => {
     console.log(profilePic);
   };
   const formData = new FormData();
-  formData.append("image", selectedFile);
+  {
+    selectedFile && formData.append("image", selectedFile);
+  }
+
   formData.append("name", name);
 
-  const updateCategory = async () => {
-    const data = {
-      payload: formData,
-      id,
-    };
+  console.log(formData);
+  const data = {
+    payload: formData,
+    id,
+  };
 
+  const convertToBinary = (url: string) => {
+    fetch(
+      "https://easy.unikmarketing.org/storage/product-category/Db95ksnxaczWr0L0mnt5"
+    )
+      .then(response => response.blob())
+      .then(blob => {
+        let reader = new FileReader();
+        const file = reader.readAsArrayBuffer(blob);
+        console.log(file);
+        reader.onload = function () {
+          let arrayBuffer = reader.result;
+          console.log(arrayBuffer);
+        };
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+  const updateCategory = async () => {
     dispatch(updateproductCategory(data));
   };
   const createCategory = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
-
     dispatch(createproductCategory(formData));
   };
   const submitFormHandler = (e: any) => {
@@ -80,20 +103,22 @@ const AddProductCategory = ({ type, id }: any) => {
       createCategory();
     }
   };
+
   useEffect(() => {
     if (type === "edit") {
-      const getMyCategory = async () => {
-        const accessToken = sessionStorage.getItem("accessToken");
+      const getMyCategory = () => {
         const url = `${productCategoryApi}/single-product-category/${id}`;
         const dataFunction = (res: any) => {
           setName(res.data.data.name);
           saveProfilePict(res.data.data.image);
+
+          // convertToBinary(res.data.data.image);
         };
         request({ url, accessToken }, dataFunction);
       };
       getMyCategory();
     }
-  }, [type, id, request]);
+  }, [accessToken]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -120,6 +145,7 @@ const AddProductCategory = ({ type, id }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchProduct(accessToken))
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

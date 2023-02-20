@@ -57,7 +57,7 @@ const Jobs = () => {
   }, [dispatch, token]);
   return (
     <ParentContainer>
-      <div>
+      <div className="mt-12">
         <JobsDisplay jobs={jobs} />
       </div>
     </ParentContainer>

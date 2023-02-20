@@ -34,19 +34,19 @@ const paginationComponentOptions = {
 export const DataFilterTable = (props: any) => {
   const [filterText, setFilterText] = useState("");
   const customFilter = (rows: any[], text: string) => {
-    return rows.filter(row =>
+    return rows?.filter(row =>
       Object.keys(row).some(key =>
         row[key]?.toString().toLowerCase().includes(text.toLowerCase())
       )
     );
   };
   return (
-    <div className="min-h-[600px] flex flex-col space-y-2 bg-white mt-2">
+    <div className="min-h-[600px] flex flex-col space-y-2 bg-white relative">
       <input
         value={filterText}
         onChange={e => setFilterText(e.target.value)}
         placeholder="Search here"
-        className="bg-lightGray rounded-md border border-darkGray w-[200px] self-end my-2 p-2 mr-1 outline-none placeholder:text-sm placeholder:text-text text-text text-sm"
+        className="absolute right-1 -top-12 bg-lightGray rounded-md border border-darkGray w-[200px] self-end my-2 p-2 mr-1 outline-none placeholder:text-sm placeholder:text-text text-text text-sm"
       />
       <DataTable
         columns={props.columns}

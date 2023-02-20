@@ -36,6 +36,7 @@ a {
   max-width: 100%;
   overflow-y: auto;
   margin-top: 10px;
+  min-height: 500px;
 }
 .rdt_TableHeadRow {
   color: rgba(18, 38, 68, 1);

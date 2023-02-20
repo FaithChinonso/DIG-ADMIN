@@ -55,11 +55,11 @@ const Orders = () => {
 
   useEffect(() => {
     dispatch(getMyOrders(token));
-  }, [dispatch,token]);
+  }, [dispatch, token]);
 
   return (
     <ParentContainer>
-      <div>
+      <div className="mt-12">
         <OrderTable data={orders} type="main" />
       </div>
     </ParentContainer>

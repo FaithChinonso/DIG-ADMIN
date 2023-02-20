@@ -16,7 +16,7 @@ import { getMyOrders } from "src/redux/store/features/order-slice";
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const { token } = useAppSelector(state => state.auth);
+  const { token, adminDetails } = useAppSelector(state => state.auth);
   const { users } = useAppSelector(state => state.user);
   const { transactions } = useAppSelector(state => state.transaction);
   const { orders } = useAppSelector(state => state.order);
@@ -32,7 +32,7 @@ const Home = () => {
     dispatch(getMyserviceCategories(token));
     dispatch(getMyproductCategories(token));
     dispatch(getMyTransactions(token));
-    dispatch(getAdminlogs(token));
+    dispatch(getAdminlogs({ token, adminDetails }));
     dispatch(getMyOrders(token));
   }, [dispatch, token]);
   return (

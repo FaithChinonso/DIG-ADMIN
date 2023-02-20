@@ -19,7 +19,7 @@ export default function DrawerCard() {
       width: "100%",
       height: "100%",
       display: "flex",
-      overflow: "scroll",
+      overflowY: "scroll",
       justifyContent: "center",
       alignItems: "center",
       borderRadius: "24px",
@@ -28,7 +28,7 @@ export default function DrawerCard() {
     mobile: {
       backgroundColor: "white",
       width: "95vw",
-      overflow: "auto",
+      overflowY: "auto",
       height: "70vh",
       bottom: 0,
       maxHeight: "70vh",
@@ -38,7 +38,7 @@ export default function DrawerCard() {
     desktop: {
       backgroundColor: "white",
       width: 483,
-      overflow: "auto",
+      overflowY: "auto",
       height: "100vh",
       top: 0,
       right: 0,

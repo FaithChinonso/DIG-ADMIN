@@ -10,12 +10,17 @@ import {
   clearError,
   clearMessage,
   createservice,
+  fetchService,
+  updateservice,
 } from "src/redux/store/features/service-slice";
 import { serviceApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
-import { getMyserviceCategories } from "src/redux/store/features/service-category-slice";
+import {
+  fetchServiceCategories,
+  getMyserviceCategories,
+} from "src/redux/store/features/service-category-slice";
 
-const AddService = ({ id, title }: any) => {
+const AddService = ({ id, title, merchantID }: any) => {
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
   const send = useHTTPPost();
@@ -26,6 +31,8 @@ const AddService = ({ id, title }: any) => {
   const { serviceCategories } = useAppSelector(
     (state: any) => state.serviceCategory
   );
+  const { states } = useAppSelector((state: any) => state.user);
+  const [localGovernments, setLocalGovernments] = useState<any[]>([]);
   const [items, setItems] = useState<any[]>([{ title: "", value: "" }]);
   const [data, setData] = useState({
     service: "",
@@ -35,6 +42,8 @@ const AddService = ({ id, title }: any) => {
     location: "",
     phone: 0,
     category: "",
+    lga: "",
+    state: "",
   });
   const inputChange = (e: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -71,17 +80,15 @@ const AddService = ({ id, title }: any) => {
     phone_number: data.phone,
     other_details: JSON.stringify(items),
     description: data.description,
-    lga: 1,
-    state: 1,
+    lga: data.lga,
+    state: data.state,
   };
 
   const createService = () => {
-    dispatch(createservice({ payload, id }));
+    dispatch(createservice({ payload, id: merchantID }));
   };
   const updateService = () => {
-    const url = `${serviceApi}/update-service/${id}`;
-    const dataFunction = (res: any) => {};
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(updateservice({ payload, id }));
   };
   const submitFormHandler = (e: any) => {
     e.preventDefault();
@@ -91,7 +98,14 @@ const AddService = ({ id, title }: any) => {
       createService();
     }
   };
-
+  const fetchLocalGovernments = async (id: string) => {
+    const response = await fetch(
+      `https://easy.unikmarketing.org/api/lgas/${id}`
+    );
+    const data = await response.json();
+    console.log(data.data);
+    setLocalGovernments(data.data);
+  };
   useEffect(() => {
     if (title === "Update Service") {
       const getAService = async () => {
@@ -114,7 +128,7 @@ const AddService = ({ id, title }: any) => {
       };
       getAService();
     }
-  }, [title, dispatch, request, data, id]);
+  }, [accessToken]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -142,6 +156,7 @@ const AddService = ({ id, title }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchService(accessToken));
       setTimeout(() => {
         dispatch(clearMessage());
         dispatch(uiActions.closeToast());
@@ -298,6 +313,65 @@ const AddService = ({ id, title }: any) => {
               setData({ ...data, amount: value });
             }}
           />
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="state"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            State
+          </label>
+
+          <select
+            name="state"
+            value={data.state || ""}
+            id="state"
+            onChange={e => {
+              inputChange(e);
+              fetchLocalGovernments(e?.target?.value);
+            }}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="State"
+          >
+            {states?.map((item: any) => (
+              <option
+                value={item.stateID}
+                key={item.stateID}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.stateName}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className=" mt-[30px]">
+          <label
+            htmlFor="state"
+            className=" text-[10px] text-[#1D2939] bg-white"
+          >
+            LGA
+          </label>
+
+          <select
+            name="lga"
+            value={data.lga || ""}
+            id="lga"
+            onChange={e => {
+              inputChange(e);
+            }}
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            placeholder="LGA"
+          >
+            {localGovernments?.map((item: any) => (
+              <option
+                value={item.lgaID}
+                key={item.lgaID}
+                className=" text-[10px] text-[#1D2939] bg-white"
+              >
+                {item.lgaName}
+              </option>
+            ))}
+          </select>
         </div>
         <div className=" text-base text-[#1D2939] bg-white">Other Details</div>
 

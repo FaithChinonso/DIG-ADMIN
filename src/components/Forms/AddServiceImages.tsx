@@ -11,6 +11,7 @@ import { uiActions } from "src/redux/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { serviceApi } from "../api";
 import userPic from "../../assets/image/userPic.svg";
+import { fetchService } from "src/redux/store/features/service-slice";
 
 const AddServiceImages = ({ id }: any) => {
   const [images, setImages] = useState<any>([]);
@@ -81,6 +82,7 @@ const AddServiceImages = ({ id }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchService(accessToken));
     } catch (err: any) {
       if (err.response) {
         dispatch(

@@ -12,12 +12,14 @@ import {
   clearError,
   clearMessage,
   createproduct,
+  fetchProduct,
+  updateproduct,
 } from "src/redux/store/features/product-slice";
 
 import { productApi } from "../api";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 
-const CreateProduct = ({ title, id }: any) => {
+const CreateProduct = ({ title, id, merchantID }: any) => {
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
   const send = useHTTPPost();
@@ -64,12 +66,11 @@ const CreateProduct = ({ title, id }: any) => {
   };
 
   const createProduct = async () => {
-    dispatch(createproduct({ payload, id }));
+    dispatch(createproduct({ payload, id: merchantID }));
   };
   const updateProduct = () => {
     const url = `${productApi}/update-product/${id}`;
-    const dataFunction = (res: any) => {};
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(updateproduct({ payload, id }));
   };
 
   const submitFormHandler = (e: any) => {
@@ -81,33 +82,36 @@ const CreateProduct = ({ title, id }: any) => {
       createProduct();
     }
   };
-  const getAProduct = useCallback(async () => {
-    const url = `${productApi}/single-product/${id}`;
-    const dataFunction = (res: any) => {
-      setData({
-        ...data,
-        name: res.data.data.product.name,
-        description: res.data.data.product.description,
-        discountAvailable: res.data.data.product.discount.isDiscountAvailable,
-        discountPercentage: res.data.data.product.discount.discountPercentage,
-        quantity: res.data.data.product.quantity,
-        brand: res.data.data.product.brand,
-        price: res.data.data.product.price,
-        deliveryTag: res.data.data.product.delivery.freeDelivery,
-        deliveryFee: res.data.data.product.delivery.shippingFee,
-        weight: res.data.data.product.weight,
-        warranty: res.data.data.product.productWarranty,
-        category: res.data.data.category.categoryID,
-      });
-    };
 
-    request({ url, accessToken }, dataFunction);
-  }, [request]);
   useEffect(() => {
     if (title === "Update Product") {
+      const getAProduct = () => {
+        const url = `${productApi}/single-product/${id}`;
+        const dataFunction = (res: any) => {
+          setData({
+            ...data,
+            name: res.data.data.product.name,
+            description: res.data.data.product.description,
+            discountAvailable:
+              res.data.data.product.discount.isDiscountAvailable,
+            discountPercentage:
+              res.data.data.product.discount.discountPercentage,
+            quantity: res.data.data.product.quantity,
+            brand: res.data.data.product.brand,
+            price: res.data.data.product.price,
+            deliveryTag: res.data.data.product.delivery.freeDelivery,
+            deliveryFee: res.data.data.product.delivery.shippingFee,
+            weight: res.data.data.product.weight,
+            warranty: res.data.data.product.productWarranty,
+            category: res.data.data.category.categoryID,
+          });
+        };
+
+        request({ url, accessToken }, dataFunction);
+      };
       getAProduct();
     }
-  }, [title]);
+  }, [accessToken]);
 
   useEffect(() => {
     dispatch(getMyproductCategories(accessToken));
@@ -139,6 +143,7 @@ const CreateProduct = ({ title, id }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
+      dispatch(fetchProduct(accessToken));
       setTimeout(() => {
         dispatch(clearMessage());
         dispatch(uiActions.closeToast());
@@ -286,7 +291,7 @@ const CreateProduct = ({ title, id }: any) => {
               setData({
                 ...data,
                 [e.target.name]: e.target.value,
-                discountPercentage: "0",
+                discountPercentage: "1",
               });
             }}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"

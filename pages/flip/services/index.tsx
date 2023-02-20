@@ -46,6 +46,7 @@ const Service = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(fetchService(token));
       dispatch(uiActions.closeModal());
       dispatch(uiActions.closedrawer());
       dispatch(
@@ -54,7 +55,7 @@ const Service = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchService(token));
+
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

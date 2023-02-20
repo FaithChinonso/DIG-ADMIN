@@ -47,6 +47,7 @@ const Products = () => {
       }, 10000);
     }
     if (success) {
+      console.log(success);
       dispatch(uiActions.closeModal());
       dispatch(uiActions.closedrawer());
       dispatch(

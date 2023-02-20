@@ -43,8 +43,8 @@ export const updateproduct = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${productApi}/update-product/${data.productID}`,
-        data,
+        `${productApi}/update-product/${data.id}`,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }

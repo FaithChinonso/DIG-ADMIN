@@ -88,7 +88,7 @@ const ServiceCategory = () => {
       return {
         id: client?.categoryID,
         serial: index + 1,
-        isActive: client?.isActive,
+        isActive: client.isActive ? "Active" : "Inactive",
         name: client?.name,
       };
     });
@@ -105,9 +105,6 @@ const ServiceCategory = () => {
     {
       name: "Status",
       selector: "isActive",
-      cell: (prop: any) => {
-        <div> {prop.isActive ? "Active" : "Inactive"}</div>;
-      },
     },
 
     {
@@ -122,6 +119,7 @@ const ServiceCategory = () => {
                 <ActionMenuItem
                   name="Update Category"
                   onClickFunction={() => {
+                    console.log(prop);
                     dispatch(
                       uiActions.openDrawerAndSetContent({
                         drawerStyles: {
@@ -137,7 +135,7 @@ const ServiceCategory = () => {
                   }}
                 />
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>

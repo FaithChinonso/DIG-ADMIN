@@ -439,13 +439,17 @@ export const delivery = [
   { id: 2, name: "No" },
 ];
 export const role = [
-  { id: 1, name: "consumer" },
-  { id: 2, name: "merchant" },
+  { id: 1, name: "" },
+  { id: 2, name: "consumer" },
+  { id: 3, name: "merchant" },
+  { id: 4, name: "rider" },
+  { id: 5, name: "driver" },
 ];
 export const productLevel = [
-  { id: 1, name: "Beginner" },
-  { id: 2, name: "Intermediate" },
-  { id: 3, name: "expert" },
+  { id: 1, name: "" },
+  { id: 2, name: "Beginner" },
+  { id: 3, name: "Intermediate" },
+  { id: 4, name: "expert" },
 ];
 export const bool = [
   { id: 0, name: "Yes" },
@@ -456,16 +460,24 @@ export const negotiable = [
   { id: 0, name: "No" },
 ];
 export const gender = [
-  { id: 1, name: "Female" },
-  { id: 2, name: "Male" },
+  { id: 1, name: "" },
+  { id: 2, name: "Female" },
+  { id: 3, name: "Male" },
 ];
 
 export const category = [
-  { id: 1, name: "electronics" },
-  { id: 2, name: "Car Dealership" },
-  { id: 3, name: "Beauty Products" },
+  { id: 1, name: "" },
+  { id: 2, name: "electronics" },
+  { id: 3, name: "Car Dealership" },
+  { id: 4, name: "Beauty Products" },
 ];
 export const merchantType = [
-  { id: 1, name: "business" },
-  { id: 2, name: "personal" },
+  { id: 1, name: "" },
+  { id: 2, name: "business" },
+  { id: 3, name: "personal" },
+];
+export const applicationType = [
+  { id: 1, name: "" },
+  { id: 2, name: "flip" },
+  { id: 3, name: "cue" },
 ];

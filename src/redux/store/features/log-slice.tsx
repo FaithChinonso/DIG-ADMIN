@@ -4,11 +4,14 @@ import { logApi } from "src/components/api";
 
 export const getAdminlogs = createAsyncThunk(
   "log/getAdminlogs",
-  async (accessToken: any, thunkAPI: any) => {
+  async ({ token, adminDetails }: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${logApi}/logs-by-admin/1`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await axios.get(
+        `${logApi}/logs-by-admin/98837152-7026-4434-b022-2f43c2eb85e3`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       console.log(response.data);
       return response.data;
     } catch (error: any) {
