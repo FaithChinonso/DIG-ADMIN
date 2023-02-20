@@ -64,7 +64,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       description: client.description,
       budget: client.budget,
       jobScope: client.jobScope,
-      isActive: client.isActive,
+      isActive: client.isActive ? "Active" : "Inactive",
       isBudgetNegotiable: client.isBudgetNegotiable,
       datePosted: moment(client.datePosted).format("ll"),
       skillsNeeded: client.skillsNeeded,
@@ -113,7 +113,10 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       name: "Date Posted",
       selector: "datePosted",
     },
-    ,
+    {
+      name: "Status",
+      selector: "isActive",
+    },
     {
       name: "Action",
       selector: "action",
@@ -147,7 +150,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
                   }}
                 />
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>

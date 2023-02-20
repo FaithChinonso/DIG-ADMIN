@@ -71,7 +71,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
       status: client?.status,
       buyer: client?.buyer,
       product: client?.product,
-      isActive: client?.isActive,
+      isActive: client.isActive,
     };
   });
   const columnOrders = [

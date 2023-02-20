@@ -5,26 +5,26 @@ import profileDriv from "../../../src/assets/image/profileDriv.svg";
 const GeneralInfo = ({ data }: any) => {
   return (
     <div>
-      <div className="flex mt-[37px] flex-wrap items-start justify-start">
-        <div className="flex flex-col gap-3 min-w-[100px] mb-3">
+      <div className="flex mt-[37px] flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-3 max-w-[100px] mb-3">
           <div className="text-text text-[10px]">Email Address</div>
           <div className="text-grey text-xs">{data?.email}</div>
         </div>
-        <div className="flex flex-col gap-3 min-w-[100px]">
+        <div className="flex flex-col gap-3 max-w-[100px]">
           <div className="text-text text-[10px]">Phone Number</div>
           <div className="text-grey text-xs">{data?.phone}</div>
         </div>
-        <div className="flex flex-col gap-3 min-w-[100px]">
+        <div className="flex flex-col gap-3 max-w-[100px]">
           <div className="text-text text-[10px]">Gender</div>
           <div className="text-grey text-xs">{data?.gender}</div>
         </div>
-        <div className="flex flex-col gap-3 min-w-[100px]">
+        <div className="flex flex-col gap-3 max-w-[100px]">
           <div className="text-text text-[10px]">Date Joined</div>
           <div className="text-grey text-xs">
             {moment(data?.dateJoined).format("ll")}
           </div>
         </div>
-        <div className="flex flex-col gap-3 min-w-[100px] w-1/2">
+        <div className="flex flex-col gap-3 max-w-[100px] w-1/2">
           <div className="text-text text-[10px]">Home Address</div>
           <div className="text-grey text-xs">{data?.address}</div>
         </div>

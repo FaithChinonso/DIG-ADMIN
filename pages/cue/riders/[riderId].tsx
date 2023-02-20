@@ -106,15 +106,14 @@ const OneUser = ({ riderID }: any) => {
               </div>
             )}
             <div className="flex flex-col gap-[14px]">
-              <h2 className="text-[16px]">
+              <div className="text-[16px] bg-red-300">
                 {user?.fullName}
-                <span className="">
-                  {" "}
-                  {user?.emailVerifiedStatus === "verified" && (
+                {user?.emailVerifiedStatus === "verified" && (
+                  <span className="ml-1">
                     <Image src={verify} alt={""} />
-                  )}
-                </span>
-              </h2>
+                  </span>
+                )}
+              </div>
               <div className="flex justify-between gap-[9px] items-center">
                 <h4 className="text-[10px]">{user?.role}</h4>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>

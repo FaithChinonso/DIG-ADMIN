@@ -78,7 +78,7 @@ const ProductTable = ({ data }: any) => {
         discountAmount: string;
       };
       description: string;
-      isActive: boolean;
+      isActive: string;
     };
 
     category: {
@@ -98,7 +98,7 @@ const ProductTable = ({ data }: any) => {
       price: client.product.price,
       categoryName: client?.category?.name,
       productCreationDate: moment(client.productCreationDate).format("ll"),
-      isActive: client.product.isActive,
+      isActive: client.product.isActive ? "Active" : "Inactive",
       numberOfOrders: client.product.numberOfOrders,
       freeDelivery: client.product.delivery.freeDelivery,
       shippingFee: client.product.delivery.shippingFee,
@@ -154,6 +154,10 @@ const ProductTable = ({ data }: any) => {
     {
       name: "Orders",
       selector: "numberOfOrders",
+    },
+    {
+      name: "Status",
+      selector: "isActive",
     },
 
     {
@@ -287,7 +291,7 @@ const ProductTable = ({ data }: any) => {
                   />
                 )}
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>

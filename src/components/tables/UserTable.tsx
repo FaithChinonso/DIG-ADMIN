@@ -90,7 +90,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       emailVerifiedStatus: client.emailVerifiedStatus,
       role: client.role,
       merchantID: client.role === "merchant" ? client.profile.merchantID : null,
-      isActive: client.isActive,
+      isActive: client.isActive ? "Active" : "Inactive",
       dateAdded: moment(client.dateAdded).format("ll"),
     };
   });
@@ -127,9 +127,13 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       selector: (row: { applicationName: any }) => `${row.applicationName}`,
     },
     {
-      name: "Status",
+      name: "Verification",
       selector: (row: { emailVerifiedStatus: any }) =>
         `${row.emailVerifiedStatus}`,
+    },
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => `${row.isActive}`,
     },
     {
       name: "Action",
@@ -163,7 +167,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                     );
                   }}
                 />
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -415,9 +419,13 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       selector: (row: { applicationName: any }) => `${row.applicationName}`,
     },
     {
-      name: "Status",
+      name: "Verification",
       selector: (row: { emailVerifiedStatus: any }) =>
         `${row.emailVerifiedStatus}`,
+    },
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => `${row.isActive}`,
     },
   ];
   return (

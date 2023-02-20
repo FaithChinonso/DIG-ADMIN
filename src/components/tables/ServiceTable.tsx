@@ -95,7 +95,7 @@ const ServiceTable = ({ data }: any) => {
       serviceName: client.service.serviceName,
       phoneNumber: client.service.phoneNumber,
       pricing: client.service.pricing,
-      isActive: client.service.isActive,
+      isActive: client.service.isActive ? "Active" : "Inactive",
       description: client.service.description,
       images: client.service.images,
       yearsOfExperience: client.service.yearsOfExperience,
@@ -142,6 +142,10 @@ const ServiceTable = ({ data }: any) => {
       name: "Date Posted",
       selector: "datePosted",
     },
+    {
+      name: "Status",
+      selector: "isActive",
+    },
     ,
     {
       name: "Action",
@@ -187,7 +191,7 @@ const ServiceTable = ({ data }: any) => {
                   }}
                 />
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>

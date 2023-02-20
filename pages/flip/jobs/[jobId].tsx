@@ -101,39 +101,43 @@ const OneMerchant = (props: any) => {
     <ParentContainer>
       <div>
         <JobList job={job} />
-        <div className="flex flex-wrap items-center bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] md:flex-row justify-between relative z-1 text-white">
-          <div className="flex justify-between w-full md:w-[350px]">
-            <div className="flex flex-col gap-3">
-              <div className="text-xs">Headline</div>
-              <div className="text-base">{job?.headline}</div>
+        <div className="flex  items-center bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] md:flex-row justify-between relative z-1 text-white">
+          <div className="flex flex-col justify-between w-full md:w-[350px] gap-3">
+            <div className="flex flex-col">
+              <div className="text-xs mb-1 text-text font-bold">Headline</div>
+              <div className="text-sm">{job?.headline}</div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs "> Duration</div>
-              <div className="text-base">{job?.duration}</div>
+            <div className="flex flex-col ">
+              <div className="text-xs mb-1 text-text font-bold"> Duration</div>
+              <div className="text-sm">{job?.duration}</div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <div className="text-xs">Job Scope</div>
-              <div className="text-base">{job?.jobScope} </div>
+            <div className="flex flex-col ">
+              <div className="text-xs mb-1 text-text font-bold">Job Scope</div>
+              <div className="text-sm">{job?.jobScope} </div>
             </div>
           </div>
-          <div className="flex justify-between mt-5 w-full md:w-[350px]">
-            <div className="flex flex-col gap-3">
-              <div className="text-xs">Experience Level</div>
-              <div className="text-base">{job?.experienceLevel}</div>
+          <div className="flex flex-col justify-between w-full md:w-[350px] gap-3">
+            <div className="flex flex-col ">
+              <div className="text-xs mb-1 text-text font-bold">
+                Experience Level
+              </div>
+              <div className="text-sm">{job?.experienceLevel}</div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs ">Date Posted</div>
-              <div className="text-base">{job?.datePosted}</div>
+            <div className="flex flex-col ">
+              <div className="text-xs mb-1 text-text font-bold">
+                Date Posted
+              </div>
+              <div className="text-sm">{job?.datePosted}</div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs ">Budget</div>
-              <div className="text-base">₦ {job?.budget}</div>
+            <div className="flex flex-col ">
+              <div className="text-xs mb-1 text-text font-bold">Budget</div>
+              <div className="text-sm">₦ {job?.budget}</div>
             </div>
           </div>
-          <div className="w-full flex flex-col justify-center gap-3 md:w-[350px]">
-            <div className="text-xs ">Description</div>
-            <div className="text-base">{job?.description}</div>
+          <div className="flex flex-col justify-between w-full md:w-[350px] gap-3">
+            <div className="text-xs mb-1 text-text font-bold">Description</div>
+            <div className="text-sm">{job?.description}</div>
           </div>
         </div>
         <div className="mt-[30px]">
