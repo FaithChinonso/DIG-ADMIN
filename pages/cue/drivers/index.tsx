@@ -16,7 +16,6 @@ const Drivers = () => {
     (state: any) => state.user
   );
   const { token } = useAppSelector((state: any) => state.auth);
-  console.log(token);
 
   useEffect(() => {
     if (loading === true) {
@@ -44,7 +43,7 @@ const Drivers = () => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-      dispatch(fetchMyDriver(""));
+      dispatch(fetchMyDriver(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
