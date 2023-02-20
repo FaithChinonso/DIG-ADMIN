@@ -18,10 +18,12 @@ import ModalAction from "../ModalContent/ModalAction";
 
 const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();
+
   const dispatch = useAppDispatch();
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.job
   );
+
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());

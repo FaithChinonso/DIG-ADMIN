@@ -4,7 +4,12 @@ import React, { PureComponent, useEffect, useState } from "react";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 import { Months } from "src/utils/months";
 
-const COLORS = ["rgba(18, 38, 68, 1) ", "#00C49F", "#FFBB28"];
+const COLORS = [
+  "rgba(18, 38, 68, 1) ",
+  "#00C49F",
+  "#FFBB28",
+  "rgba(24, 160, 251, 1)",
+];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -35,13 +40,21 @@ const renderCustomizedLabel = ({
 
 const PieChartDashboard = ({ orders }: any) => {
   const [month, setMonth] = useState<any>("");
+  let pending = 0;
+  let rejected = 0;
+  let accepted = 0;
+  let completed = 0;
   const [statusGroup, setStatusGroup] = useState<any>([
     {
       name: "Pending",
-      value: 0,
+      value: 10,
     },
     {
       name: "Rejected",
+      value: 0,
+    },
+    {
+      name: "Accepted",
       value: 0,
     },
     {
@@ -55,13 +68,11 @@ const PieChartDashboard = ({ orders }: any) => {
       const formDate = moment(tr?.orderDate).format("MMM");
       return formDate === month;
     });
-    let pending = 0;
-    let rejected = 0;
-    let completed = 0;
 
     filterOrders.forEach((order: any) => {
       if (order.status === "Pending") return pending++;
       if (order.status === "Rejected") return rejected++;
+      if (order.status === "Accepted") return accepted++;
       if (order.status === "Completed") return completed++;
     });
     setStatusGroup([
@@ -74,11 +85,15 @@ const PieChartDashboard = ({ orders }: any) => {
         value: rejected,
       },
       {
+        name: "Accepted",
+        value: accepted,
+      },
+      {
         name: "Completed",
         value: completed,
       },
     ]);
-  }, [orders]);
+  }, [orders, pending, accepted, completed, rejected, month]);
   useEffect(() => {
     setMonth(moment().format("MMM"));
   }, []);

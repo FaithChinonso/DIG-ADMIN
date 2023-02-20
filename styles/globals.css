@@ -30,7 +30,7 @@ a {
   font-family: ClashDisplay;
 }
 .rdt_Table {
-  padding-bottom: 150px;
+  padding-bottom: 15px;
   position: relative;
   z-index: 10;
   max-width: 100%;
@@ -48,7 +48,6 @@ a {
   text-align: center;
 }
 .spinner {
-  z-index: 200000000000;
   color: red;
 }
 .rdt_TableCol {
@@ -60,3 +59,7 @@ a {
   color: rgba(16, 24, 40, 1);
   font-weight: 200;
 }
+/* .rdt_TableFooter {
+  margin: 0 auto;
+  background-color: red;
+} */

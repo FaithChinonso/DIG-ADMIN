@@ -33,7 +33,7 @@ const ActionMenuBase = ({ items, text = <MoreHorizIcon />, type }: any) => {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
   return (
-    <div className="relative h-full flex items-center justify-center cursor-pointer ">
+    <div className="relative h-full flex items-center justify-center cursor-pointer">
       <div
         className={`${
           type === "export"
