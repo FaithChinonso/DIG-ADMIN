@@ -10,15 +10,18 @@ import {
   createuser,
   fetchMyuser,
   getMerchantCategory,
+  updateuser,
 } from "src/redux/store/features/user-slice";
 import { gender, merchantType, role } from "src/utils/analytics";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
+import { userApi } from "../api";
+import useHTTPGet from "src/Hooks/use-httpget";
 
-const AddUser = ({ title, id = null }: any) => {
+const AddUser = ({ title, id }: any) => {
   const accessToken = sessionStorage.getItem("accessToken");
-  const [selectedDate, setSelectedDate] = useState(null);
+  const request = useHTTPGet();
+  const [selectedDate, setSelectedDate] = useState();
   const dispatch = useAppDispatch();
   const { success, loading, error, message, states, merchantCategory } =
     useAppSelector((state: any) => state.user);
@@ -143,17 +146,41 @@ const AddUser = ({ title, id = null }: any) => {
       phone: phoneNumber,
     };
 
-    if (data.role === "merchant") {
-      dispatch(createuser(payloadMerchant));
+    const createUserFunction = () => {
+      if (data.role === "merchant") {
+        dispatch(createuser(payloadMerchant));
+      }
+      if (data.role === "consumer") {
+        dispatch(createuser(payloadConsumer));
+      }
+      if (data.role === "rider") {
+        dispatch(createuser(payloadRider));
+      }
+      if (data.role === "driver") {
+        dispatch(createuser(payloadDriver));
+      }
+    };
+
+    const updateUserFunction = () => {
+      if (data.role === "merchant") {
+        dispatch(updateuser({ payload: payloadMerchant, id }));
+      }
+      if (data.role === "consumer") {
+        dispatch(updateuser({ payload: payloadConsumer, id }));
+      }
+      if (data.role === "rider") {
+        dispatch(updateuser({ payload: payloadRider, id }));
+      }
+      if (data.role === "driver") {
+        dispatch(updateuser({ payload: payloadDriver, id }));
+      }
+    };
+
+    if (title === "Add User") {
+      createUserFunction();
     }
-    if (data.role === "consumer") {
-      dispatch(createuser(payloadConsumer));
-    }
-    if (data.role === "rider") {
-      dispatch(createuser(payloadRider));
-    }
-    if (data.role === "driver") {
-      dispatch(createuser(payloadDriver));
+    if (title === "Update User") {
+      updateUserFunction();
     }
   };
   const fetchLocalGovernments = async (id: string) => {
@@ -164,35 +191,42 @@ const AddUser = ({ title, id = null }: any) => {
     console.log(data.data);
     setLocalGovernments(data.data);
   };
-  // useEffect(() => {
-  //   if (title === "Update User") {
-  //     const getAProduct = () => {
-  //       const url = `${userApi}/single-user/${id}`;
-  //       const dataFunction = (res: any) => {
-  //         setData({
-  //           ...data,
-  //           name: res.data.data.product.name,
-  //           description: res.data.data.product.description,
-  //           discountAvailable:
-  //             res.data.data.product.discount.isDiscountAvailable,
-  //           discountPercentage:
-  //             res.data.data.product.discount.discountPercentage,
-  //           quantity: res.data.data.product.quantity,
-  //           brand: res.data.data.product.brand,
-  //           price: res.data.data.product.price,
-  //           deliveryTag: res.data.data.product.delivery.freeDelivery,
-  //           deliveryFee: res.data.data.product.delivery.shippingFee,
-  //           weight: res.data.data.product.weight,
-  //           warranty: res.data.data.product.productWarranty,
-  //           category: res.data.data.category.categoryID,
-  //         });
-  //       };
+  useEffect(() => {
+    if (title === "Update User") {
+      const getAUser = () => {
+        const url = `${userApi}/single-user/${id}`;
+        const dataFunction = (res: any) => {
+          console.log(res);
+          const response = res?.data?.data;
+          setData({
+            ...data,
+            firstname: response?.firstName,
+            lastname: response?.lastName,
+            email: response?.email,
+            role: response?.role,
+            application_name: response?.applicationName,
+            gender: response?.gender,
+            password: response?.password,
+            category: response?.category,
+            state: response?.state,
+            lga: response?.lga,
+            address: response.address,
+            merchantType: response?.profile?.merchantType,
+            dateOfBirth: response?.dateOfBirth,
+          });
+          setPhoneNumber(response?.phone);
 
-  //       request({ url, accessToken }, dataFunction);
-  //     };
-  //     getAProduct();
-  //   }
-  // }, [accessToken]);
+          const date = new Date(response?.dateOfBirth);
+          const isoDateString = date.toISOString();
+
+          // setSelectedDate(isoDateString);
+        };
+
+        request({ url, accessToken }, dataFunction);
+      };
+      getAUser();
+    }
+  }, [accessToken]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -230,6 +264,7 @@ const AddUser = ({ title, id = null }: any) => {
   useEffect(() => {
     dispatch(getMerchantCategory(""));
   }, []);
+
   return (
     <DrawerWrapper title={title}>
       <form
@@ -565,7 +600,7 @@ const AddUser = ({ title, id = null }: any) => {
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-2"
           type="submit"
         >
-          Add User
+          {title}
         </button>
       </form>
     </DrawerWrapper>

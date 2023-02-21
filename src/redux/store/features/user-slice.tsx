@@ -77,8 +77,8 @@ export const updateuser = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${userApi}/update-user/${data.userID}`,
-        data,
+        `${userApi}/update-user/${data.id}`,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -327,6 +327,7 @@ const userSlice = createSlice({
         }
       }
     );
+
     builder.addCase(getMyuser.pending, state => {
       state.loading = true;
     });

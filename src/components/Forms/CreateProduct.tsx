@@ -22,7 +22,6 @@ import { getMyproductCategories } from "src/redux/store/features/product-categor
 const CreateProduct = ({ title, id, merchantID }: any) => {
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
-  const send = useHTTPPost();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.product
   );
