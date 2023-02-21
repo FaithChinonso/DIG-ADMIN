@@ -182,7 +182,7 @@ const ServiceDetails = ({ data }: any) => {
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-center gap-3 w-[120px]">
+        <div className="w-full flex flex-col justify-center gap-3 ">
           <div className="text-[10px] text-center  text-text">Description</div>
           <div className="text-xs text-center  text-[#090F47]">
             {data.description}

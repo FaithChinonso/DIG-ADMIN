@@ -135,7 +135,7 @@ const OneUser = (props: any) => {
                 </div>
               )}
               <div className="flex flex-col gap-[14px]">
-                <h2 className="text-[16px]">
+                <h2 className="text-[16px] text-text">
                   {user?.fullName}
                   <span className="">
                     {" "}
@@ -150,7 +150,7 @@ const OneUser = (props: any) => {
                   <div className="text-[10px]">{user?.email}</div>
                 </div>
                 <div className="flex justify-between gap-[9px] items-center">
-                  {user?.gender && (
+                  {user.gender && (
                     <h4 className="text-[10px]">
                       {" "}
                       <span>
@@ -199,7 +199,7 @@ const OneUser = (props: any) => {
                 <div className="flex flex-row gap-3 text-white">
                   {user?.profile?.driversLicenceFront ? (
                     <div className="text-white flex flex-col">
-                      <h3 className="text-[13px] mt-[28px]">
+                      <h3 className="text-[13px] mt-[28px] text-text">
                         {" "}
                         Driver's Licence Front
                       </h3>
@@ -210,7 +210,7 @@ const OneUser = (props: any) => {
                   ) : null}
                   {user?.profile?.driversLicenceBack ? (
                     <div className="text-white flex flex-col">
-                      <h3 className="text-[13px] mt-[28px]">
+                      <h3 className="text-[13px] mt-[28px] text-text">
                         Driver's Licence Back
                       </h3>
                       <p className="text-[10px]">
@@ -221,14 +221,19 @@ const OneUser = (props: any) => {
                 </div>
                 <div className="flex flex-row gap-3 text-white">
                   <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]"> Completed Rides</h3>
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      {" "}
+                      Completed Rides
+                    </h3>
                     <p className="text-[10px]">
                       {user?.profile?.numOfCompletedRides}
                     </p>
                   </div>
                   {user?.profile?.vehicle?.length === 0 ? (
                     <div className="text-white flex flex-col">
-                      <h3 className="text-[13px] mt-[28px]">Vehicle Details</h3>
+                      <h3 className="text-[13px] mt-[28px] text-text ">
+                        Vehicle Details
+                      </h3>
                       <p className="text-[10px]"></p>
                     </div>
                   ) : null}
@@ -239,12 +244,17 @@ const OneUser = (props: any) => {
               <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
                 <div className="flex flex-row gap-3 text-white">
                   <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]"> House Address</h3>
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      {" "}
+                      House Address
+                    </h3>
                     <p className="text-[10px]">{user?.profile?.homeLocation}</p>
                   </div>
                   {user?.profile?.workLocation ? (
                     <div className="text-white flex flex-col">
-                      <h3 className="text-[13px] mt-[28px]">Work Location</h3>
+                      <h3 className="text-[13px] mt-[28px] text-text">
+                        Work Location
+                      </h3>
                       <p className="text-[10px]">
                         {user?.profile?.workLocation}
                       </p>
@@ -253,7 +263,9 @@ const OneUser = (props: any) => {
                 </div>
 
                 <div className="text-white flex flex-col ">
-                  <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
+                  <h3 className="text-[13px] mt-[28px] text-text">
+                    Completed Rides
+                  </h3>
                   <p className="text-[10px]">{user?.profile?.completedRides}</p>
                 </div>
               </div>
@@ -262,21 +274,26 @@ const OneUser = (props: any) => {
               <div className="flex flex-col items-center justify-around text-white w-full">
                 <div className="flex md:flex-col gap-3 text-white">
                   <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      Merchant Type
+                    </h3>
                     <p className="text-[10px]">{user?.profile?.merchantType}</p>
                   </div>
                   <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      Merchant Category
+                    </h3>
                     <p className="text-[10px]">
                       {user?.profile?.merchantCategory.categoryName}
                     </p>
                   </div>
                 </div>
-
-                <div className="text-white flex flex-col ">
-                  <h3 className="text-[13px] mt-[28px]">About</h3>
-                  <p className="text-[10px]">{user?.profile?.bio}</p>
-                </div>
+                {user?.profile?.bio ? (
+                  <div className="text-white flex flex-col ">
+                    <h3 className="text-[13px] mt-[28px] text-text">About</h3>
+                    <p className="text-[10px]">{user?.profile?.bio}</p>
+                  </div>
+                ) : null}
               </div>
             ) : null}
 

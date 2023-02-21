@@ -79,13 +79,7 @@ const OneMerchant = (props: any) => {
     fetchAMerchant(props.merchantId);
     fetchAllJobs(props.merchantId);
     fetchOrdersByAMerchant(props.merchantId);
-  }, [
-    props.merchantId,
-    dispatch,
-    fetchAMerchant,
-    fetchAllJobs,
-    fetchOrdersByAMerchant,
-  ]);
+  }, [props.merchantId]);
 
   useEffect(() => {
     if (loading === true) {

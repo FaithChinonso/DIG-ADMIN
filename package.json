@@ -50,6 +50,7 @@
     "react-tooltip": "^4.4.2",
     "recharts": "2.1.12",
     "regenerator-runtime": "^0.13.10",
+    "sharp": "^0.31.3",
     "tailwind-children": "^0.5.0",
     "tailwindcss-children": "^2.1.0"
   },

@@ -61,12 +61,6 @@ export const innerNav = [
         value: "dashboard",
         route: "/dashboard/audit",
       },
-      {
-        id: 8,
-        name: "Settings",
-        value: "dashboard",
-        route: "/dashboard/settings",
-      },
     ],
   },
   {
@@ -206,12 +200,7 @@ export const outerNav = [
     value: "dashboard",
     route: "/dashboard/audit",
   },
-  {
-    id: 8,
-    name: "Settings",
-    value: "dashboard",
-    route: "/dashboard/settings",
-  },
+
   {
     id: 9,
     name: "Consumers",

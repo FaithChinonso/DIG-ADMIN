@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { RiAddCircleLine } from "react-icons/ri";
+import { useDispatch } from "react-redux";
 import useHTTPPost from "src/Hooks/use-httppost";
+import { useAppDispatch } from "src/Hooks/use-redux";
+import { fetchProduct } from "src/redux/store/features/product-slice";
 import { productApi } from "../api";
 import DrawerWrapper from "../DrawerWrapper";
 import MultipleInput from "../MultipleInput";
 
 const AddProductSpec = ({ id, title, existingSpec }: any) => {
+  const dispatch = useAppDispatch();
   const [items, setItems] = useState<any[]>([]);
   const send = useHTTPPost();
 
@@ -42,14 +46,18 @@ const AddProductSpec = ({ id, title, existingSpec }: any) => {
     if (title === "Add Product Specification") {
       const accessToken = sessionStorage.getItem("accessToken");
       const url = `${productApi}/add-product-specs/${id}`;
-      const dataFunction = (res: any) => {};
+      const dataFunction = (res: any) => {
+        dispatch(fetchProduct(accessToken));
+      };
       send({ url, values: payload, accessToken }, dataFunction);
     }
 
     if (title === "Edit Product Specification") {
       const accessToken = sessionStorage.getItem("accessToken");
       const url = `${productApi}/edit-product-spec/${id}`;
-      const dataFunction = (res: any) => {};
+      const dataFunction = (res: any) => {
+        dispatch(fetchProduct(accessToken));
+      };
       send({ url, values: payload, accessToken }, dataFunction);
     }
   };

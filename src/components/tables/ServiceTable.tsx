@@ -89,19 +89,19 @@ const ServiceTable = ({ data }: any) => {
   };
   const formatData = data?.slice(0).map((client: any) => {
     return {
-      id: client.service.serviceID,
-      serial: client.service.serial,
-      location: client.service.location,
-      serviceName: client.service.serviceName,
-      phoneNumber: client.service.phoneNumber,
-      pricing: client.service.pricing,
-      isActive: client.service.isActive ? "Active" : "Inactive",
-      description: client.service.description,
-      images: client.service.images,
-      yearsOfExperience: client.service.yearsOfExperience,
-      categoryName: client.category.name,
-      merchant: client.merchant,
-      otherDetails: client.service.other_details,
+      id: client?.service?.serviceID,
+      serial: client?.service?.serial,
+      location: client?.service?.location,
+      serviceName: client?.service?.serviceName,
+      phoneNumber: client?.service?.phoneNumber,
+      pricing: client?.service?.pricing,
+      isActive: client?.service?.isActive ? "Active" : "Inactive",
+      description: client?.service?.description,
+      images: client?.service?.images,
+      yearsOfExperience: client?.service?.yearsOfExperience,
+      categoryName: client?.category?.name,
+      merchant: client?.merchant,
+      otherDetails: client?.service?.other_details,
       datePosted: moment(client.service.datePosted).format("ll"),
     };
   });
