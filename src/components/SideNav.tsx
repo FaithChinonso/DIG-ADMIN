@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { authActions } from "src/redux/store/auth-slice";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "src/Hooks/use-redux";
+import { GetStaticProps } from "next/types";
 
 const SideNav = () => {
   const router = useRouter();
@@ -35,7 +36,6 @@ const SideNav = () => {
   return (
     <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-Purple z-30">
       <div className="bg-lightPurple w-[60px] rounded-r-3xl py-10 flex flex-col items-center">
-        <div>LOGO</div>
         <ul className="mt-[70px] flex flex-col gap-5">
           {innerNav.map((item: any) => (
             <div
@@ -149,4 +149,5 @@ const SideNav = () => {
     </div>
   );
 };
+
 export default SideNav;

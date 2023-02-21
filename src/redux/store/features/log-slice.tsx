@@ -4,7 +4,7 @@ import { logApi } from "src/components/api";
 
 export const getAdminlogs = createAsyncThunk(
   "log/getAdminlogs",
-  async ({ token, adminDetails }: any, thunkAPI: any) => {
+  async ({ token }: any, thunkAPI: any) => {
     try {
       const response = await axios.get(
         `${logApi}/logs-by-admin/98837152-7026-4434-b022-2f43c2eb85e3`,

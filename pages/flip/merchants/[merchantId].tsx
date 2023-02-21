@@ -60,17 +60,14 @@ const OneMerchant = (props: any) => {
     },
     [request]
   );
-  const fetchOrdersByAMerchant = useCallback(
-    (id: any) => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const url = `${orderApi}/orders-for-merchant/${id}`;
-      const dataFunction = (res: any) => {
-        setOrders(res.data.data);
-      };
-      request({ url, accessToken }, dataFunction);
-    },
-    [request]
-  );
+  const fetchOrdersByAMerchant = useCallback(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${orderApi}/orders-for-merchant/${user?.profile.merchantID}`;
+    const dataFunction = (res: any) => {
+      setOrders(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  }, [request]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -78,7 +75,7 @@ const OneMerchant = (props: any) => {
   useEffect(() => {
     fetchAMerchant(props.merchantId);
     fetchAllJobs(props.merchantId);
-    fetchOrdersByAMerchant(props.merchantId);
+    // fetchOrdersByAMerchant();
   }, [props.merchantId]);
 
   useEffect(() => {
@@ -206,10 +203,12 @@ const OneMerchant = (props: any) => {
               </div>
             </div>
 
-            <div className="text-white flex flex-col ">
-              <h3 className="text-[13px] mt-[28px]">About</h3>
-              <p className="text-[10px]">{user?.profile?.bio}</p>
-            </div>
+            {user?.profile?.bio ? (
+              <div className="text-white flex flex-col ">
+                <h3 className="text-[13px] mt-[28px] text-text">About</h3>
+                <p className="text-[10px]">{user?.profile?.bio}</p>
+              </div>
+            ) : null}
           </div>
 
           <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
@@ -273,7 +272,11 @@ const OneMerchant = (props: any) => {
               <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <OrderHistory data={orders} />
+              <OrderHistory
+                data={orders}
+                id={user?.profile?.merchantID}
+                role={user?.role}
+              />
             </TabPanel>
 
             <TabPanel value={value} index={3}>

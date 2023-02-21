@@ -11,6 +11,7 @@ import {
 } from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
+import { GetStaticProps } from "next/types";
 
 const Users = () => {
   const dispatch = useAppDispatch();
@@ -66,5 +67,11 @@ const Users = () => {
       </div>
     </ParentContainer>
   );
+};
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  console.log(context);
+  return {
+    props: {},
+  };
 };
 export default memo(Users);

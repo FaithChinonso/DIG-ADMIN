@@ -109,7 +109,7 @@ export const editproductCategory = createAsyncThunk(
 );
 
 export const deleteproductCategory = createAsyncThunk(
-  "product-category/getMyProducts",
+  "product-category/deleteproductCategory",
   async (id: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");

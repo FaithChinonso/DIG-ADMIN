@@ -31,7 +31,7 @@ const Audit = () => {
   }, [loading, error, dispatch]);
 
   useEffect(() => {
-    dispatch(getAdminlogs(token));
+    dispatch(getAdminlogs({ token }));
   }, [dispatch, token]);
 
   return (
