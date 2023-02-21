@@ -35,6 +35,24 @@ const nextConfig = {
         port: "",
         pathname: "/product-category/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com/",
+        port: "",
+        pathname: "/product-category/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com/",
+        port: "",
+        pathname: "/service-category/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com/",
+        port: "",
+        pathname: "/storage/**",
+      },
     ],
   },
 
