@@ -111,8 +111,12 @@ export type riderType = {
   profile: {
     riderID: number | null;
     userID: string | null;
-    homeLocation: string | null;
-    workLocation: string | null;
+    homeLocation: {
+      homeAddress: string | null
+    };
+    workLocation: {
+      workAddress: string | null
+    };
     completedRides: number | null;
   };
   wallet: {

@@ -45,7 +45,7 @@ const AddProductCategory = ({ type, id }: any) => {
       if (event?.target?.files[0]?.size > 2000000) {
         Notify({
           type: NotifyType.warning,
-          message: "File size to big, File must not be more than 2mb",
+          message: "File size too big, File must not be more than 2mb",
         });
       } else {
         saveProfilePict(fileString);
@@ -142,7 +142,7 @@ const AddProductCategory = ({ type, id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchProduct(accessToken))

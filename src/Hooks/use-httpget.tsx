@@ -21,7 +21,6 @@ const useHTTPGet = () => {
         },
       })
       .then(res => {
-        console.log(res);
         dataFunction(res);
         if (alert === "send") {
           dispatch(

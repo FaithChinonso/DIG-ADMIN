@@ -19,19 +19,24 @@ import { tripApi, userApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
-import { driverType } from "src/@types/data";
+import { driverType, tripType } from "src/@types/data";
+import DriverTrip from "src/components/tables/DriverTrip";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase";
+import Map from "src/components/Map";
 
 const OneDriver = ({ driverId }: any) => {
   const request = useHTTPGet();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [driverLocation, setDriverLocation] = useState();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { drivers, loading, success, error, message } = useAppSelector(
+  const { drivers, loading, success, error, message }: any = useAppSelector(
     state => state.user
   );
   const [driver, setDriver] = useState<driverType>();
-  const [trips, setTrips] = useState();
+  const [trips, setTrips] = useState<tripType[]>([]);
   const fetchADriver = useCallback(
     async (id: any) => {
       const url = `${userApi}/single-user/${id}`;
@@ -66,6 +71,22 @@ const OneDriver = ({ driverId }: any) => {
   }, [driverId]);
 
   useEffect(() => {
+    // setLoading(true);
+    const unsub = onSnapshot(
+      doc(db, "driver/" + driver?.profile?.driverID),
+      (s: any) => {
+        const data = s.data();
+        console.log(data);
+        setDriverLocation(data?.currentLocation);
+        // setDriver(s.data());
+        // setLoading(false);
+      }
+    );
+    // console.log("New active driver", activeTrip?.driver);
+    return () => unsub();
+  }, [driver?.profile?.driverID]);
+
+  useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
     }
@@ -88,7 +109,7 @@ const OneDriver = ({ driverId }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       fetchADriver(driverId);
@@ -101,7 +122,7 @@ const OneDriver = ({ driverId }: any) => {
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
         <div className="absolute top-0 left-0 w-full h-full -z-10">
-          <Image src={maps} className="object-cover w-full h-full" alt={""} />
+          <Map address={driverLocation} name={driver?.fullName} />
         </div>
         <div className="mt-14">
           <button
@@ -115,7 +136,16 @@ const OneDriver = ({ driverId }: any) => {
             <div className="flex justify-between">
               <div className="flex gap-[17px]">
                 <div>
-                  <Image src={driverPic} alt={""} />
+                  {driver?.image ? (
+                    <Image
+                      src={driver?.image}
+                      width={60}
+                      height={60}
+                      alt={""}
+                    />
+                  ) : (
+                    <Image src={driverPic} alt={""} />
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <div className="text-lg text-white">{driver?.fullName}</div>
@@ -182,9 +212,7 @@ const OneDriver = ({ driverId }: any) => {
                       {...a11yProps(value.id)}
                       style={{
                         backgroundColor:
-                          selected === value.id
-                            ? "rgba(18, 38, 68, 1)"
-                            : "transparent",
+                          selected === value.id ? "#49D3BA" : "transparent",
                         fontFamily: "Steradian",
                         fontStyle: "normal",
                         fontWeight: "normal",
@@ -205,7 +233,7 @@ const OneDriver = ({ driverId }: any) => {
                 <GeneralInfo data={driver} />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                <Trip data={trips} />
+                <Trip data={trips} type="driver" />
               </TabPanel>
               <TabPanel value={value} index={2}>
                 {trips && <TrackRide trip={trips[0]} />}

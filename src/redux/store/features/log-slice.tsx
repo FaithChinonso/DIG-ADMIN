@@ -19,9 +19,23 @@ export const getAdminlogs = createAsyncThunk(
     }
   }
 );
-
+export const getAllLogs = createAsyncThunk(
+  "log/getAllLogs",
+  async ({ token }: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${logApi}/all-logs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 interface logState {
-  adminLogs: any;
+  adminLogs: any[];
+  allLogs: any[];
   success: boolean;
   loading: boolean;
   error: string;
@@ -30,6 +44,7 @@ interface logState {
 
 const initialState: logState = {
   adminLogs: [],
+  allLogs: [],
   success: false,
   loading: false,
   error: "",
@@ -63,6 +78,29 @@ const logSlice = createSlice({
     );
     builder.addCase(
       getAdminlogs.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error occured please try again";
+        }
+      }
+    );
+    builder.addCase(getAllLogs.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getAllLogs.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.allLogs = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getAllLogs.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         if (action.payload.response) {

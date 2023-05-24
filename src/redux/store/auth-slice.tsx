@@ -37,13 +37,10 @@ const authSlice = createSlice({
       state.message = action.payload.message;
       sessionStorage.setItem("accessToken", action.payload.token);
       state.token = action.payload.token;
-      // sessionStorage.setItem(
-      //   "adminDetails",
-      //   JSON.stringify(action.payload.data)
-      // );
+
       state.adminDetails = action.payload.data;
 
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/overview";
     },
     errorHandler(state, action) {
       if (action.payload.response) {
@@ -56,7 +53,6 @@ const authSlice = createSlice({
     },
     logoutHandler(state) {
       sessionStorage.removeItem("accessToken");
-      // sessionStorage.removeItem("adminDetails");
       state.token = "";
       state.adminDetails = {};
       window.location.href = "/";

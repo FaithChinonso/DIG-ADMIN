@@ -4,7 +4,7 @@ import birth from "../../../src/assets/image/birth.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { MyUserValue } from "../../../src/utils/boxValues";
+import { MyConsumerValue, MyUserValue } from "../../../src/utils/boxValues";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
@@ -188,11 +188,21 @@ const OneUser = ({ consumerID }: any) => {
             <div className="flex md:flex-col flex-row w-full gap-3 items-center">
               <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
                 <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {
+                    orders?.filter((item: any) => item.status === "Completed")
+                      .length
+                  }
+                </div>
               </div>
               <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
                 <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {
+                    orders?.filter((item: any) => item.status === "Rejected")
+                      .length
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -215,7 +225,7 @@ const OneUser = ({ consumerID }: any) => {
                 style={{ background: "#edf2f7" }}
                 // classes={{ flexContainer: classes.flexContainer }}
               >
-                {MyUserValue.map(value => (
+                {MyConsumerValue.map(value => (
                   <Tab
                     label={value.label}
                     {...a11yProps(value.id)}
@@ -239,9 +249,6 @@ const OneUser = ({ consumerID }: any) => {
               </Tabs>
             </Box>
 
-            <TabPanel value={value} index={0}>
-              <SupportingDocuments />
-            </TabPanel>
             <TabPanel value={value} index={1}>
               <BankDetails data={user?.bank} />
             </TabPanel>

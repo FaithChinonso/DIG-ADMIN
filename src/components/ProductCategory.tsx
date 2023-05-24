@@ -230,7 +230,7 @@ const ProductCategory = () => {
         {" "}
         <button
           onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+          className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center"
         >
           <span style={{ marginRight: "3px", translate: "0 3px" }}>
             {/* <Image src={Add} alt="" /> */}

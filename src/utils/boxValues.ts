@@ -5,6 +5,20 @@ export const MyUserValue = [
   { id: 4, label: "Transaction History" },
   { id: 6, label: "Job Posting" },
 ];
+export const MyConsumerValue = [
+
+  { id: 1, label: "Bank Details" },
+  { id: 2, label: "Order History" },
+  { id: 3, label: "Transaction History" },
+  { id: 4, label: "Job Posting" },
+];
+export const MyMerchantValue = [
+  { id: 1, label: "Merchant Documents" },
+  { id: 2, label: "Bank Details" },
+  { id: 3, label: "Order History" },
+  { id: 4, label: "Transaction History" },
+  { id: 5, label: "Job Posting" },
+];
 export const MySettingsValue = [
   { id: 1, label: "Personal Details" },
   { id: 2, label: "Account Details" },
@@ -44,4 +58,8 @@ export const MyOrderValue = [
 export const MyJobValue = [
   { id: 1, label: "Skills" },
   { id: 2, label: "Proposals" },
+];
+export const MySosValue = [
+  { id: 1, label: "All SOS" },
+  { id: 2, label: "SOS Reports" },
 ];

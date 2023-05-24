@@ -1,8 +1,11 @@
+import Image from "next/image";
+import emptyState from "../../assets/image/illustrations.svg";
+
 const BankDetails = ({ data }: any) => {
   console.log(data);
   return (
     <div className="w-full flex flex-col items-center">
-      {data ? (
+      {data.bankName ? (
         <div className="flex flex-col items-center">
           <div className="flex justify-between w-full">
             <div className="flex flex-col gap-3">
@@ -32,8 +35,11 @@ const BankDetails = ({ data }: any) => {
           </div>
         </div>
       ) : (
-        <div className="text-text text-xs font-bold">
-          No Bank Details Available
+        <div className="flex flex-col items-center justify-center mx-auto mt-10">
+          <Image src={emptyState} alt="" />
+          <div className="text-[#8487A3] text-xs -mt-2">
+            No bank details available
+          </div>
         </div>
       )}
     </div>

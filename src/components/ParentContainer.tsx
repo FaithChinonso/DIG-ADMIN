@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { GetStaticProps } from "next/types";
 import { ReactNode } from "react";
 import DrawerCard from "./DrawerCard";
 
@@ -10,6 +11,7 @@ import TopNav from "./TopNav";
 
 const ParentContainer = ({ children }: { children: ReactNode }) => {
   if (typeof window === "undefined") return <div></div>;
+
   return (
     <div className="flex flex-row w-full max-w-screen relative h-screen overflow-x-hidden">
       <SideNav />
@@ -24,4 +26,5 @@ const ParentContainer = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
+
 export default ParentContainer;

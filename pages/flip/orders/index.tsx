@@ -10,10 +10,11 @@ import {
   getMyOrders,
 } from "src/redux/store/features/order-slice";
 import OrderTable from "src/components/tables/OrderTable";
+import { GetStaticProps } from "next/types";
 
-const Orders = () => {
+const Orders = (props: any) => {
   const dispatch = useAppDispatch();
-
+  console.log(props);
   const { orders, loading, error, message, success } = useAppSelector(
     (state: any) => state.order
   );
@@ -43,7 +44,7 @@ const Orders = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchOrder(token));
@@ -64,5 +65,13 @@ const Orders = () => {
       </div>
     </ParentContainer>
   );
+};
+
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  const param = context.resolvedUrl;
+
+  return {
+    props: { param: "params" },
+  };
 };
 export default Orders;

@@ -20,6 +20,7 @@ import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 import Trip from "src/components/BoxComponents/Trip";
 import { tripType, riderType } from "src/@types/data";
+import TrackRide from "../../../src/components/BoxComponents/TrackRide";
 
 const OneUser = ({ riderID }: any) => {
   const request = useHTTPGet();
@@ -31,7 +32,7 @@ const OneUser = ({ riderID }: any) => {
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
-
+  console.log(trips);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -86,7 +87,7 @@ const OneUser = ({ riderID }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -102,26 +103,26 @@ const OneUser = ({ riderID }: any) => {
           <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
-                <Image src={user?.image} alt={""} />
+                <Image src={user?.image} alt={""} width={100} height={100} />
               </div>
             )}
             <div className="flex flex-col gap-[14px]">
-              <div className="text-[16px] bg-red-300">
-                {user?.fullName}
+              <div className="flex gap-1">
+                <div className="text-[16px] bg-red-300">{user?.fullName}</div>
                 {user?.emailVerifiedStatus === "verified" && (
-                  <span className="ml-1">
+                  <div className="ml-1">
                     <Image src={verify} alt={""} />
-                  </span>
+                  </div>
                 )}
               </div>
               <div className="flex justify-between gap-[9px] items-center">
-                <h4 className="text-[10px]">{user?.role}</h4>
+                <h4 className="text-[12px]">{user?.role}</h4>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                <div className="text-[10px]">{user?.email}</div>
+                <div className="text-[12px]">{user?.email}</div>
               </div>
               <div className="flex justify-between gap-[9px] items-center">
                 {user?.gender && (
-                  <h4 className="text-[10px]">
+                  <h4 className="text-[12px]">
                     {" "}
                     <span>
                       {" "}
@@ -135,7 +136,7 @@ const OneUser = ({ riderID }: any) => {
                 )}
 
                 {user?.phone && (
-                  <div className="text-[10px]">
+                  <div className="text-[12px]">
                     {" "}
                     <span>
                       {" "}
@@ -146,15 +147,15 @@ const OneUser = ({ riderID }: any) => {
                 )}
               </div>
 
-              <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
+              <div className="md:w-[213px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px]">Escrow Balance</div>
+                  <div className="text-[10px]">Escrow Balance</div>
                   <div className="text-xs font-[500]">
                     ₦ {user?.wallet?.escrowBalance}
                   </div>
                 </div>
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px] ">Withdrawable Balance</div>
+                  <div className="text-[10px] ">Withdrawable Balance</div>
                   <div className="text-xs font-[500]">
                     {" "}
                     ₦ {user?.wallet?.withdrawableBalance}
@@ -168,34 +169,52 @@ const OneUser = ({ riderID }: any) => {
             <div className="flex flex-row gap-3 text-white">
               <div className="text-white flex flex-col">
                 <h3 className="text-[13px] mt-[28px]"> House Address</h3>
-                <p className="text-[10px]">{user?.profile?.homeLocation}</p>
+                <p className="text-[10px] text-center">
+                  {user?.profile?.homeLocation?.homeAddress}
+                </p>
               </div>
               {user?.profile?.workLocation ? (
                 <div className="text-white flex flex-col">
                   <h3 className="text-[13px] mt-[28px]">Work Location</h3>
-                  <p className="text-[10px]">{user?.profile?.workLocation}</p>
+                  <p className="text-[10px] text-center">
+                    {user?.profile?.workLocation?.workAddress}
+                  </p>
                 </div>
               ) : null}
             </div>
 
             <div className="text-white flex flex-col ">
               <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
-              <p className="text-[10px]">{user?.profile?.completedRides}</p>
+              <p className="text-[10px] text-center">
+                {user?.profile?.completedRides}
+              </p>
             </div>
           </div>
 
           <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
             <div className="text-white text-[13px] my-2 md:text-center">
-              Total Orders
+              Total Trips
             </div>
             <div className="flex md:flex-col flex-row w-full gap-3 items-center">
-              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-                <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+              <div className="bg-faintWhite p-[11px] w-[117px] rounded-md ">
+                <div className="text-[10px] ">Successful</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    trips?.filter((item: any) => item.status === "Completed")
+                      .length
+                  }
+                </div>
               </div>
-              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-                <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+              <div className="bg-faintWhite p-[11px]  w-[117px] rounded-md ">
+                <div className="text-[10px] ">Cancelled</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    trips?.filter((item: any) => item.status === "Canceled")
+                      .length
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -249,7 +268,9 @@ const OneUser = ({ riderID }: any) => {
               <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <div></div>
+              <div className="w-[500px]">
+                {trips && <TrackRide trip={trips[0]} />}
+              </div>
             </TabPanel>
           </Box>
         </div>

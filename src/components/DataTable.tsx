@@ -12,7 +12,28 @@ createTheme("solarized", {
 const customStyles = {
   rows: {
     style: {
-      // zIndex: 0,
+      padding: "0px",
+      fontWeight: 400,
+      fontSize: 14,
+      lineHeight: 17,
+      letterSpacing: 0.4,
+      color: "rgba(118, 118, 118, 1)",
+      border: "none",
+    },
+  },
+  head: {
+    style: {
+      backgroundColor: "red",
+    },
+  },
+  headCells: {
+    style: {
+      fontWeight: 600,
+      fontSize: 15,
+      color: "rgba(18, 38, 68, 1)",
+
+      borderBottom: "1px solid rgba(18, 38, 68, 1)",
+      textAlign: "center",
     },
   },
 
@@ -42,15 +63,17 @@ export const DataFilterTable = (props: any) => {
   };
   return (
     <div className="min-h-[600px] flex flex-col space-y-2 bg-white relative">
-      <input
-        value={filterText}
-        onChange={e => setFilterText(e.target.value)}
-        placeholder="Search here"
-        className="absolute right-1 -top-12 bg-lightGray rounded-md border border-darkGray w-[200px] self-end my-2 p-2 mr-1 outline-none placeholder:text-sm placeholder:text-text text-text text-sm"
-      />
+      {props?.data?.length > 0 && (
+        <input
+          value={filterText}
+          onChange={e => setFilterText(e.target.value)}
+          placeholder="Search here"
+          className="absolute right-1 -top-12 bg-lightGray rounded-md border border-lightPurple w-[200px] self-end mb-2 p-2 mr-1 outline-none placeholder:text-sm placeholder:text-text text-text text-sm"
+        />
+      )}
       <DataTable
-        columns={props.columns}
-        data={customFilter(props.data, filterText)}
+        columns={props?.columns}
+        data={customFilter(props?.data, filterText) || []}
         sortIcon={<SortIcon />}
         pagination
         paginationComponentOptions={paginationComponentOptions}

@@ -6,7 +6,7 @@ import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { MyUserValue } from "../../../src/utils/boxValues";
+import { MyMerchantValue, MyUserValue } from "../../../src/utils/boxValues";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
@@ -33,7 +33,7 @@ const OneMerchant = (props: any) => {
   );
   const [user, setUser] = useState<merchantType>();
   const [orders, setOrders] = useState<any>([]);
-  const [job, setJob] = useState<any>();
+  const [job, setJob] = useState<any>([]);
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
 
@@ -101,7 +101,7 @@ const OneMerchant = (props: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       fetchAMerchant(props.merchantId);
@@ -218,11 +218,23 @@ const OneMerchant = (props: any) => {
             <div className="flex md:flex-col flex-row w-full gap-3 items-center">
               <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
                 <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    orders?.filter((item: any) => item.status === "Completed")
+                      .length
+                  }
+                </div>
               </div>
               <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
                 <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    orders?.filter((item: any) => item.status === "Rejected")
+                      .length
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -241,7 +253,7 @@ const OneMerchant = (props: any) => {
                 style={{ background: "#edf2f7" }}
                 // classes={{ flexContainer: classes.flexContainer }}
               >
-                {MyUserValue.map(value => (
+                {MyMerchantValue.map((value: any) => (
                   <Tab
                     label={value.label}
                     {...a11yProps(value.id)}
@@ -266,7 +278,7 @@ const OneMerchant = (props: any) => {
             </Box>
 
             <TabPanel value={value} index={0}>
-              <SupportingDocuments />
+              <SupportingDocuments data={user?.profile?.merchantInfo} />
             </TabPanel>
             <TabPanel value={value} index={1}>
               <BankDetails data={user?.bank} />

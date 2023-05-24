@@ -4,8 +4,11 @@ import useHTTPPost from "src/Hooks/use-httppost";
 import DrawerWrapper from "../DrawerWrapper";
 import { RiAddCircleLine } from "react-icons/ri";
 import { productApi } from "../api";
+import { fetchProduct } from "src/redux/store/features/product-slice";
+import { useAppDispatch } from "src/Hooks/use-redux";
 
 const AddProductFeature = ({ id, title, existingFeature }: any) => {
+  const dispatch = useAppDispatch();
   const [feature, setFeature] = useState<string>();
   const [items, setItems] = useState<any[]>([]);
   const send = useHTTPPost();
@@ -36,7 +39,9 @@ const AddProductFeature = ({ id, title, existingFeature }: any) => {
     e.preventDefault();
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `${productApi}/add-product-feature/${id}`;
-    const dataFunction = (res: any) => {};
+    const dataFunction = (res: any) => {
+      dispatch(fetchProduct(accessToken));
+    };
     send({ url, values: payload, accessToken }, dataFunction);
   };
 

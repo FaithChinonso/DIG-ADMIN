@@ -18,6 +18,7 @@ import AddServiceImages from "../Forms/AddServiceImages";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
 import ServiceDetails from "../ServiceDetails";
+import StatusCell from "../StatusCell";
 
 const ServiceTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ const ServiceTable = ({ data }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -144,7 +145,9 @@ const ServiceTable = ({ data }: any) => {
     },
     {
       name: "Status",
-      selector: "isActive",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
     ,
     {
@@ -300,19 +303,7 @@ const ServiceTable = ({ data }: any) => {
   ];
 
   return (
-    <div>
-      <div>
-        {" "}
-        <button
-          onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
-        >
-          <span style={{ marginRight: "3px", translate: "0 3px" }}>
-            {/* <Image src={Add} alt="" /> */}
-          </span>
-          Add Service
-        </button>
-      </div>
+    <div className="mt-10">
       <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );

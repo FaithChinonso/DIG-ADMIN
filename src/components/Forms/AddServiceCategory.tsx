@@ -129,7 +129,7 @@ const AddServiceCategory = ({ type, id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchServiceCategories(accessToken));
@@ -138,7 +138,7 @@ const AddServiceCategory = ({ type, id }: any) => {
         dispatch(uiActions.closeToast());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, accessToken]);
 
   return (
     <DrawerWrapper

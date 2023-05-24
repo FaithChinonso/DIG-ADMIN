@@ -13,12 +13,14 @@ import axios from "axios";
 import store from "src/redux/store";
 import { authActions } from "src/redux/store/auth-slice";
 import { is8Chars, isNotEmpty } from "src/utils/helperFunctions";
+import { TailSpin } from "react-loader-spinner";
 
 const SignInForm = ({ login }: any) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const [formisValid, setFormIsValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {
@@ -57,6 +59,7 @@ const SignInForm = ({ login }: any) => {
 
     if (emailIsValid && passwordIsValid) {
       setFormIsValid(true);
+      setIsLoading(true);
       const loginHandler = async () => {
         try {
           const res = await axios.post(
@@ -68,9 +71,12 @@ const SignInForm = ({ login }: any) => {
               },
             }
           );
+          setIsLoading(false);
+          window.location.href = "/dashboard/overview";
 
           dispatch(authActions.loginHandler(res.data));
         } catch (err: any) {
+          setIsLoading(false);
           console.log(err);
           dispatch(authActions.errorHandler(err));
         }
@@ -104,7 +110,7 @@ const SignInForm = ({ login }: any) => {
             id="email"
             onBlur={emailBlurHandler}
             onChange={emailInputHandler}
-            className="bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
+            className="bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-4"
             placeholder="Email Address"
           />
         </div>
@@ -125,7 +131,7 @@ const SignInForm = ({ login }: any) => {
             onChange={passwordInputHandler}
             autoFocus={false}
             placeholder="Password"
-            className="bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3"
+            className="bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-4"
           />
 
           <span className="w-[11px] absolute right-1 top-[50%] -translate-y-[50%]">
@@ -138,12 +144,24 @@ const SignInForm = ({ login }: any) => {
         </div>
         <div className="text-red-400 text-[10px]">{passwordError}</div>
 
-        <button
-          type="submit"
-          className="bg-lightPurple w-full text-white text-center py-2 rounded-[10px] mt-[30px]"
-        >
-          Sign In
-        </button>
+        {isLoading ? (
+          <div className="bg-lightPurple h-full w-full justify-center items-center py-3 rounded-[10px] mt-[30px]">
+            <TailSpin
+              color="#fff"
+              width={16}
+              height={16}
+              radius={8}
+              wrapperStyle={{ margin: "0px auto", alignSelf: "center" }}
+            />
+          </div>
+        ) : (
+          <button
+            type="submit"
+            className="bg-lightPurple w-full text-white text-center py-3 rounded-[10px] mt-[30px]"
+          >
+            Sign In{" "}
+          </button>
+        )}
       </form>
     </Provider>
   );

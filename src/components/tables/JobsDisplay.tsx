@@ -15,6 +15,7 @@ import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import AddJob from "../Forms/AddJob";
 import ModalAction from "../ModalContent/ModalAction";
+import StatusCell from "../StatusCell";
 
 const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.job
   );
-
+  console.log(jobs);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -115,7 +116,9 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
     },
     {
       name: "Status",
-      selector: "isActive",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
     {
       name: "Action",
@@ -242,7 +245,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable data={formatData} columns={columnDasboard} />
     </div>
   );

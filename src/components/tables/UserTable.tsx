@@ -25,6 +25,7 @@ import {
   merchantType,
   riderType,
 } from "src/@types/data";
+import StatusCell from "../StatusCell";
 
 type Prop = {
   data:
@@ -133,7 +134,9 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
     },
     {
       name: "Status",
-      selector: (row: { isActive: string }) => `${row.isActive}`,
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
     {
       name: "Action",
@@ -150,7 +153,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                     router.push(`${location.pathname}/${prop?.id}`);
                   }}
                 />
-                <ActionMenuItem
+                {/* <ActionMenuItem
                   name="Update User"
                   onClickFunction={() => {
                     dispatch(
@@ -166,7 +169,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                       })
                     );
                   }}
-                />
+                /> */}
                 {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
@@ -425,7 +428,9 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
     },
     {
       name: "Status",
-      selector: (row: { isActive: string }) => `${row.isActive}`,
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
   ];
   return (
@@ -433,16 +438,17 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       {type !== "dashboard" && (
         <button
           onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+          className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center mt-6"
         >
           Add User
         </button>
       )}
-
-      <DataFilterTable
-        columns={action === "none" ? columnUser : columnUsers}
-        data={formatData}
-      />
+      <div className="mt-4">
+        <DataFilterTable
+          columns={action === "none" ? columnUser : columnUsers}
+          data={formatData}
+        />
+      </div>
     </div>
   );
 };

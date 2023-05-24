@@ -79,11 +79,12 @@ const AddServiceImages = ({ id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: res.data.message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchService(accessToken));
     } catch (err: any) {
+      dispatch(uiActions.closeLoader());
       if (err.response) {
         dispatch(
           uiActions.openToastAndSetContent({

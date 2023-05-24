@@ -9,6 +9,7 @@ import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import ModalAction from "../ModalContent/ModalAction";
+import StatusCell from "../StatusCell";
 
 type Props = {
   data: tripType[];
@@ -25,7 +26,7 @@ const TripTable = ({ data }: Props) => {
       pickup: client.pickupLocation,
       dropoff: client.dropoffLocation,
       basePrice: client.basePrice,
-      tripDuration: client.tripDuration,
+      tripDuration: `${client.tripDuration} mins`,
       driver: client.driver.fullName,
       rider: client.rider.fullName,
       status: client.status,
@@ -76,7 +77,9 @@ const TripTable = ({ data }: Props) => {
 
     {
       name: "Status",
-      selector: (row: any) => `${row.status}`,
+      selector: (row: { status: string }) => {
+        return <StatusCell status={row.status} />;
+      },
       sortable: true,
     },
     {
@@ -130,7 +133,7 @@ const TripTable = ({ data }: Props) => {
     },
   ];
   return (
-    <div>
+    <div className="mt-14">
       <DataFilterTable columns={columnTrips} data={formatData} />
     </div>
   );

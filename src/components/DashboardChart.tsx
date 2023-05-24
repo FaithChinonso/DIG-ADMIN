@@ -123,7 +123,11 @@ const DashboardChart = ({ transaction }: any) => {
           {filterTransactions?.length > 1 ? (
             <YAxis
               domain={[0, mode]}
-              style={{ fontSize: "8px" }}
+              style={{
+                fontSize: "8px",
+                fontWeight: 800,
+                fontFamily: "ClashDisplay",
+              }}
               // label={<Label value="Amount" position="insideBottom" />}
               tickFormatter={formatter}
             />

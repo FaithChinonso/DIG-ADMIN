@@ -35,7 +35,7 @@ const OneUser = (props: any) => {
   const { users, loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
-
+  console.log(props);
   const fetchAUser = useCallback(
     (id: any) => {
       const url = `${userApi}/single-user/${id}`;
@@ -74,7 +74,6 @@ const OneUser = (props: any) => {
       const url = `${transactionApi}/transactions-by-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
-        console.log(res);
         setTransactions(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
@@ -114,7 +113,7 @@ const OneUser = (props: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -130,9 +129,7 @@ const OneUser = (props: any) => {
           <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
             <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
               {user?.image && (
-                <div>
-                  <Image src={user?.image} alt={""} />
-                </div>
+                <div>{/* <Image src={user?.image} alt={""} /> */}</div>
               )}
               <div className="flex flex-col gap-[14px]">
                 <h2 className="text-[16px] text-text">
@@ -289,7 +286,7 @@ const OneUser = (props: any) => {
                   </div>
                 </div>
                 {user?.profile?.bio ? (
-                  <div className="text-white flex flex-col ">
+                  <div className="text-white flex flex-col w-[550px] text-center">
                     <h3 className="text-[13px] mt-[28px] text-text">About</h3>
                     <p className="text-[10px]">{user?.profile?.bio}</p>
                   </div>
@@ -386,9 +383,12 @@ const OneUser = (props: any) => {
 };
 export const getServerSideProps: GetStaticProps = async (context: any) => {
   const userId = context.params.usersId;
+  const param = context.resolvedUrl;
+  console.log(context.params);
   return {
     props: {
       userId,
+      param,
     },
   };
 };

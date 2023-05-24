@@ -12,6 +12,7 @@ import {
 import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
 import { GetStaticProps } from "next/types";
+import AllUsersTable from "src/components/tables/AllUsersTable";
 
 const Users = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +20,6 @@ const Users = () => {
     (state: any) => state.user
   );
   const { token } = useAppSelector((state: any) => state.auth);
-  console.log(token);
 
   useEffect(() => {
     if (loading === true) {
@@ -45,7 +45,7 @@ const Users = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchMyuser(token));
@@ -58,12 +58,12 @@ const Users = () => {
   useEffect(() => {
     dispatch(getMyuser(token));
     dispatch(getStates(token));
-  }, [dispatch, token]);
+  }, []);
 
   return (
     <ParentContainer>
       <div className="">
-        <UserTable data={users} type="" action="" />
+        <AllUsersTable data={users} type="" action="" />
       </div>
     </ParentContainer>
   );

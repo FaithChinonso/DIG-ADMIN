@@ -47,7 +47,7 @@ const PieChartDashboard = ({ orders }: any) => {
   const [statusGroup, setStatusGroup] = useState<any>([
     {
       name: "Pending",
-      value: 10,
+      value: 0,
     },
     {
       name: "Rejected",
@@ -78,19 +78,19 @@ const PieChartDashboard = ({ orders }: any) => {
     setStatusGroup([
       {
         name: "Pending",
-        value: pending,
+        value: pending || 10,
       },
       {
         name: "Rejected",
-        value: rejected,
+        value: rejected || 10,
       },
       {
         name: "Accepted",
-        value: accepted,
+        value: accepted || 10,
       },
       {
         name: "Completed",
-        value: completed,
+        value: completed || 10,
       },
     ]);
   }, [orders, pending, accepted, completed, rejected, month]);

@@ -14,6 +14,7 @@ import {
   getMyservice,
 } from "src/redux/store/features/service-slice";
 import ServiceTable from "src/components/tables/ServiceTable";
+import { getStates } from "src/redux/store/features/user-slice";
 
 const Service = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,7 @@ const Service = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
 
@@ -64,6 +65,7 @@ const Service = () => {
 
   useEffect(() => {
     dispatch(getMyservice(token));
+    dispatch(getStates(token));
   }, [dispatch, token]);
   return (
     <ParentContainer>

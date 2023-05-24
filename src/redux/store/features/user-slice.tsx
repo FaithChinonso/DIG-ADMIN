@@ -346,10 +346,10 @@ const userSlice = createSlice({
     );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = action.payload.response.data.message;
+      if (action?.payload?.response) {
+        state.error = action?.payload?.response?.data?.message;
+      } else if (action?.payload?.request) {
+        state.error = action?.payload?.message;
       } else {
         state.error = "An Error occured please try again";
       }
