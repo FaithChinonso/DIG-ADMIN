@@ -17,6 +17,7 @@ import {
   clearError,
   clearMessage,
   createserviceCategory,
+  fetchServiceCategories,
   updateserviceCategory,
 } from "src/redux/store/features/service-category-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
@@ -24,17 +25,17 @@ import { serviceCategoryApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
 
 const AddServiceCategory = ({ type, id }: any) => {
-  const send = useHTTPPost();
+  const accessToken = sessionStorage.getItem("accessToken");
   const request = useHTTPGet();
   const [name, setName] = React.useState("");
   const [profilePic, setProfilePic] = React.useState<any>("");
   const [profilePict, saveProfilePict] = React.useState<any>("");
   const [selectedFile, setSelectedFile] = useState<any>("");
-
-  const dispatch = useAppDispatch();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.serviceCategory
   );
+
+  const dispatch = useAppDispatch();
 
   const updateProps = (event: any) => {
     const newValue = event?.target?.value;
@@ -64,7 +65,9 @@ const AddServiceCategory = ({ type, id }: any) => {
   };
 
   const formData = new FormData();
-  formData.append("image", selectedFile);
+  {
+    selectedFile && formData.append("image", selectedFile);
+  }
   formData.append("name", name);
 
   const createCategory = () => {
@@ -91,18 +94,51 @@ const AddServiceCategory = ({ type, id }: any) => {
   useEffect(() => {
     if (type === "edit") {
       const getMyCategory = async () => {
-        const reader = new FileReader();
-        const accessToken = sessionStorage.getItem("accessToken");
         const url = `${serviceCategoryApi}/single-service-category/${id}`;
         const dataFunction = (res: any) => {
           setName(res.data.data.name);
-          // saveProfilePict(res.data.data.image);
+          saveProfilePict(res.data.data.image);
         };
         request({ url, accessToken }, dataFunction);
       };
       getMyCategory();
     }
-  }, [type,request,id]);
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(clearError());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+    if (success) {
+      dispatch(uiActions.closedrawer());
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: message,
+          backgroundColor: "#49D3BA",
+        })
+      );
+      dispatch(fetchServiceCategories(accessToken));
+      setTimeout(() => {
+        dispatch(clearMessage());
+        dispatch(uiActions.closeToast());
+      }, 10000);
+    }
+  }, [loading, error, message, success, dispatch, accessToken]);
 
   return (
     <DrawerWrapper

@@ -88,7 +88,7 @@ const ServiceCategory = () => {
       return {
         id: client?.categoryID,
         serial: index + 1,
-        isActive: client?.isActive,
+        isActive: client.isActive ? "Active" : "Inactive",
         name: client?.name,
       };
     });
@@ -105,9 +105,6 @@ const ServiceCategory = () => {
     {
       name: "Status",
       selector: "isActive",
-      cell: (prop: any) => {
-        <div> {prop.isActive ? "Active" : "Inactive"}</div>;
-      },
     },
 
     {
@@ -122,6 +119,7 @@ const ServiceCategory = () => {
                 <ActionMenuItem
                   name="Update Category"
                   onClickFunction={() => {
+                    console.log(prop);
                     dispatch(
                       uiActions.openDrawerAndSetContent({
                         drawerStyles: {
@@ -137,7 +135,7 @@ const ServiceCategory = () => {
                   }}
                 />
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -234,7 +232,7 @@ const ServiceCategory = () => {
         {" "}
         <button
           onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+          className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center"
         >
           <span style={{ marginRight: "3px", translate: "0 3px" }}>
             {/* <Image src={Add} alt="" /> */}

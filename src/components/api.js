@@ -1,16 +1,16 @@
-export const baseUrl = "https://backendapi.flip.onl/api/admin";
-export const userApi = "https://backendapi.flip.onl/api/admin/user";
-export const productApi = "https://backendapi.flip.onl/api/admin/product";
+export const baseUrl = "https://easy.unikmarketing.org/api/admin";
+export const userApi = "https://easy.unikmarketing.org/api/admin/user";
+export const productApi = "https://easy.unikmarketing.org/api/admin/product";
 export const productCategoryApi =
-  "https://backendapi.flip.onl/api/admin/productcategory";
-export const orderApi = "https://backendapi.flip.onl/api/admin/order";
+  "https://easy.unikmarketing.org/api/admin/productcategory";
+export const orderApi = "https://easy.unikmarketing.org/api/admin/order";
 export const serviceCategoryApi =
-  "https://backendapi.flip.onl/api/admin/servicecategory";
-export const proposalApi = "https://backendapi.flip.onl/api/admin/proposal";
-export const jobApi = "https://backendapi.flip.onl/api/admin/job";
-export const withdrawalApi = "https://backendapi.flip.onl/api/admin/withdrawal";
-export const serviceApi = "https://backendapi.flip.onl/api/admin/service";
-export const logApi = "https://backendapi.flip.onl/api/admin/logs";
+  "https://easy.unikmarketing.org/api/admin/servicecategory";
+export const proposalApi = "https://easy.unikmarketing.org/api/admin/proposal";
+export const jobApi = "https://easy.unikmarketing.org/api/admin/job";
+export const withdrawalApi = "https://easy.unikmarketing.org/api/admin/withdrawal";
+export const serviceApi = "https://easy.unikmarketing.org/api/admin/service";
+export const logApi = "https://easy.unikmarketing.org/api/admin/logs";
 export const transactionApi =
-  "https://backendapi.flip.onl/api/admin/transaction";
-export const tripApi = "https://backendapi.flip.onl/api/admin/trips";
+  "https://easy.unikmarketing.org/api/admin/transaction";
+export const tripApi = "https://easy.unikmarketing.org/api/admin/trips";

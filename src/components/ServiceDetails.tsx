@@ -124,42 +124,69 @@ const ServiceDetails = ({ data }: any) => {
         </div>
 
         <div className="flex justify-between w-full">
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Service Name</div>
-            <div className="text-sm text-[#090F47]">{data?.serviceName}</div>
+          <div className="flex flex-col items-center gap-3 w-[120px]">
+            <div className="text-[10px] text-[#8487A3]">Service Name</div>
+            <div className="text-xs text-center text-[#090F47]">
+              {data?.serviceName}
+            </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Service ID</div>
-            <div className="text-sm text-[#090F47]">{data?.id}</div>
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center  text-[#8487A3] ">
+              Service ID
+            </div>
+            <div className="text-xs text-center text-[#090F47] ">
+              {data?.id}
+            </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-[#8487A3]">Location</div>
-            <div className="text-sm text-[#090F47]">{data?.location}</div>
-          </div>
-        </div>
-        <div className="flex justify-between mt-5 w-full">
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text"> Phone Number</div>
-            <div className="text-sm text-[#090F47]">{data?.phoneNumber}</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Category Name</div>
-            <div className="text-sm text-[#090F47]">{data?.categoryName}</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Price </div>
-            <div className="text-sm text-[#090F47]">₦ {data?.pricing}</div>
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center  text-[#8487A3]">
+              Location
+            </div>
+            <div className="text-xs text-center  text-[#090F47]">
+              {data?.location}
+            </div>
           </div>
         </div>
         <div className="flex justify-between mt-5 w-full">
-          <div className="flex flex-col gap-3">
-            <div className="text-xs text-text">Date Posted</div>
-            <div className="text-sm text-[#090F47]">{data?.datePosted}</div>
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center text-text">
+              {" "}
+              Phone Number
+            </div>
+            <div className="text-xs text-center  text-[#090F47]">
+              {data?.phoneNumber}
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center  text-text">
+              Category Name
+            </div>
+            <div className="text-xs text-center  text-[#090F47]">
+              {data?.categoryName}
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center  text-text">Price </div>
+            <div className="text-xs text-center  text-[#090F47]">
+              ₦ {data?.pricing}
+            </div>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-center gap-3">
-          <div className="text-xs text-text">Description</div>
-          <div className="text-sm text-[#090F47]">{data.description}</div>
+        <div className="flex justify-between mt-5 w-full">
+          <div className="flex flex-col gap-3 w-[120px]">
+            <div className="text-[10px] text-center  text-text">
+              Date Posted
+            </div>
+            <div className="text-xs text-center  text-[#090F47]">
+              {data?.datePosted}
+            </div>
+          </div>
+        </div>
+        <div className="w-full flex flex-col justify-center gap-3 ">
+          <div className="text-[10px] text-center  text-text">Description</div>
+          <div className="text-xs text-center  text-[#090F47]">
+            {data.description}
+          </div>
         </div>
         {data?.otherDetails?.length !== 0 ? (
           <div className=" mt-5 w-full">
@@ -181,25 +208,27 @@ const ServiceDetails = ({ data }: any) => {
             Merchant Details
           </div>
           <div className="flex justify-between gap-4 w-full">
-            <div className="flex flex-col gap-3">
-              <div className="text-xs text-[#8487A3]">Merchant Name</div>
-              <div className="text-sm text-[#090F47]">
+            <div className="flex flex-col gap-3 max-w-[120px]">
+              <div className="text-[10px] text-center text-[#8487A3]">
+                Merchant Name
+              </div>
+              <div className="text-xs text-center text-[#090F47]">
                 {data?.merchant?.fullName}
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs text-[#8487A3]">
+            <div className="flex flex-col gap-3 max-w-[120px]">
+              <div className="text-[10px] text-center text-[#8487A3]">
                 Merchant Phone Number
               </div>
-              <div className="text-sm text-[#090F47]">
+              <div className="text-xs text-center text-[#090F47]">
                 {data?.merchant?.phone}
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs text-[#8487A3]">
+            <div className="flex flex-col gap-3 max-w-[120px]">
+              <div className="text-[10px] text-center text-[#8487A3]">
                 Merchant Email Address
               </div>
-              <div className="text-sm text-[#090F47]">
+              <div className="text-xs text-center text-[#090F47]">
                 {data?.merchant?.email}
               </div>
             </div>

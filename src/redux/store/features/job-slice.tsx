@@ -50,7 +50,7 @@ export const updatejob = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${jobApi}/update-job/${data.jobID}`,
+        `${jobApi}/update-job/${data.id}`,
         data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -204,7 +204,7 @@ const jobSlice = createSlice({
       } else if (action.payload.request) {
         state.error = "An Error occured on our end";
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     });
     builder.addCase(fetchJob.fulfilled, (state, action: PayloadAction<any>) => {
@@ -228,7 +228,7 @@ const jobSlice = createSlice({
       } else if (action.payload.request) {
         state.error = "An Error occured on our end";
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     });
     builder.addCase(editjob.pending, state => {
@@ -264,7 +264,7 @@ const jobSlice = createSlice({
       } else if (action.payload.request) {
         state.error = "An Error occured on our end";
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     });
   },

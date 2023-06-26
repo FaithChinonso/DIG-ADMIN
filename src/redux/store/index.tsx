@@ -14,6 +14,7 @@ import orderSlice from "./features/order-slice";
 import logSlice from "./features/log-slice";
 import transactionSlice from "./features/transaction-slice";
 import tripSlice from "./features/trip-slice";
+import sosSlice from "./features/sos-slice";
 
 export function makeStore() {
   return configureStore({
@@ -32,6 +33,7 @@ export function makeStore() {
       productCategory: productCategorySlice,
       serviceCategory: serviceCategorySlice,
       trip: tripSlice,
+      sos: sosSlice,
     },
   });
 }

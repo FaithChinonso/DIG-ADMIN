@@ -46,7 +46,7 @@ const LogTable = ({ data, fetchAll, type = "", userId }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );

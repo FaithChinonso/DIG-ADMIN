@@ -1,84 +1,28 @@
-import { fontSize } from "@mui/system";
 import { useRouter } from "next/router";
-
 import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
-import gender from "../../../src/assets/image/gender.svg";
-import birth from "../../../src/assets/image/birth.svg";
 import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
 import { useEffect, useState } from "react";
-
-import ActionMenuBase from "../../../src/components/ActionMenu/ActionMenuBase";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
 import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
 import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
-import Profile from "../../../src/components/Profile";
-import ModalAction from "../../../src/components/ModalContent/ModalAction";
-import ActionMenuItem from "../../../src/components/ActionMenu/ActionMenuItem";
-import { uiActions } from "../../../src/redux/store/ui-slice";
-import { useDispatch } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
 import axios from "axios";
+import { serviceApi } from "src/components/api";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 
 const OneMerchant = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [service, setService] = useState<any>();
-
   const id = router.query.serviceId;
-
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }
-
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const [selected, setSelected] = useState(1);
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
-
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -88,15 +32,12 @@ const OneMerchant = () => {
     const fetchAService = async () => {
       const accessToken = sessionStorage.getItem("accessToken");
       try {
-        const res: any = await axios.get(
-          `https://backendapi.flip.onl/api/admin/service/single-service/${id}`,
-          {
-            headers: {
-              authorization: `Bearer ${accessToken}`,
-              authsource: "user",
-            },
-          }
-        );
+        const res: any = await axios.get(`${serviceApi}/single-service/${id}`, {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+            authsource: "user",
+          },
+        });
         console.log(res?.data.data);
         setService(res?.data.data);
       } catch (error: any) {}

@@ -14,29 +14,16 @@ import {
   getMyservice,
 } from "src/redux/store/features/service-slice";
 import ServiceTable from "src/components/tables/ServiceTable";
+import { getStates } from "src/redux/store/features/user-slice";
 
 const Service = () => {
   const dispatch = useAppDispatch();
-
   const { services, loading, error, message, success } = useAppSelector(
     state => state.service
   );
   const { token } = useAppSelector(state => state.auth);
-
   const [selected, setSelected] = useState(1);
-
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
-
   const [value, setValue] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -60,15 +47,16 @@ const Service = () => {
       }, 10000);
     }
     if (success) {
+      dispatch(fetchService(token));
       dispatch(uiActions.closeModal());
       dispatch(uiActions.closedrawer());
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
-      dispatch(fetchService(token));
+
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
@@ -77,6 +65,7 @@ const Service = () => {
 
   useEffect(() => {
     dispatch(getMyservice(token));
+    dispatch(getStates(token));
   }, [dispatch, token]);
   return (
     <ParentContainer>

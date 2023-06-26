@@ -43,7 +43,7 @@ const TransactionTable = ({ data, type = "" }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -93,7 +93,7 @@ const TransactionTable = ({ data, type = "" }: any) => {
       selector: "applicationName",
     },
     {
-      name: "amount",
+      name: "Amount",
       selector: "amount",
       cell: (prop: any) => (
         <div> &#8358; {numberWithCommas(Number(prop.amount || 0))}</div>
@@ -171,7 +171,7 @@ const TransactionTable = ({ data, type = "" }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );

@@ -7,7 +7,7 @@ import {
   merchantType,
   riderType,
 } from "src/@types/data";
-import { userApi } from "src/components/api";
+import { baseUrl, userApi } from "src/components/api";
 
 interface userData {
   name: string;
@@ -40,14 +40,45 @@ export const createuser = createAsyncThunk(
   }
 );
 
+export const getStates = createAsyncThunk(
+  "user/getStates",
+  async (thunkAPI: any) => {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const response = await axios.get(
+        `https://easy.unikmarketing.org/api/states/160`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getMerchantCategory = createAsyncThunk(
+  "user/getMerchantCategory",
+  async (thunkAPI: any) => {
+    try {
+      const response = await axios.get(
+        `https://easy.unikmarketing.org/api/flip/merchant/merchant-categories`
+      );
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const updateuser = createAsyncThunk(
   "user/updateuser",
   async (data: any, thunkAPI: any) => {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${userApi}/update-user/${data.userID}`,
-        data,
+        `${userApi}/update-user/${data.id}`,
+        data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -231,6 +262,8 @@ interface userState {
     | riderType[]
     | adminType[];
   merchants: merchantType[];
+  states: any[];
+  merchantCategory: any[];
   drivers: driverType[];
   consumers: consumerType[];
   riders: riderType[];
@@ -242,10 +275,13 @@ interface userState {
 
 const initialState: userState = {
   users: [],
+  states: [],
+  merchantCategory: [],
   merchants: [],
   drivers: [],
   consumers: [],
   riders: [],
+
   success: false,
   loading: false,
   error: "",
@@ -285,12 +321,13 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
+
     builder.addCase(getMyuser.pending, state => {
       state.loading = true;
     });
@@ -309,18 +346,32 @@ const userSlice = createSlice({
     );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
+      if (action?.payload?.response) {
+        state.error = action?.payload?.response?.data?.message;
+      } else if (action?.payload?.request) {
+        state.error = action?.payload?.message;
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     });
 
     builder.addCase(getMymerchant.pending, state => {
       state.loading = true;
     });
+    builder.addCase(
+      getStates.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.states = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMerchantCategory.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.merchantCategory = action.payload.data;
+      }
+    );
     builder.addCase(
       getMymerchant.fulfilled,
       (state, action: PayloadAction<any>) => {
@@ -341,9 +392,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -371,9 +422,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -401,9 +452,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -431,9 +482,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -456,9 +507,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -477,9 +528,9 @@ const userSlice = createSlice({
         if (action.payload.response) {
           state.error = action.payload.response.data.message;
         } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
+          state.error = action.payload.response.data.message;
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -493,9 +544,9 @@ const userSlice = createSlice({
       if (action.payload.response) {
         state.error = action.payload.response.data.message;
       } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
+        state.error = action.payload.response.data.message;
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     });
   },

@@ -16,7 +16,6 @@ const Drivers = () => {
     (state: any) => state.user
   );
   const { token } = useAppSelector((state: any) => state.auth);
-  console.log(token);
 
   useEffect(() => {
     if (loading === true) {
@@ -41,10 +40,10 @@ const Drivers = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
-      dispatch(fetchMyDriver(""));
+      dispatch(fetchMyDriver(token));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

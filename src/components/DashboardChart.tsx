@@ -7,22 +7,29 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Label,
 } from "recharts";
 import moment from "moment";
-import { ChartType, Transaction, TransactionData } from "../@types/chart";
 import { useEffect, useState } from "react";
 import { Months } from "src/utils/months";
 import { numberWithCommas } from "src/utils/formatNumber";
-import Orders from "pages/flip/orders";
 
 const DashboardChart = ({ transaction }: any) => {
   const [month, setMonth] = useState<any>("");
   useEffect(() => {
     setMonth(moment().format("MMM"));
   }, []);
+  const formatter = (value: number) => {
+    const formattedValue = new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+    }).format(value);
+
+    return formattedValue;
+  };
+
   const filterTransactions = transaction?.filter((tr: any) => {
     const formDate = moment(tr?.transDate).format("MMM");
-
     return formDate === month;
   });
   const data = filterTransactions?.map((pc: any) => {
@@ -101,7 +108,7 @@ const DashboardChart = ({ transaction }: any) => {
           margin={{
             top: 10,
             right: 0,
-            left: 40,
+            left: 20,
             bottom: 0,
           }}
         >
@@ -110,11 +117,20 @@ const DashboardChart = ({ transaction }: any) => {
             dataKey="date"
             padding={{ left: 40, right: 30 }}
             tick={false}
-            // tickFormatter={number => `₦${numberWithCommas(number)}`}
+            tickFormatter={number => `₦${numberWithCommas(number)}`}
             label={{ value: month.toUpperCase() }}
           />
           {filterTransactions?.length > 1 ? (
-            <YAxis domain={[0, mode]} />
+            <YAxis
+              domain={[0, mode]}
+              style={{
+                fontSize: "8px",
+                fontWeight: 800,
+                fontFamily: "ClashDisplay",
+              }}
+              // label={<Label value="Amount" position="insideBottom" />}
+              tickFormatter={formatter}
+            />
           ) : (
             <YAxis domain={[0, 2000]} />
           )}
@@ -126,6 +142,7 @@ const DashboardChart = ({ transaction }: any) => {
             fill="rgba(18, 38, 68, 0.2) "
             activeDot={{ r: 8 }}
             strokeWidth={1.5}
+            style={{ fontFamily: "ClashDisplay !important" }}
             dot={false}
           />
           <Area

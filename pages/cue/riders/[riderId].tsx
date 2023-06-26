@@ -1,54 +1,43 @@
-import { fontSize } from "@mui/system";
-import { useRouter } from "next/router";
-
-import profilePic from "../../../src/assets/image/profilePic.svg";
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
 import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { MyRidersValue, MyUserValue } from "../../../src/utils/boxValues";
-import { useEffect, useState } from "react";
+import { MyRidersValue } from "../../../src/utils/boxValues";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
-import OrderHistory from "../../../src/components/BoxComponents/OrderHistory";
-import TransactionHistory from "../../../src/components/BoxComponents/TransactionHistory";
 import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
-import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { userApi } from "src/components/api";
+import { tripApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 import Trip from "src/components/BoxComponents/Trip";
 import { tripType, riderType } from "src/@types/data";
+import TrackRide from "../../../src/components/BoxComponents/TrackRide";
 
 const OneUser = ({ riderID }: any) => {
   const request = useHTTPGet();
   const dispatch = useDispatch();
   const [user, setUser] = useState<riderType>();
   const [trips, setTrips] = useState<tripType[]>([]);
-  const [orders, setOrders] = useState<any>([]);
-  const [job, setJob] = useState<any>();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { users, loading, success, message, error } = useAppSelector(
+  const { loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
-
+  console.log(trips);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    const fetchAUser = async (id: any) => {
+  const fetchAUser = useCallback(
+    async (id: any) => {
       const url = `${userApi}/single-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
@@ -56,18 +45,24 @@ const OneUser = ({ riderID }: any) => {
         setUser(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
-    const fetchAllTrips = (id: any) => {
+    },
+    [request]
+  );
+  const fetchAllTrips = useCallback(
+    (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-rider/${id}`;
+      const url = `${tripApi}/trips-by-rider/${id}`;
       const dataFunction = (res: any) => {
         setTrips(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
-    };
+    },
+    [request]
+  );
+  useEffect(() => {
     fetchAUser(riderID);
     fetchAllTrips(riderID);
-  }, [riderID, dispatch, request]);
+  }, [riderID]);
 
   useEffect(() => {
     if (loading === true) {
@@ -92,7 +87,7 @@ const OneUser = ({ riderID }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -104,33 +99,30 @@ const OneUser = ({ riderID }: any) => {
     <ParentContainer>
       <div className="">
         <ActionList user={user} />
-        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-          <div className="flex gap-[30px] items-start text-white ">
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+          <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
-                <Image src={user?.image} alt={""} />
+                <Image src={user?.image} alt={""} width={100} height={100} />
               </div>
             )}
-
             <div className="flex flex-col gap-[14px]">
-              <h2 className="text-[16px]">
-                {user?.fullName}
-                <span className="left-1">
-                  {" "}
-                  {user?.emailVerifiedStatus === "verified" && (
+              <div className="flex gap-1">
+                <div className="text-[16px] bg-red-300">{user?.fullName}</div>
+                {user?.emailVerifiedStatus === "verified" && (
+                  <div className="ml-1">
                     <Image src={verify} alt={""} />
-                  )}
-                </span>
-              </h2>
-              <div className="flex justify-between gap-[9px] items-center">
-                <h4 className="text-[10px]">{user?.role}</h4>
-                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                <div className="text-[10px]">{user?.email}</div>
+                  </div>
+                )}
               </div>
-
+              <div className="flex justify-between gap-[9px] items-center">
+                <h4 className="text-[12px]">{user?.role}</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.email}</div>
+              </div>
               <div className="flex justify-between gap-[9px] items-center">
                 {user?.gender && (
-                  <h4 className="text-[10px]">
+                  <h4 className="text-[12px]">
                     {" "}
                     <span>
                       {" "}
@@ -144,7 +136,7 @@ const OneUser = ({ riderID }: any) => {
                 )}
 
                 {user?.phone && (
-                  <div className="text-[10px]">
+                  <div className="text-[12px]">
                     {" "}
                     <span>
                       {" "}
@@ -154,23 +146,16 @@ const OneUser = ({ riderID }: any) => {
                   </div>
                 )}
               </div>
-              {user?.address && (
-                <div className="flex justify-between gap-[9px] items-center">
-                  <h4 className="text-[10px]">Address</h4>
-                  <div className="bg-white w-1 h-1 rounded-[50%]"></div>
-                  <div className="text-[10px]">{user?.address}</div>
-                </div>
-              )}
 
-              <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-2">
+              <div className="md:w-[213px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px]">Escrow Balance</div>
+                  <div className="text-[10px]">Escrow Balance</div>
                   <div className="text-xs font-[500]">
                     ₦ {user?.wallet?.escrowBalance}
                   </div>
                 </div>
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px] ">Withdrawable Balance</div>
+                  <div className="text-[10px] ">Withdrawable Balance</div>
                   <div className="text-xs font-[500]">
                     {" "}
                     ₦ {user?.wallet?.withdrawableBalance}
@@ -180,18 +165,56 @@ const OneUser = ({ riderID }: any) => {
             </div>
           </div>
 
-          <div className="flex md:flex-col  items-center justify-around text-white mt-4">
-            <div className="text-white text-[13px]">Total Rides</div>
-            <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-              <div className="text-[8px] ">Successful</div>
-              <div className="text-sm font-semibold">
-                {user?.profile?.completedRides}
+          <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
+            <div className="flex flex-row gap-3 text-white">
+              <div className="text-white flex flex-col">
+                <h3 className="text-[13px] mt-[28px]"> House Address</h3>
+                <p className="text-[10px] text-center">
+                  {user?.profile?.homeLocation?.homeAddress}
+                </p>
               </div>
+              {user?.profile?.workLocation ? (
+                <div className="text-white flex flex-col">
+                  <h3 className="text-[13px] mt-[28px]">Work Location</h3>
+                  <p className="text-[10px] text-center">
+                    {user?.profile?.workLocation?.workAddress}
+                  </p>
+                </div>
+              ) : null}
             </div>
-            <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-              <div className="text-[8px] ">Cancelled</div>
-              <div className="text-sm font-semibold">
+
+            <div className="text-white flex flex-col ">
+              <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
+              <p className="text-[10px] text-center">
                 {user?.profile?.completedRides}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+            <div className="text-white text-[13px] my-2 md:text-center">
+              Total Trips
+            </div>
+            <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+              <div className="bg-faintWhite p-[11px] w-[117px] rounded-md ">
+                <div className="text-[10px] ">Successful</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    trips?.filter((item: any) => item.status === "Completed")
+                      .length
+                  }
+                </div>
+              </div>
+              <div className="bg-faintWhite p-[11px]  w-[117px] rounded-md ">
+                <div className="text-[10px] ">Cancelled</div>
+                <div className="text-sm font-semibold">
+                  {" "}
+                  {
+                    trips?.filter((item: any) => item.status === "Canceled")
+                      .length
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -245,7 +268,9 @@ const OneUser = ({ riderID }: any) => {
               <BankDetails data={user?.bank} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <div></div>
+              <div className="w-[500px]">
+                {trips && <TrackRide trip={trips[0]} />}
+              </div>
             </TabPanel>
           </Box>
         </div>

@@ -11,11 +11,14 @@ import {
   clearError,
   clearMessage,
   createjob,
+  fetchJob,
+  updatejob,
 } from "src/redux/store/features/job-slice";
 import { jobApi } from "../api";
 import useHTTPGet from "src/Hooks/use-httpget";
 
 const AddJob = ({ id, title }: any) => {
+  const accessToken = sessionStorage.getItem("accessToken");
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
   const { success, loading, error, message } = useAppSelector(
@@ -70,11 +73,7 @@ const AddJob = ({ id, title }: any) => {
   };
 
   const updateJobPosting = async () => {
-    const url = `${jobApi}/update-job/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {};
-
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(updatejob({ payload, id }));
   };
   const createJobPosting = async () => {
     const data = {
@@ -96,7 +95,7 @@ const AddJob = ({ id, title }: any) => {
     if (title === "Update Job Posting") {
       const getJobDetail = () => {
         const url = `${jobApi}/single-job/${id}`;
-        const accessToken = sessionStorage.getItem("accessToken");
+
         const dataFunction = (res: any) => {
           console.log(res);
           setData({
@@ -115,7 +114,7 @@ const AddJob = ({ id, title }: any) => {
       };
       getJobDetail();
     }
-  }, [title, datas, id, request]);
+  }, [accessToken]);
 
   useEffect(() => {
     if (loading === true) {
@@ -140,9 +139,10 @@ const AddJob = ({ id, title }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
+      dispatch(fetchJob(accessToken));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

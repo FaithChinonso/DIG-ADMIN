@@ -10,15 +10,18 @@ interface AuthState {
   message: string;
 }
 // Define the initial state using that type
+// const adminDetailsString = sessionStorage.getItem("adminDetails");
 const initialState: AuthState = {
   token:
     typeof window !== "undefined"
       ? sessionStorage.getItem("accessToken")
       : null,
-  adminDetails:
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("adminDetails")
-      : null,
+  // adminDetails:
+  //   typeof window !== "undefined" && adminDetailsString
+  //     ? JSON.parse(adminDetailsString)
+  //     : null,
+  adminDetails: {},
+
   loading: false,
   error: "",
   success: false,
@@ -34,10 +37,10 @@ const authSlice = createSlice({
       state.message = action.payload.message;
       sessionStorage.setItem("accessToken", action.payload.token);
       state.token = action.payload.token;
-      sessionStorage.setItem("adminDetails", action.payload.data);
+
       state.adminDetails = action.payload.data;
 
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/overview";
     },
     errorHandler(state, action) {
       if (action.payload.response) {
@@ -45,12 +48,11 @@ const authSlice = createSlice({
       } else if (action.payload.request) {
         state.error = "An Error occured on our end, please reload";
       } else {
-        state.error = "An Error";
+        state.error = "An Error occured please try again";
       }
     },
     logoutHandler(state) {
       sessionStorage.removeItem("accessToken");
-      sessionStorage.removeItem("adminDetails");
       state.token = "";
       state.adminDetails = {};
       window.location.href = "/";

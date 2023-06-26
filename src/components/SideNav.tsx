@@ -1,5 +1,5 @@
 import { innerNav, outerNav, bottomNav } from "../utils/analytics";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { useDispatch } from "react-redux";
 
@@ -11,20 +11,22 @@ import { useRouter } from "next/router";
 import { authActions } from "src/redux/store/auth-slice";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "src/Hooks/use-redux";
+import { GetStaticProps } from "next/types";
+import { getFirstWord, includesSubstring } from "src/utils/helperFunctions";
 
-const SideNav = () => {
+const SideNav = (props: any) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { adminDetails } = useAppSelector(state => state.auth);
   const [array, setArray] = useState<string[]>([]);
-  const [path, setPath] = useState<string>("");
-  const [value, setValue] = useState("dashboard");
-  const [selected, setSelected] = useState("dashboard");
+  const path = location.pathname;
+  console.log(path);
+  const [value, setValue] = useState(path);
+  const [selected, setSelected] = useState(path);
 
   useEffect(() => {
-    setArray(router.pathname.split("/"));
-    setPath(router.pathname.slice(1));
-  }, [router.pathname]);
+    setValue(getFirstWord(path));
+  }, [path]);
 
   // useEffect(() => {
   //   setArray(router.pathname.split("/"));
@@ -33,10 +35,9 @@ const SideNav = () => {
   // }, []);
 
   return (
-    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-Purple z-30">
-      <div className="bg-lightPurple w-[60px] rounded-r-3xl py-10 flex flex-col items-center">
-        <div>LOGO</div>
-        <ul className="mt-[70px] flex flex-col gap-5">
+    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-[#475467] z-30">
+      <div className="bg-[#1D2939]  w-[60px] rounded-r-3xl py-10 flex flex-col items-center">
+        <ul className="mt-[70px] flex flex-col gap-2">
           {innerNav.map((item: any) => (
             <div
               key={item.id}
@@ -48,15 +49,24 @@ const SideNav = () => {
                   setValue(item.value);
                 }}
                 style={{
-                  borderLeft: value === item.value ? "3px solid white" : "none",
+                  borderLeft: includesSubstring(item.value, path)
+                    ? "3px solid white"
+                    : "none",
                 }}
               >
                 <li
-                  className="p-2 md:w-[40px] text-white rounded text-center"
+                  className="p-2 md:w-[40px] font-extrabold text-white rounded text-center"
                   style={{
-                    border: value === item.value ? "1px solid" : "none",
+                    border: includesSubstring(item.value, path)
+                      ? "1px solid"
+                      : "none",
 
-                    borderColor: value === item.value ? "white" : "transparent",
+                    borderColor: includesSubstring(item.value, path)
+                      ? "white"
+                      : "transparent",
+                    height: includesSubstring(item.value, path)
+                      ? "100px"
+                      : "auto",
 
                     backgroundColor: item.color,
                   }}
@@ -64,18 +74,19 @@ const SideNav = () => {
                   {item.initials}
                 </li>
               </div>
-              {value === item.value && (
+              {item?.navItems && (
                 <ul className="flex flex-col md:hidden max-h-[100px] overflow-y-auto pl-4 mt-2">
                   {item?.navItems?.map((nav: any) => (
                     <li
                       className=" text-[8px] w-full  p-2  rounded-[-12px] hover:bg-darkPurple text-white"
                       style={{
-                        backgroundColor:
-                          selected === nav.name
-                            ? "rgba(255,255,255, .2)"
-                            : "transparent",
+                        backgroundColor: includesSubstring(nav.value, path)
+                          ? "rgba(255,255,255, .2)"
+                          : "transparent",
                         // color: selected === nav.name ? "white" : "white",
-                        borderRadius: selected === nav.name ? "4px" : "0",
+                        borderRadius: includesSubstring(nav.value, path)
+                          ? "4px"
+                          : "0",
                       }}
                       key={nav.id}
                       onClick={() => {
@@ -120,12 +131,15 @@ const SideNav = () => {
               <li
                 className=" text-xs w-full  p-2 rounded-l-full rounded-[-12px] hover:bg-darkPurple"
                 style={{
-                  backgroundColor:
-                    selected === item.name
-                      ? "rgba(255,255,255, .2)"
-                      : "transparent",
-                  color: selected === item.name ? "white" : "white",
-                  borderRadius: selected === item.name ? "4px" : "0",
+                  backgroundColor: includesSubstring(item.route, path)
+                    ? "rgba(255,255,255, .2)"
+                    : "transparent",
+                  color: includesSubstring(item.route, path)
+                    ? "white"
+                    : "white",
+                  borderRadius: includesSubstring(item.route, path)
+                    ? "4px"
+                    : "0",
                 }}
                 key={item.id}
                 onClick={() => {
@@ -149,4 +163,5 @@ const SideNav = () => {
     </div>
   );
 };
-export default SideNav;
+
+export default memo(SideNav);

@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import useHTTPDelete from "src/Hooks/use-httpdelete";
-import useHTTPGet from "src/Hooks/use-httpget";
+import { memo } from "react";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { deleteuser, edituser } from "src/redux/store/features/user-slice";
 import { uiActions } from "../redux/store/ui-slice";
@@ -12,13 +10,15 @@ import CreateProduct from "./Forms/CreateProduct";
 import ModalAction from "./ModalContent/ModalAction";
 
 const ActionList = ({ user, type, setIsOpen }: any) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   return (
     <div className="w-full flex items-center justify-end pb-5 gap-3 z-30 relative">
       {" "}
-      <button className="text-sm text-lightPurple border-2 border-lightPurple py-3 px-4 rounded-md flex items-center justify-center">
+      <button className="text-sm text-darkPurple border-2 border-darkPurple py-3 px-4 rounded-md flex items-center justify-center">
         <ActionMenuBase
           items={
             <>
@@ -140,7 +140,7 @@ const ActionList = ({ user, type, setIsOpen }: any) => {
                   }
                 />
               )}
-              {user.role === "merchant" && (
+              {user?.role === "merchant" && (
                 <ActionMenuItem
                   name="Create Product"
                   onClickFunction={() => {
@@ -219,13 +219,12 @@ const ActionList = ({ user, type, setIsOpen }: any) => {
         </span>
       </button>
       <button
-        className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+        className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center"
         onClick={() => router.back()}
       >
-        <span style={{ marginRight: "5px", fontSize: "20px" }}>&lt;</span>
         Back to List
       </button>
     </div>
   );
 };
-export default ActionList;
+export default memo(ActionList);

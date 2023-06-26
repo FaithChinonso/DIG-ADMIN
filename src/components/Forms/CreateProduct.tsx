@@ -1,7 +1,7 @@
 import { uiActions } from "../../redux/store/ui-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useHTTPPost from "src/Hooks/use-httppost";
 
 import useHTTPGet from "src/Hooks/use-httpget";
@@ -12,19 +12,20 @@ import {
   clearError,
   clearMessage,
   createproduct,
+  fetchProduct,
+  updateproduct,
 } from "src/redux/store/features/product-slice";
 
 import { productApi } from "../api";
 import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
 
-const CreateProduct = ({ title, id }: any) => {
+const CreateProduct = ({ title, id, merchantID }: any) => {
   const dispatch = useAppDispatch();
   const request = useHTTPGet();
-  const send = useHTTPPost();
   const { success, loading, error, message } = useAppSelector(
     (state: any) => state.product
   );
-
+  const accessToken = sessionStorage.getItem("accessToken");
   const [data, setData] = useState({
     name: "",
     description: "",
@@ -64,13 +65,11 @@ const CreateProduct = ({ title, id }: any) => {
   };
 
   const createProduct = async () => {
-    dispatch(createproduct({ payload, id }));
+    dispatch(createproduct({ payload, id: merchantID }));
   };
   const updateProduct = () => {
-    const accessToken = sessionStorage.getItem("accessToken");
     const url = `${productApi}/update-product/${id}`;
-    const dataFunction = (res: any) => {};
-    send({ url, values: payload, accessToken }, dataFunction);
+    dispatch(updateproduct({ payload, id }));
   };
 
   const submitFormHandler = (e: any) => {
@@ -82,11 +81,10 @@ const CreateProduct = ({ title, id }: any) => {
       createProduct();
     }
   };
+
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
     if (title === "Update Product") {
-      const getAProduct = async () => {
-        const accessToken = sessionStorage.getItem("accessToken");
+      const getAProduct = () => {
         const url = `${productApi}/single-product/${id}`;
         const dataFunction = (res: any) => {
           setData({
@@ -112,9 +110,11 @@ const CreateProduct = ({ title, id }: any) => {
       };
       getAProduct();
     }
-    dispatch(getMyproductCategories(accessToken));
-  }, [title, dispatch, data, id, request]);
+  }, [accessToken]);
 
+  useEffect(() => {
+    dispatch(getMyproductCategories(accessToken));
+  }, [dispatch, getMyproductCategories, accessToken]);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -139,9 +139,10 @@ const CreateProduct = ({ title, id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
+      dispatch(fetchProduct(accessToken));
       setTimeout(() => {
         dispatch(clearMessage());
         dispatch(uiActions.closeToast());
@@ -289,7 +290,7 @@ const CreateProduct = ({ title, id }: any) => {
               setData({
                 ...data,
                 [e.target.name]: e.target.value,
-                discountPercentage: "0",
+                discountPercentage: "1",
               });
             }}
             className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
@@ -344,7 +345,7 @@ const CreateProduct = ({ title, id }: any) => {
             onValueChange={(values: any, sourceInfo: any) => {
               const { formattedValue, value } = values;
               const { event, source } = sourceInfo;
-              console.log(event.target.value);
+
               setData({ ...data, price: value });
             }}
           />

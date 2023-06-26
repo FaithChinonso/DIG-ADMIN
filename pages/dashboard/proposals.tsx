@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import ParentContainer from "src/components/ParentContainer";
 import ProposalTable from "src/components/tables/ProposalTable";
-
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-
 import {
   clearError,
   getMyproposal,

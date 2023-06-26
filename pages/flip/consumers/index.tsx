@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
-
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import AddJob from "src/components/Forms/AddJob";
 import {
@@ -51,7 +50,7 @@ const Users = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchMyConsumers(token));

@@ -4,20 +4,38 @@ import { logApi } from "src/components/api";
 
 export const getAdminlogs = createAsyncThunk(
   "log/getAdminlogs",
-  async (accessToken: any, thunkAPI: any) => {
+  async ({ token }: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(`${logApi}/logs-by-admin/1`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await axios.get(
+        `${logApi}/logs-by-admin/98837152-7026-4434-b022-2f43c2eb85e3`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-
+export const getAllLogs = createAsyncThunk(
+  "log/getAllLogs",
+  async ({ token }: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${logApi}/all-logs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 interface logState {
-  adminLogs: any;
+  adminLogs: any[];
+  allLogs: any[];
   success: boolean;
   loading: boolean;
   error: string;
@@ -26,6 +44,7 @@ interface logState {
 
 const initialState: logState = {
   adminLogs: [],
+  allLogs: [],
   success: false,
   loading: false,
   error: "",
@@ -66,7 +85,30 @@ const logSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
+        }
+      }
+    );
+    builder.addCase(getAllLogs.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getAllLogs.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.allLogs = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getAllLogs.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        if (action.payload.response) {
+          state.error = action.payload.response.data.message;
+        } else if (action.payload.request) {
+          state.error = "An Error occured on our end";
+        } else {
+          state.error = "An Error occured please try again";
         }
       }
     );

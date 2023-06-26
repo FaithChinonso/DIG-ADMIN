@@ -15,13 +15,16 @@ import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import DataFilterTable from "../DataTable";
 import AddJob from "../Forms/AddJob";
 import ModalAction from "../ModalContent/ModalAction";
+import StatusCell from "../StatusCell";
 
 const JobsDisplay = ({ jobs, type = "" }: any) => {
   const router = useRouter();
+
   const dispatch = useAppDispatch();
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.job
   );
+  console.log(jobs);
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -62,7 +65,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       description: client.description,
       budget: client.budget,
       jobScope: client.jobScope,
-      isActive: client.isActive,
+      isActive: client.isActive ? "Active" : "Inactive",
       isBudgetNegotiable: client.isBudgetNegotiable,
       datePosted: moment(client.datePosted).format("ll"),
       skillsNeeded: client.skillsNeeded,
@@ -111,7 +114,12 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
       name: "Date Posted",
       selector: "datePosted",
     },
-    ,
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
+    },
     {
       name: "Action",
       selector: "action",
@@ -145,7 +153,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
                   }}
                 />
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -237,7 +245,7 @@ const JobsDisplay = ({ jobs, type = "" }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable data={formatData} columns={columnDasboard} />
     </div>
   );

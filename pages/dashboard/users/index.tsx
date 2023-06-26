@@ -1,21 +1,18 @@
-import { useRouter } from "next/router";
 import { memo, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
 
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import AddJob from "src/components/Forms/AddJob";
 import {
   clearError,
   clearMessage,
-  deleteuser,
-  edituser,
   fetchMyuser,
   getMyuser,
+  getStates,
 } from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
+import { GetStaticProps } from "next/types";
+import AllUsersTable from "src/components/tables/AllUsersTable";
 
 const Users = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +20,6 @@ const Users = () => {
     (state: any) => state.user
   );
   const { token } = useAppSelector((state: any) => state.auth);
-  console.log(token);
 
   useEffect(() => {
     if (loading === true) {
@@ -49,7 +45,7 @@ const Users = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchMyuser(token));
@@ -61,14 +57,21 @@ const Users = () => {
 
   useEffect(() => {
     dispatch(getMyuser(token));
-  }, [dispatch, token]);
+    dispatch(getStates(token));
+  }, []);
 
   return (
     <ParentContainer>
       <div className="">
-        <UserTable data={users} type="" action="" />
+        <AllUsersTable data={users} type="" action="" />
       </div>
     </ParentContainer>
   );
+};
+export const getServerSideProps: GetStaticProps = async (context: any) => {
+  console.log(context);
+  return {
+    props: {},
+  };
 };
 export default memo(Users);

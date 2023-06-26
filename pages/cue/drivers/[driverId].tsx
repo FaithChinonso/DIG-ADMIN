@@ -1,43 +1,42 @@
-import GoogleMapReact from "google-map-react";
 import driverPic from "../../../src/assets/image/driverPic.png";
-import message from "../../../src/assets/image/message.svg";
 import call from "../../../src/assets/image/call.svg";
-
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { MyDriversValue } from "../../../src/utils/boxValues";
 import { useCallback, useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
 import Trip from "../../../src/components/BoxComponents/Trip";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
-import ActionList from "../../../src/components/ActionList";
 import maps from "src/assets/image/maps.png";
 import ParentContainer from "src/components/ParentContainer";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { GetStaticProps } from "next/types";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { userApi } from "src/components/api";
+import { tripApi, userApi } from "src/components/api";
 import useHTTPGet from "src/Hooks/use-httpget";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
-import { driverType } from "src/@types/data";
+import { driverType, tripType } from "src/@types/data";
+import DriverTrip from "src/components/tables/DriverTrip";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase";
+import Map from "src/components/Map";
 
 const OneDriver = ({ driverId }: any) => {
   const request = useHTTPGet();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [driverLocation, setDriverLocation] = useState();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { drivers, loading, success, error, message } = useAppSelector(
+  const { drivers, loading, success, error, message }: any = useAppSelector(
     state => state.user
   );
   const [driver, setDriver] = useState<driverType>();
-  const [trips, setTrips] = useState();
+  const [trips, setTrips] = useState<tripType[]>([]);
   const fetchADriver = useCallback(
     async (id: any) => {
       const url = `${userApi}/single-user/${id}`;
@@ -53,7 +52,7 @@ const OneDriver = ({ driverId }: any) => {
   const fetchAllTrips = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/trips/trips-by-driver/${id}`;
+      const url = `${tripApi}/trips-by-driver/${id}`;
       const dataFunction = (res: any) => {
         setTrips(res.data.data);
       };
@@ -66,17 +65,26 @@ const OneDriver = ({ driverId }: any) => {
     setValue(newValue);
   };
 
-  const defaultProps = {
-    center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
-    },
-    zoom: 11,
-  };
   useEffect(() => {
     fetchADriver(driverId);
     fetchAllTrips(driverId);
-  }, [driverId, fetchADriver, fetchAllTrips]);
+  }, [driverId]);
+
+  useEffect(() => {
+    // setLoading(true);
+    const unsub = onSnapshot(
+      doc(db, "driver/" + driver?.profile?.driverID),
+      (s: any) => {
+        const data = s.data();
+        console.log(data);
+        setDriverLocation(data?.currentLocation);
+        // setDriver(s.data());
+        // setLoading(false);
+      }
+    );
+    // console.log("New active driver", activeTrip?.driver);
+    return () => unsub();
+  }, [driver?.profile?.driverID]);
 
   useEffect(() => {
     if (loading === true) {
@@ -101,7 +109,7 @@ const OneDriver = ({ driverId }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       fetchADriver(driverId);
@@ -114,7 +122,7 @@ const OneDriver = ({ driverId }: any) => {
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
         <div className="absolute top-0 left-0 w-full h-full -z-10">
-          <Image src={maps} className="object-cover w-full h-full" alt={""} />
+          <Map address={driverLocation} name={driver?.fullName} />
         </div>
         <div className="mt-14">
           <button
@@ -128,7 +136,16 @@ const OneDriver = ({ driverId }: any) => {
             <div className="flex justify-between">
               <div className="flex gap-[17px]">
                 <div>
-                  <Image src={driverPic} alt={""} />
+                  {driver?.image ? (
+                    <Image
+                      src={driver?.image}
+                      width={60}
+                      height={60}
+                      alt={""}
+                    />
+                  ) : (
+                    <Image src={driverPic} alt={""} />
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <div className="text-lg text-white">{driver?.fullName}</div>
@@ -170,7 +187,7 @@ const OneDriver = ({ driverId }: any) => {
               </div>
             )}
           </div>
-          <div className="rounded-[20px] bg-white w-[435px] p-5 mt-[23px]">
+          <div className="rounded-[20px] bg-white w-[435px] p-2  md:p-5 mt-[23px]">
             <Box
               sx={{ width: "100%" }}
               style={{
@@ -195,9 +212,7 @@ const OneDriver = ({ driverId }: any) => {
                       {...a11yProps(value.id)}
                       style={{
                         backgroundColor:
-                          selected === value.id
-                            ? "rgba(18, 38, 68, 1)"
-                            : "transparent",
+                          selected === value.id ? "#49D3BA" : "transparent",
                         fontFamily: "Steradian",
                         fontStyle: "normal",
                         fontWeight: "normal",
@@ -218,10 +233,10 @@ const OneDriver = ({ driverId }: any) => {
                 <GeneralInfo data={driver} />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                <Trip data={trips} />
+                <Trip data={trips} type="driver" />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                <TrackRide />
+                {trips && <TrackRide trip={trips[0]} />}
               </TabPanel>
             </Box>
           </div>

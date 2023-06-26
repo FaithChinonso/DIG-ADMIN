@@ -25,6 +25,7 @@ import {
   merchantType,
   riderType,
 } from "src/@types/data";
+import StatusCell from "../StatusCell";
 
 type Prop = {
   data:
@@ -50,7 +51,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
         },
         drawerContent: (
           <>
-            <AddUser applicationName="flip" />
+            <AddUser title="Add User" />
           </>
         ),
       })
@@ -78,33 +79,23 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
     };
     isActive: boolean;
   };
-  const formatData = data
-    ?.slice(0)
-    .map(
-      (
-        client:
-          | driverType
-          | riderType
-          | merchantType
-          | consumerType
-          | adminType,
-        index: number
-      ) => {
-        return {
-          id: client.userID,
-          serial: index + 1,
-          gender: client.gender,
-          fullName: client.fullName,
-          email: client.email,
-          phone: client.phone,
-          applicationName: client.applicationName,
-          emailVerifiedStatus: client.emailVerifiedStatus,
-          role: client.role,
-          isActive: client.isActive,
-          dateAdded: moment(client.dateAdded).format("ll"),
-        };
-      }
-    );
+  const formatData = data?.slice(0).map((client: any, index: number) => {
+    return {
+      id: client.userID,
+      serial: index + 1,
+      gender: client.gender,
+      fullName: client.fullName,
+      email: client.email,
+      phone: client.phone,
+      applicationName: client.applicationName,
+      emailVerifiedStatus: client.emailVerifiedStatus,
+      role: client.role,
+      merchantID: client.role === "merchant" ? client.profile.merchantID : null,
+      isActive: client.isActive ? "Active" : "Inactive",
+      dateAdded: moment(client.dateAdded).format("ll"),
+    };
+  });
+
   const columnUsers = [
     {
       name: "Full Name",
@@ -137,9 +128,15 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       selector: (row: { applicationName: any }) => `${row.applicationName}`,
     },
     {
-      name: "Status",
+      name: "Verification",
       selector: (row: { emailVerifiedStatus: any }) =>
         `${row.emailVerifiedStatus}`,
+    },
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
     {
       name: "Action",
@@ -156,7 +153,24 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                     router.push(`${location.pathname}/${prop?.id}`);
                   }}
                 />
-                {prop?.isActive === true ? (
+                {/* <ActionMenuItem
+                  name="Update User"
+                  onClickFunction={() => {
+                    dispatch(
+                      uiActions.openDrawerAndSetContent({
+                        drawerStyles: {
+                          padding: 0,
+                        },
+                        drawerContent: (
+                          <>
+                            <AddUser id={prop.id} title="Update User" />
+                          </>
+                        ),
+                      })
+                    );
+                  }}
+                /> */}
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -278,6 +292,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                   <ActionMenuItem
                     name="Create Product"
                     onClickFunction={() => {
+                      console.log(prop);
                       dispatch(
                         uiActions.openDrawerAndSetContent({
                           drawerStyles: {
@@ -287,6 +302,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                             <>
                               <CreateProduct
                                 id={prop.id}
+                                merchantID={prop.merchantID}
                                 title="Create Product"
                               />
                             </>
@@ -307,7 +323,11 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                           },
                           drawerContent: (
                             <>
-                              <AddService id={prop.id} title="Create Service" />
+                              <AddService
+                                id={prop.id}
+                                merchantID={prop.merchantID}
+                                title="Create Service"
+                              />
                             </>
                           ),
                         })
@@ -315,7 +335,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                     }}
                   />
                 )}
-                {prop?.applicationName === "flip" && (
+                {prop?.role === "merchant" && (
                   <ActionMenuItem
                     name="Create Job posting"
                     onClickFunction={() => {
@@ -402,9 +422,15 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       selector: (row: { applicationName: any }) => `${row.applicationName}`,
     },
     {
-      name: "Status",
+      name: "Verification",
       selector: (row: { emailVerifiedStatus: any }) =>
         `${row.emailVerifiedStatus}`,
+    },
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
   ];
   return (
@@ -412,16 +438,17 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       {type !== "dashboard" && (
         <button
           onClick={toggleDrawer}
-          className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center"
+          className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center mt-6"
         >
           Add User
         </button>
       )}
-
-      <DataFilterTable
-        columns={action === "none" ? columnUser : columnUsers}
-        data={formatData}
-      />
+      <div className="mt-4">
+        <DataFilterTable
+          columns={action === "none" ? columnUser : columnUsers}
+          data={formatData}
+        />
+      </div>
     </div>
   );
 };

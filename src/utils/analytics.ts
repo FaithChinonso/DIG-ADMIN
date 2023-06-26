@@ -9,144 +9,144 @@ import WidgetsIcon from "@mui/icons-material/Widgets";
 
 export const innerNav = [
   {
-    id: 1,
+    id: 32,
     icon: WidgetsIcon,
     value: "dashboard",
-    color: "rgba(225,225,225, .8)",
-    borderColor: "rgba(225,225,225, .4)",
+    color: "#BBAC69",
+    borderColor: "#BBAC69",
     initials: "GE",
     name: "General Administration",
     route: "/dashboard",
     navItems: [
       {
-        id: 1,
+        id: 16,
         name: "Dashboard",
         value: "dashboard",
-        route: "/dashboard",
-      },
-
-      {
-        id: 2,
-        name: "Media & Communications",
-        value: "dashboard",
-        route: "/dashboard/media",
+        route: "/dashboard/overview",
       },
       {
-        id: 3,
+        id: 17,
         name: "All Users",
         value: "dashboard",
         route: "/dashboard/users",
       },
       {
-        id: 4,
+        id: 18,
         name: "Transactions",
         value: "dashboard",
         route: "/dashboard/transactions",
       },
       {
-        id: 5,
+        id: 19,
         name: "Proposals",
         value: "dashboard",
         route: "/dashboard/proposals",
       },
       {
-        id: 6,
+        id: 20,
         name: "Withdrawal",
         value: "dashboard",
         route: "/dashboard/withdrawal",
       },
+
       {
-        id: 7,
+        id: 21,
+        name: "Media",
+        value: "dashboard",
+        route: "/dashboard/media",
+      },
+
+      {
+        id: 22,
         name: "Audit Trail",
         value: "dashboard",
         route: "/dashboard/audit",
       },
-      {
-        id: 8,
-        name: "Settings",
-        value: "dashboard",
-        route: "/dashboard/settings",
-      },
     ],
   },
   {
-    id: 2,
+    id: 33,
     icon: WidgetsIcon,
     value: "flip",
-    color: "rgba(180, 96, 133, .8)",
-    borderColor: "rgba(180, 96, 133, .4)",
+    color: "#49D3BA",
+    borderColor: "#49D3BA",
     initials: "FP",
     name: "Flip",
     route: "/flip",
     navItems: [
       {
-        id: 1,
-        name: "Consumers",
+        id: 23,
+        name: "Merchants",
         value: "flip",
-        route: "/flip/consumers",
+        route: "/flip/merchants",
       },
       {
-        id: 2,
+        id: 24,
         name: "Orders",
         value: "flip",
         route: "/flip/orders",
       },
+      {
+        id: 25,
+        name: "Consumers",
+        value: "flip",
+        route: "/flip/consumers",
+      },
 
       {
-        id: 3,
+        id: 26,
         name: "Products",
         value: "flip",
         route: "/flip/products",
       },
       {
-        id: 4,
+        id: 27,
         name: "Services",
         value: "flip",
         route: "/flip/services",
       },
       {
-        id: 5,
+        id: 28,
         name: "Job Posting",
         value: "flip",
         route: "/flip/jobs",
       },
-
-      {
-        id: 6,
-        name: "Merchants",
-        value: "flip",
-        route: "/flip/merchants",
-      },
     ],
   },
   {
-    id: 3,
+    id: 34,
     icon: WidgetsIcon,
     value: "cue",
-    color: "rgba(37, 82, 59, .8)",
-    borderColor: "rgba(37, 82, 59, .4)",
+    color: "#0195FF",
+    borderColor: "#0195FF",
     initials: "CU",
     name: "Cue",
     route: "/cue",
     navItems: [
       {
-        id: 1,
-        name: "Riders",
-        value: "cue",
-        route: "/cue/riders",
-      },
-      {
-        id: 2,
+        id: 29,
         name: "Trips",
         value: "cue",
         route: "/cue/trips",
       },
 
       {
-        id: 3,
+        id: 30,
         name: "Drivers",
         value: "cue",
         route: "/cue/drivers",
+      },
+      {
+        id: 31,
+        name: "Riders",
+        value: "cue",
+        route: "/cue/riders",
+      },
+      {
+        id: 31,
+        name: "SOS Alerts",
+        value: "cue",
+        route: "/cue/SOS",
       },
     ],
   },
@@ -167,39 +167,40 @@ export const outerNav = [
     id: 1,
     name: "Dashboard",
     value: "dashboard",
-    route: "/dashboard",
+    route: "/dashboard/overview",
   },
-
   {
     id: 2,
-    name: "Media & Communications",
-    value: "dashboard",
-    route: "/dashboard/media",
-  },
-  {
-    id: 3,
     name: "All Users",
     value: "dashboard",
     route: "/dashboard/users",
   },
   {
-    id: 4,
+    id: 3,
     name: "Transactions",
     value: "dashboard",
     route: "/dashboard/transactions",
   },
   {
-    id: 5,
+    id: 4,
     name: "Proposals",
     value: "dashboard",
     route: "/dashboard/proposals",
   },
   {
-    id: 6,
+    id: 5,
     name: "Withdrawal",
     value: "dashboard",
     route: "/dashboard/withdrawal",
   },
+
+  {
+    id: 6,
+    name: "Media",
+    value: "dashboard",
+    route: "/dashboard/media",
+  },
+
   {
     id: 7,
     name: "Audit Trail",
@@ -208,73 +209,65 @@ export const outerNav = [
   },
   {
     id: 8,
-    name: "Settings",
-    value: "dashboard",
-    route: "/dashboard/settings",
+    name: "Merchants",
+    value: "flip",
+    route: "/flip/merchants",
   },
   {
     id: 9,
-    name: "Consumers",
-    value: "flip",
-    route: "/flip/consumers",
-  },
-  {
-    id: 10,
     name: "Orders",
     value: "flip",
     route: "/flip/orders",
   },
+  {
+    id: 19,
+    name: "Consumers",
+    value: "flip",
+    route: "/flip/consumers",
+  },
 
   {
-    id: 11,
+    id: 10,
     name: "Products",
     value: "flip",
     route: "/flip/products",
   },
   {
-    id: 12,
+    id: 11,
     name: "Services",
     value: "flip",
     route: "/flip/services",
   },
   {
-    id: 14,
+    id: 12,
     name: "Job Posting",
     value: "flip",
     route: "/flip/jobs",
   },
 
   {
-    id: 15,
-    name: "Merchants",
-    value: "flip",
-    route: "/flip/merchants",
+    id: 13,
+    name: "Drivers",
+    value: "cue",
+    route: "/cue/drivers",
   },
-
-  // {
-  //   id: 27,
-  //   name: "Audit Trail",
-  //   value: "flip",
-  //   route: "/flip/audit",
-  // },
   {
-    id: 9,
+    id: 14,
+    name: "Trips",
+    value: "cue",
+    route: "/cue/trips",
+  },
+  {
+    id: 15,
     name: "Riders",
     value: "cue",
     route: "/cue/riders",
   },
   {
-    id: 17,
-    name: "Trips",
+    id: 16,
+    name: "SOS Alert",
     value: "cue",
-    route: "/cue/trips",
-  },
-
-  {
-    id: 19,
-    name: "Drivers",
-    value: "cue",
-    route: "/cue/drivers",
+    route: "/cue/SOS",
   },
 
   // {
@@ -439,13 +432,17 @@ export const delivery = [
   { id: 2, name: "No" },
 ];
 export const role = [
-  { id: 1, name: "consumer" },
-  { id: 2, name: "merchant" },
+  { id: 1, name: "" },
+  { id: 2, name: "consumer" },
+  { id: 3, name: "merchant" },
+  { id: 4, name: "rider" },
+  { id: 5, name: "driver" },
 ];
 export const productLevel = [
-  { id: 1, name: "Beginner" },
-  { id: 2, name: "Intermediate" },
-  { id: 3, name: "expert" },
+  { id: 1, name: "" },
+  { id: 2, name: "Beginner" },
+  { id: 3, name: "Intermediate" },
+  { id: 4, name: "expert" },
 ];
 export const bool = [
   { id: 0, name: "Yes" },
@@ -456,16 +453,24 @@ export const negotiable = [
   { id: 0, name: "No" },
 ];
 export const gender = [
-  { id: 1, name: "Female" },
-  { id: 2, name: "Male" },
+  { id: 1, name: "" },
+  { id: 2, name: "Female" },
+  { id: 3, name: "Male" },
 ];
 
 export const category = [
-  { id: 1, name: "electronics" },
-  { id: 2, name: "Car Dealership" },
-  { id: 3, name: "Beauty Products" },
+  { id: 1, name: "" },
+  { id: 2, name: "electronics" },
+  { id: 3, name: "Car Dealership" },
+  { id: 4, name: "Beauty Products" },
 ];
 export const merchantType = [
-  { id: 1, name: "business" },
-  { id: 2, name: "personal" },
+  { id: 1, name: "" },
+  { id: 2, name: "business" },
+  { id: 3, name: "personal" },
+];
+export const applicationType = [
+  { id: 1, name: "" },
+  { id: 2, name: "flip" },
+  { id: 3, name: "cue" },
 ];

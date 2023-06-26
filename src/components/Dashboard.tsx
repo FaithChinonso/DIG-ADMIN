@@ -29,7 +29,7 @@ const Dashboard = ({ recentUsers, transactions, orders, users }: any) => {
         {/* <div className="w-full flex flex-col md:flex-row gap-5 items-start p-[10px] md:p-[30px]"> */}
         <div className=" bg-white py-3 rounded-sm  w-full  max-h-[400px] overflow-hidden px-3 ">
           <div className="text-gray-800 text-3xl"> Recent Users</div>
-          <div className=" overflow-auto max-h-[calc(400px-65px)]">
+          <div className=" ">
             <UserTable data={recentUsers} type="dashboard" action="none" />{" "}
           </div>
         </div>

@@ -17,12 +17,14 @@ import AddProductSpec from "../Forms/AddProductSpec";
 import CreateProduct from "../Forms/CreateProduct";
 import ModalAction from "../ModalContent/ModalAction";
 import ProductDetails from "../ProductDetails";
+import StatusCell from "../StatusCell";
 
 const ProductTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
   const { loading, success, message, error } = useAppSelector(
     (state: any) => state.product
   );
+
   useEffect(() => {
     if (loading === true) {
       dispatch(uiActions.openLoader());
@@ -46,7 +48,7 @@ const ProductTable = ({ data }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
@@ -78,7 +80,7 @@ const ProductTable = ({ data }: any) => {
         discountAmount: string;
       };
       description: string;
-      isActive: boolean;
+      isActive: string;
     };
 
     category: {
@@ -98,7 +100,7 @@ const ProductTable = ({ data }: any) => {
       price: client.product.price,
       categoryName: client?.category?.name,
       productCreationDate: moment(client.productCreationDate).format("ll"),
-      isActive: client.product.isActive,
+      isActive: client.product.isActive ? "Active" : "Inactive",
       numberOfOrders: client.product.numberOfOrders,
       freeDelivery: client.product.delivery.freeDelivery,
       shippingFee: client.product.delivery.shippingFee,
@@ -108,20 +110,17 @@ const ProductTable = ({ data }: any) => {
       images: client.product.images,
     };
   });
-  console.log(formatData);
+
   const columnProduct = [
     {
       name: "#",
-      selector: "serial",
+      selector: "id",
     },
     {
       name: "Product Name",
       selector: "name",
     },
-    {
-      name: "Brand",
-      selector: "brand",
-    },
+
     {
       name: "product Quantity",
       selector: "quantity",
@@ -130,7 +129,6 @@ const ProductTable = ({ data }: any) => {
       name: "Price",
       selector: "price",
       cell: (prop: any) => {
-        console.log(prop);
         return <div> ₦{prop.price}</div>;
       },
     },
@@ -139,10 +137,7 @@ const ProductTable = ({ data }: any) => {
       selector: "weight",
       cell: (prop: any) => <div> {prop.weight}</div>,
     },
-    {
-      name: "Warranty",
-      selector: "productWarranty",
-    },
+
     {
       name: "Created On",
       selector: "productCreationDate",
@@ -154,6 +149,12 @@ const ProductTable = ({ data }: any) => {
     {
       name: "Orders",
       selector: "numberOfOrders",
+    },
+    {
+      name: "Status",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
 
     {
@@ -287,7 +288,7 @@ const ProductTable = ({ data }: any) => {
                   />
                 )}
 
-                {prop?.isActive === true ? (
+                {prop?.isActive === "Active" ? (
                   <ActionMenuItem
                     name="Deactivate"
                     onClickFunction={() =>
@@ -397,8 +398,10 @@ const ProductTable = ({ data }: any) => {
   ];
 
   return (
-    <div>
-      <DataFilterTable columns={columnProduct} data={formatData} />
+    <div className="mt-10">
+      <div className="mt-4">
+        <DataFilterTable columns={columnProduct} data={formatData} />
+      </div>
     </div>
   );
 };

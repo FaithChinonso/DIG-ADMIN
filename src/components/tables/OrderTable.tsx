@@ -16,6 +16,7 @@ import {
 } from "src/redux/store/features/order-slice";
 import { useRouter } from "next/router";
 import { DataFilterTable } from "../DataTable";
+import StatusCell from "../StatusCell";
 
 const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
   const dispatch = useAppDispatch();
@@ -71,13 +72,13 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
       status: client?.status,
       buyer: client?.buyer,
       product: client?.product,
-      isActive: client?.isActive,
+      isActive: client.isActive,
     };
   });
   const columnOrders = [
     {
-      name: "Serial",
-      selector: "serial",
+      name: "ID",
+      selector: "id",
     },
     {
       name: "Product Name",
@@ -106,7 +107,9 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
 
     {
       name: "Status",
-      selector: "status",
+      selector: (row: { status: string }) => {
+        return <StatusCell status={row.status} />;
+      },
     },
     {
       name: "Category Name",
@@ -224,7 +227,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-14">
       <DataFilterTable columns={columnOrders} data={formatData} />
     </div>
   );

@@ -10,54 +10,54 @@ import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import { DataFilterTable } from "../DataTable";
 import ModalAction from "../ModalContent/ModalAction";
 import MultipleSelectTable from "../multiple-select-table";
+import StatusCell from "../StatusCell";
 
 const WithdrawalTable = ({ data }: any) => {
   const dispatch = useAppDispatch();
   const formatData = data?.slice(0).map((client: any, index: number) => {
     return {
-      id: client.userID,
+      id: client.withdrawID,
       serial: index + 1,
-      gender: client.gender,
-      fullName: client.fullName,
-      email: client.email,
-      phone: client.phone,
+      fullName: client.fullname,
+      amount: client.amount,
+      status: client.status,
       applicationName: client.applicationName,
-      emailVerifiedStatus: client.emailVerifiedStatus,
-      role: client.role,
-      isActive: client.isActive,
-      dateAdded: moment(client.dateAdded).format("ll"),
+      rejectionReason: client.rejectionReason || "--",
+      dateAdded: moment(client.requestDate).format("ll"),
     };
   });
   const columnDasboard = [
     {
       name: "#",
-      selector: "serial",
-      Filter: false,
+      selector: (row: { serial: any }) => `${row.serial}`,
+      width: "80px",
     },
     {
-      name: "Business Name",
-      selector: "businessName",
+      name: "ID",
+      selector: (row: { id: any }) => `${row.id}`,
     },
     {
-      name: "Contact Person",
-      selector: "contactPerson",
+      name: "Full Name",
+      selector: (row: { fullName: any }) => `${row.fullName}`,
     },
     {
-      name: "Email",
-      selector: "email",
+      name: "Reason For Rejection",
+      selector: (row: { rejectionReason: any }) => `${row.rejectionReason}`,
     },
     {
-      name: "Phone Number",
-      selector: "number",
+      name: "Amount",
+      selector: (row: { amount: any }) => `${row.amount}`,
     },
 
     {
-      name: "Client Type",
-      selector: "clientType",
+      name: "Request Date",
+      selector: (row: { dateAdded: any }) => `${row.dateAdded}`,
     },
     {
       name: "Status",
-      selector: "status",
+      selector: (row: { status: string }) => {
+        return <StatusCell status={row.status} />;
+      },
     },
     {
       name: "Action",
@@ -191,7 +191,7 @@ const WithdrawalTable = ({ data }: any) => {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );

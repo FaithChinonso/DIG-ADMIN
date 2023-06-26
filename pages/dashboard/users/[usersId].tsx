@@ -1,12 +1,11 @@
 import verify from "../../../src/assets/image/verify.svg";
 import gender from "../../../src/assets/image/gender.svg";
 import birth from "../../../src/assets/image/birth.svg";
-import rating from "../../../src/assets/image/rating.svg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { MyUserValue } from "../../../src/utils/boxValues";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import Image from "next/image";
 import SupportingDocuments from "../../../src/components/BoxComponents/SupportingDocuments";
 import BankDetails from "../../../src/components/BoxComponents/BankDetails";
@@ -15,11 +14,10 @@ import TransactionHistory from "../../../src/components/BoxComponents/Transactio
 import { useDispatch, useSelector } from "react-redux";
 import ActionList from "../../../src/components/ActionList";
 import ParentContainer from "src/components/ParentContainer";
-import axios from "axios";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { transactionApi, userApi } from "src/components/api";
+import { jobApi, orderApi, transactionApi, userApi } from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
@@ -30,16 +28,16 @@ const OneUser = (props: any) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>();
   const [orders, setOrders] = useState<any>([]);
-  const [transactions, setTrasactions] = useState<any>([]);
+  const [transactions, setTransactions] = useState<any>([]);
   const [job, setJob] = useState<any>();
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState<any>(1);
   const [value, setValue] = useState(0);
   const { users, loading, success, message, error } = useAppSelector(
     (state: any) => state.user
   );
-
+  console.log(props);
   const fetchAUser = useCallback(
-    async (id: any) => {
+    (id: any) => {
       const url = `${userApi}/single-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
@@ -52,7 +50,7 @@ const OneUser = (props: any) => {
   const fetchAllJobs = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/job/jobs-by-user/${id}`;
+      const url = `${jobApi}/jobs-by-user/${id}`;
       const dataFunction = (res: any) => {
         setJob(res.data.data);
       };
@@ -63,7 +61,7 @@ const OneUser = (props: any) => {
   const fetchOrdersByAUser = useCallback(
     (id: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const url = `https://backendapi.flip.onl/api/admin/order/orders-by-user/${id}`;
+      const url = `${orderApi}/orders-by-user/${id}`;
       const dataFunction = (res: any) => {
         setOrders(res.data.data);
       };
@@ -76,15 +74,12 @@ const OneUser = (props: any) => {
       const url = `${transactionApi}/transactions-by-user/${id}`;
       const accessToken = sessionStorage.getItem("accessToken");
       const dataFunction = (res: any) => {
-        console.log(res);
-        setTrasactions(res.data.data);
+        setTransactions(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
     },
     [request]
   );
-
-  useEffect(() => {}, []);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -93,14 +88,7 @@ const OneUser = (props: any) => {
     fetchAllJobs(props.userId);
     fetchOrdersByAUser(props.userId);
     fetchAllTransactions(props.userId);
-  }, [
-    props.userId,
-    dispatch,
-    fetchAUser,
-    fetchAllJobs,
-    fetchAllTransactions,
-    fetchOrdersByAUser,
-  ]);
+  }, [props.userId]);
 
   useEffect(() => {
     if (loading === true) {
@@ -125,40 +113,28 @@ const OneUser = (props: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [
-    loading,
-    error,
-    message,
-    success,
-    dispatch,
-    fetchAUser,
-    fetchAllJobs,
-    fetchAllTransactions,
-    fetchOrdersByAUser,
-  ]);
+  }, [loading, error, message, success, dispatch]);
   return (
     <ParentContainer>
       {user && (
         <div className="">
           <ActionList user={user} />
-          <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1">
-            <div className="flex gap-[30px] items-start text-white ">
+          <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+            <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
               {user?.image && (
-                <div>
-                  <Image src={user?.image} alt={""} />
-                </div>
+                <div>{/* <Image src={user?.image} alt={""} /> */}</div>
               )}
               <div className="flex flex-col gap-[14px]">
-                <h2 className="text-[16px]">
+                <h2 className="text-[16px] text-text">
                   {user?.fullName}
-                  <span className="left-1">
+                  <span className="">
                     {" "}
                     {user?.emailVerifiedStatus === "verified" && (
                       <Image src={verify} alt={""} />
@@ -171,7 +147,7 @@ const OneUser = (props: any) => {
                   <div className="text-[10px]">{user?.email}</div>
                 </div>
                 <div className="flex justify-between gap-[9px] items-center">
-                  {user?.gender && (
+                  {user.gender && (
                     <h4 className="text-[10px]">
                       {" "}
                       <span>
@@ -197,7 +173,7 @@ const OneUser = (props: any) => {
                   )}
                 </div>
 
-                <div className="w-[193px] bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px]">
+                <div className="md:w-[193px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                   <div className="flex flex-col justify-between">
                     <div className="text-[8px]">Escrow Balance</div>
                     <div className="text-xs font-[500]">
@@ -215,37 +191,122 @@ const OneUser = (props: any) => {
               </div>
             </div>
 
-            {user?.role === "merchant" && (
-              <div className="flex flex-col items-center justify-around text-white">
+            {user?.role === "driver" ? (
+              <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full ">
+                <div className="flex flex-row gap-3 text-white">
+                  {user?.profile?.driversLicenceFront ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px] text-text">
+                        {" "}
+                        Driver's Licence Front
+                      </h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.driversLicenceFront}
+                      </p>
+                    </div>
+                  ) : null}
+                  {user?.profile?.driversLicenceBack ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px] text-text">
+                        Driver's Licence Back
+                      </h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.driversLicenceBack}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
                 <div className="flex flex-row gap-3 text-white">
                   <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Type</h3>
-                    <p className="text-[10px]">{user?.profile?.merchantType}</p>
-                  </div>
-                  <div className="text-white flex flex-col">
-                    <h3 className="text-[13px] mt-[28px]">Merchant Category</h3>
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      {" "}
+                      Completed Rides
+                    </h3>
                     <p className="text-[10px]">
-                      {user?.profile?.merchantCategory}
+                      {user?.profile?.numOfCompletedRides}
                     </p>
                   </div>
+                  {user?.profile?.vehicle?.length === 0 ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px] text-text ">
+                        Vehicle Details
+                      </h3>
+                      <p className="text-[10px]"></p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {user?.role === "rider" ? (
+              <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
+                <div className="flex flex-row gap-3 text-white">
+                  <div className="text-white flex flex-col">
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      {" "}
+                      House Address
+                    </h3>
+                    <p className="text-[10px]">{user?.profile?.homeLocation}</p>
+                  </div>
+                  {user?.profile?.workLocation ? (
+                    <div className="text-white flex flex-col">
+                      <h3 className="text-[13px] mt-[28px] text-text">
+                        Work Location
+                      </h3>
+                      <p className="text-[10px]">
+                        {user?.profile?.workLocation}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="text-white flex flex-col ">
-                  <h3 className="text-[13px] mt-[28px]">About</h3>
-                  <p className="text-[10px]">{user?.profile?.bio}</p>
+                  <h3 className="text-[13px] mt-[28px] text-text">
+                    Completed Rides
+                  </h3>
+                  <p className="text-[10px]">{user?.profile?.completedRides}</p>
                 </div>
               </div>
-            )}
-
-            <div className="flex flex-col items-center justify-around text-white">
-              <div className="text-white text-[13px]">Total Orders</div>
-              <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
-                <div className="text-[8px] ">Successful</div>
-                <div className="text-sm font-semibold">100</div>
+            ) : null}
+            {user?.role === "merchant" ? (
+              <div className="flex flex-col items-center justify-around text-white w-full">
+                <div className="flex md:flex-col gap-3 text-white">
+                  <div className="text-white flex flex-col">
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      Merchant Type
+                    </h3>
+                    <p className="text-[10px]">{user?.profile?.merchantType}</p>
+                  </div>
+                  <div className="text-white flex flex-col">
+                    <h3 className="text-[13px] mt-[28px] text-text">
+                      Merchant Category
+                    </h3>
+                    <p className="text-[10px]">
+                      {user?.profile?.merchantCategory.categoryName}
+                    </p>
+                  </div>
+                </div>
+                {user?.profile?.bio ? (
+                  <div className="text-white flex flex-col w-[550px] text-center">
+                    <h3 className="text-[13px] mt-[28px] text-text">About</h3>
+                    <p className="text-[10px]">{user?.profile?.bio}</p>
+                  </div>
+                ) : null}
               </div>
-              <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
-                <div className="text-[8px] ">Cancelled</div>
-                <div className="text-sm font-semibold">100</div>
+            ) : null}
+
+            <div className="flex flex-col justify-around text-white w-full md:w-[200px]">
+              <div className="text-white text-[13px] my-2 md:text-center">
+                Total Orders
+              </div>
+              <div className="flex md:flex-col flex-row w-full gap-3 items-center">
+                <div className="bg-faintWhite p-[11px] w-[97px] rounded-md ">
+                  <div className="text-[8px] ">Successful</div>
+                  <div className="text-sm font-semibold">100</div>
+                </div>
+                <div className="bg-faintWhite p-[11px]  w-[97px] rounded-md ">
+                  <div className="text-[8px] ">Cancelled</div>
+                  <div className="text-sm font-semibold">100</div>
+                </div>
               </div>
             </div>
           </div>
@@ -322,10 +383,13 @@ const OneUser = (props: any) => {
 };
 export const getServerSideProps: GetStaticProps = async (context: any) => {
   const userId = context.params.usersId;
+  const param = context.resolvedUrl;
+  console.log(context.params);
   return {
     props: {
       userId,
+      param,
     },
   };
 };
-export default OneUser;
+export default memo(OneUser);

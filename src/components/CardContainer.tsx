@@ -58,10 +58,10 @@ const CardContainer = ({ orders, transaction, users }: any) => {
   ];
 
   return (
-    <div className=" justify-center md:justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 items-center py-3">
+    <div className=" justify-center gap-2 md:justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 md:gap-6 items-center py-3">
       {cardData.map(item => (
         <div
-          className="w-[120px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
+          className="w-[140px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
           key={item.id}
           style={{
             boxShadow: "0px 1px 2px 1px #d7d7d7",

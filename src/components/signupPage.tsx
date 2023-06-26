@@ -75,10 +75,10 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <div className="w-full px-[60px] py-[30px] md:px-[150px] md:py-[120px] md:w-[calc(100vw-600px)]">
+      <div className="w-full px-[60px] py-[30px] md:px-[150px] md:py-[120px] md:w-[calc(100vw-700px)]">
         <div className="w-full">
-          <div className="text-lightPurple text-[32px] leading-10 font-extrabold w-full text-center">
-            Welcome Page
+          <div className="text-darkPurple text-[32px] leading-10 font-extrabold w-full text-center">
+            Welcome Back
           </div>
           {/* 
           <div className="flex justify-center items-center gap-[30px] mt-[30px]">

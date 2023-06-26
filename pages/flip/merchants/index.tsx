@@ -1,22 +1,14 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import ParentContainer from "src/components/ParentContainer";
-
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import AddJob from "src/components/Forms/AddJob";
 import {
   clearError,
   clearMessage,
-  deleteuser,
-  edituser,
   fetchMymerchant,
   getMymerchant,
-  getMyuser,
 } from "src/redux/store/features/user-slice";
 import UserTable from "src/components/tables/UserTable";
 import { uiActions } from "src/redux/store/ui-slice";
-import SuccessfulModal from "src/components/ModalContent/SuccessfulModal";
 
 const Merchants = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +41,7 @@ const Merchants = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchMymerchant(token));

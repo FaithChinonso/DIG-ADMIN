@@ -40,7 +40,7 @@ const Trips = () => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       dispatch(fetchMyTrips(token));
@@ -54,9 +54,7 @@ const Trips = () => {
   }, [dispatch, token]);
   return (
     <ParentContainer>
-      {/* <div className=" p-[10px] md:p-[30px]"> */}
       <TripTable data={trips} />
-      {/* </div> */}
     </ParentContainer>
   );
 };

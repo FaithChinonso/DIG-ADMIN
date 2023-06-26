@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import location from "../../../src/assets/image/location.svg";
 import quantity from "../../../src/assets/image/quantity.svg";
 import cost from "../../../src/assets/image/cost.svg";
@@ -49,7 +48,7 @@ const OneOrder = (props: any) => {
   };
   useEffect(() => {
     fetchAnOrder(props.orderId);
-  }, [props.orderId, fetchAnOrder]);
+  }, [props.orderId]);
 
   useEffect(() => {
     if (loading === true) {
@@ -75,7 +74,7 @@ const OneOrder = (props: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
       fetchAnOrder(props.orderId);
@@ -93,9 +92,9 @@ const OneOrder = (props: any) => {
           <div className="text-offWhite md:text-left md:text-lg text-center text-2xl">
             Overview
           </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+          <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-1 md:gap-0">
             <div className="flex md:flex-col gap-[14px] w-full md:w-auto items-center justify-center md:items-start md:justify-start">
-              <div className="text-lg text-white font-semibold">
+              <div className="md:text-lg text-white font-semibold">
                 OrderId:
                 <span className="text-offWhite text-sm ml-2">
                   {" "}
@@ -106,12 +105,12 @@ const OneOrder = (props: any) => {
                 <div className="text-offWhite text-sm ">
                   <Image src={location} alt={""} />
                 </div>
-                <div className="text-offWhite text-sm">
+                <div className="text-offWhite md:text-sm text-xs">
                   {order?.deliveryAddress}
                 </div>
               </div>
             </div>
-            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+            <div className="flex md:gap-6  w-[280px]  md:justify-start ">
               <div className="w-[100px] md:w-auto ">
                 <div>
                   <Image src={quantity} alt={""} />
@@ -119,35 +118,41 @@ const OneOrder = (props: any) => {
               </div>
 
               <div>
-                <div className="text-offWhite text-sm">Quantity Purchased</div>
-                <div className="text-base text-white font-semibold mt-[10px]">
+                <div className="text-offWhite md:text-sm text-xs">
+                  Quantity Purchased
+                </div>
+                <div className="text-sm md:text-base text-white font-semibold mt-[10px]">
                   {order?.quantityPurchased}
                 </div>
               </div>
             </div>
-            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+            <div className="flex  md:gap-6 w-[280px]  md:justify-start ">
               <div className="w-[100px] md:w-auto ">
                 <div>
                   <Image src={cost} alt={""} />
                 </div>
               </div>
               <div>
-                <div className="text-offWhite text-sm">Order Cost</div>
-                <div className="text-base text-white font-semibold mt-[10px]">
+                <div className="text-offWhite md:text-sm text-xs">
+                  Order Cost
+                </div>
+                <div className="text-sm md:text-base text-white font-semibold mt-[10px]">
                   {" "}
                   ₦{order?.price}
                 </div>
               </div>
             </div>
-            <div className="flex gap-6 w-[280px] justify-between md:justify-start">
+            <div className="flex  md:gap-6 w-[280px]  md:justify-start">
               <div className="w-[100px] md:w-auto ">
                 <div>
                   <Image src={date} alt={""} />
                 </div>
               </div>
               <div>
-                <div className="text-offWhite text-sm">Date and Time</div>
-                <div className="text-base text-white font-semibold mt-[10px]">
+                <div className="text-offWhite md:text-sm text-xs">
+                  Date and Time
+                </div>
+                <div className="text-sm md:text-base text-white font-semibold mt-[10px]">
                   {" "}
                   {order?.expectedDeliveryDate}
                 </div>

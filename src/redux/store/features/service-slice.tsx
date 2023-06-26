@@ -43,7 +43,7 @@ export const updateservice = createAsyncThunk(
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
-        `${serviceApi}/update-service/${data.serviceID}`,
+        `${serviceApi}/update-service/${data.id}`,
         data.payload,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -169,7 +169,7 @@ const serviceSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An Error occured please try again";
         }
       }
     );
@@ -187,7 +187,7 @@ const serviceSlice = createSlice({
     builder.addCase(
       fetchService.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.services = action.payload.data;
+        state.services = [...action.payload.data];
       }
     );
     builder.addCase(
@@ -199,7 +199,7 @@ const serviceSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An error occured please try again";
         }
       }
     );
@@ -223,7 +223,7 @@ const serviceSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An error occured please try again";
         }
       }
     );
@@ -244,7 +244,7 @@ const serviceSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An error occured please try again";
         }
       }
     );
@@ -265,7 +265,7 @@ const serviceSlice = createSlice({
         } else if (action.payload.request) {
           state.error = "An Error occured on our end";
         } else {
-          state.error = "An Error";
+          state.error = "An error occured please try again";
         }
       }
     );

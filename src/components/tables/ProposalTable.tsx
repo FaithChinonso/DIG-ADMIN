@@ -3,6 +3,7 @@ import React from "react";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { numberWithCommas } from "src/utils/formatNumber";
 import DataFilterTable from "../DataTable";
+import StatusCell from "../StatusCell";
 
 const ProposalTable = ({ data }: any) => {
   const formatData = data?.slice(0).map((client: any, index: number) => {
@@ -64,11 +65,13 @@ const ProposalTable = ({ data }: any) => {
     },
     {
       name: "Status",
-      selector: (row: { status: any }) => `${row.status}`,
+      selector: (row: { status: any }) => {
+        return <StatusCell status={row.status} />;
+      },
     },
   ];
   return (
-    <div>
+    <div className="mt-10">
       <DataFilterTable columns={columnDasboard} data={formatData} />
     </div>
   );

@@ -5,7 +5,7 @@ const MultipleInput = ({
   removeFormFields,
 }: any) => {
   return (
-    <div className="w-full relative" key={index}>
+    <div className="w-full relative border-bottom border-lightGray" key={index}>
       <div className="mt-[10px]">
         <label className=" text-[10px] text-[#1D2939] bg-white">Title</label>
         <input

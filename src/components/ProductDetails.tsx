@@ -183,7 +183,7 @@ const ProductDetails = ({ data }: any) => {
             <div className="text-darkPurple text-lg text-center">
               Product Specification
             </div>
-            <div className="flex justify-between mt-3 w-full">
+            <div className="flex justify-around mt-3 w-full">
               {data?.specifications?.map((item: any, index: any) => (
                 <div className="mt-5" key={index}>
                   <div className="text-xs text-text mb-5">{item?.title}</div>
@@ -198,7 +198,7 @@ const ProductDetails = ({ data }: any) => {
         ) : (
           <div className=" mt-3 w-full">
             <div className="text-darkPurple text-lg text-center">Features</div>
-            <div className="flex justify-between mt-3 w-full gap-2">
+            <div className="flex justify-around mt-3 w-full gap-2">
               {data?.features?.map((item: any) => (
                 <div
                   className="text-xs text-text mb-5 mt-3 capitalize"

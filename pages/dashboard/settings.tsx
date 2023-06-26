@@ -1,64 +1,20 @@
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import { MySettingsValue } from "../../src/utils/boxValues";
 import { useState } from "react";
 import ParentContainer from "src/components/ParentContainer";
+import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 
 const Setting = () => {
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }
-
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const [selected, setSelected] = useState(1);
-  const useStyles = makeStyles({
-    flexContainer: {
-      alignItems: "center",
-      justifyContent: "space-between !important",
-    },
-    check: {
-      padding: "0px",
-    },
-  });
-
   const [value, setValue] = useState(0);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   return (
     <ParentContainer>
-      <div >
+      <div>
         {" "}
         <Box
           sx={{ width: "100%" }}

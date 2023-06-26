@@ -80,7 +80,7 @@ const AddProductImages = ({ id }: any) => {
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: res.data.message,
-          backgroundColor: "rgba(24, 160, 251, 1)",
+          backgroundColor: "#49D3BA",
         })
       );
     } catch (err: any) {
