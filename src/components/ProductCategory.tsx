@@ -16,6 +16,7 @@ import ActionMenuItem from "./ActionMenu/ActionMenuItem";
 import DataFilterTable from "./DataTable";
 import AddProductCategory from "./Forms/AddProductCategory";
 import ModalAction from "./ModalContent/ModalAction";
+import StatusCell from "./StatusCell";
 
 const ProductCategory = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +93,7 @@ const ProductCategory = () => {
         name: client?.name,
       };
     });
+
   const columnProductCategory = [
     {
       name: "#",
@@ -103,7 +105,9 @@ const ProductCategory = () => {
     },
     {
       name: "Status",
-      selector: "isActive",
+      selector: (row: { isActive: string }) => {
+        return <StatusCell status={row.isActive} />;
+      },
     },
 
     {

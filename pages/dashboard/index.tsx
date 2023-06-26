@@ -20,7 +20,8 @@ const Home = () => {
   const { users } = useAppSelector(state => state.user);
   const { transactions } = useAppSelector(state => state.transaction);
   const { orders } = useAppSelector(state => state.order);
-  const last10Users = users.slice(-10);
+  const last10Users = users?.reverse().slice(0, 10);
+  console.log(users.slice(10), "lll");
 
   useEffect(() => {
     dispatch(getMyuser(token));

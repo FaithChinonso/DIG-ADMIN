@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { GetStaticProps } from "next/types";
 import { getFirstWord, includesSubstring } from "src/utils/helperFunctions";
+import { Avatar } from "@mui/material";
 
 const SideNav = (props: any) => {
   const router = useRouter();
@@ -111,9 +112,9 @@ const SideNav = (props: any) => {
         </button>
       </div>
       <div className="hidden md:block relative w-full px-6 mt-8">
-        <div className="bg-faintWhite flex items-center gap-3 rounded p-3">
-          <div className="w-8 h-8 rounded-[50%]">
-            <Image src={profile} alt={""} />
+        <div className="bg-faintWhite flex items-center justify-around gap-3 rounded p-3">
+          <div className="w-8 h-8">
+            <Avatar src={profile} alt={adminDetails?.fullName} />
           </div>
 
           <div>

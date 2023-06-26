@@ -10,22 +10,35 @@ import {
   createuser,
   fetchMyuser,
   getMerchantCategory,
+  getStates,
   updateuser,
 } from "src/redux/store/features/user-slice";
 import { gender, merchantType, role } from "src/utils/analytics";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { userApi } from "../api";
+import { ThreeDots } from "react-loader-spinner";
 import useHTTPGet from "src/Hooks/use-httpget";
+import { errorFunction } from "src/utils/helperFunctions";
 
 const AddUser = ({ title, id }: any) => {
   const accessToken = sessionStorage.getItem("accessToken");
   const request = useHTTPGet();
   const [selectedDate, setSelectedDate] = useState();
   const dispatch = useAppDispatch();
-  const { success, loading, error, message, states, merchantCategory } =
-    useAppSelector((state: any) => state.user);
+  const {
+    success,
+    loading,
+    loadingCategory,
+    loadingState,
+    error,
+    message,
+    states,
+    merchantCategory,
+  } = useAppSelector((state: any) => state.user);
   const [errorMessage, setError] = useState(false);
+  const [load, setLoad] = useState(false);
+  const [err, setErr] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [localGovernments, setLocalGovernments] = useState<any[]>([]);
   const dateString: any = selectedDate;
@@ -62,6 +75,7 @@ const AddUser = ({ title, id }: any) => {
     e.preventDefault();
 
     if (data.role === "merchant" && data.merchantType === "") {
+      window.scrollTo(0, 0);
       setError(true);
       return;
     }
@@ -69,10 +83,12 @@ const AddUser = ({ title, id }: any) => {
       data.application_name === "cue" &&
       (data.state === "" || data.lga === "" || data.address === "")
     ) {
+      window.scrollTo(0, 0);
       setError(true);
       return;
     }
     if (data.role === "driver" && formattedDate === "") {
+      window.scrollTo(0, 0);
       setError(true);
       return;
     }
@@ -184,12 +200,19 @@ const AddUser = ({ title, id }: any) => {
     }
   };
   const fetchLocalGovernments = async (id: string) => {
-    const response = await fetch(
-      `https://easy.unikmarketing.org/api/lgas/${id}`
-    );
-    const data = await response.json();
-    console.log(data.data);
-    setLocalGovernments(data.data);
+    setLoad(true);
+    try {
+      const response = await fetch(
+        `https://easy.unikmarketing.org/api/lgas/${id}`
+      );
+      const data = await response.json();
+      setLoad(false);
+      setLocalGovernments(data.data);
+    } catch (error) {
+      const errorMessage = errorFunction(error);
+      setErr(errorMessage);
+      setLoad(false);
+    }
   };
   useEffect(() => {
     if (title === "Update User") {
@@ -235,6 +258,7 @@ const AddUser = ({ title, id }: any) => {
       dispatch(uiActions.closeLoader());
     }
     if (error.length > 0) {
+      window.scrollTo(0, 0);
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: error,
@@ -247,6 +271,7 @@ const AddUser = ({ title, id }: any) => {
       }, 10000);
     }
     if (success) {
+      window.scrollTo(0, 0);
       dispatch(uiActions.closedrawer());
       dispatch(
         uiActions.openToastAndSetContent({
@@ -263,6 +288,7 @@ const AddUser = ({ title, id }: any) => {
   }, [loading, error, message, success, dispatch]);
   useEffect(() => {
     dispatch(getMerchantCategory(""));
+    dispatch(getStates({}));
   }, []);
 
   return (
@@ -330,7 +356,7 @@ const AddUser = ({ title, id }: any) => {
           >
             {gender?.map((item: any) => (
               <option
-                value={item.name}
+                value={item.value}
                 key={item.id}
                 className=" text-[10px] text-[#1D2939] bg-white"
               >
@@ -425,12 +451,12 @@ const AddUser = ({ title, id }: any) => {
                 });
               }
             }}
-            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGray w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
             placeholder="role"
           >
             {role?.map((item: any) => (
               <option
-                value={item.name}
+                value={item.value}
                 key={item.id}
                 className=" text-[10px] text-[#1D2939] bg-white"
               >
@@ -446,25 +472,42 @@ const AddUser = ({ title, id }: any) => {
           >
             Category
           </label>
-
-          <select
-            name="category"
-            value={data.category || ""}
-            id="category"
-            onChange={handleChange}
-            className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-            placeholder="category"
-          >
-            {merchantCategory?.map((item: any) => (
+          {loadingCategory ? (
+            <div className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] text-center w-full h-full  px-2 py-3 text-grey">
+              <ThreeDots
+                width={20}
+                height={20}
+                color="#122644"
+                wrapperStyle={{ margin: "0 auto" }}
+              />
+            </div>
+          ) : (
+            <select
+              name="category"
+              value={data.category || ""}
+              id="category"
+              onChange={handleChange}
+              className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+              placeholder="category"
+            >
               <option
-                value={item.categoryID}
-                key={item.categoryID}
+                value=""
+                key="select"
                 className=" text-[10px] text-[#1D2939] bg-white"
               >
-                {item.categoryName}
+                Select Category
               </option>
-            ))}
-          </select>
+              {merchantCategory?.map((item: any) => (
+                <option
+                  value={item.categoryID}
+                  key={item.categoryID}
+                  className=" text-[10px] text-[#1D2939] bg-white"
+                >
+                  {item.categoryName}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         {data.role === "merchant" ? (
           <div className=" mt-[30px]">
@@ -485,7 +528,7 @@ const AddUser = ({ title, id }: any) => {
             >
               {merchantType?.map((item: any) => (
                 <option
-                  value={item.name}
+                  value={item.value}
                   key={item.id}
                   className=" text-[10px] text-[#1D2939] bg-white"
                 >
@@ -504,28 +547,45 @@ const AddUser = ({ title, id }: any) => {
               >
                 State
               </label>
-
-              <select
-                name="state"
-                value={data.state || ""}
-                id="state"
-                onChange={e => {
-                  handleChange(e);
-                  fetchLocalGovernments(e?.target?.value);
-                }}
-                className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-                placeholder="State"
-              >
-                {states?.map((item: any) => (
+              {loadingState ? (
+                <div className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] text-center w-full h-full  px-2 py-3 text-grey">
+                  <ThreeDots
+                    width={20}
+                    height={20}
+                    color="#122644"
+                    wrapperStyle={{ margin: "0 auto" }}
+                  />
+                </div>
+              ) : (
+                <select
+                  name="state"
+                  value={data.state || ""}
+                  id="state"
+                  onChange={e => {
+                    handleChange(e);
+                    fetchLocalGovernments(e?.target?.value);
+                  }}
+                  className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+                  placeholder="State"
+                >
                   <option
-                    value={item.stateID}
-                    key={item.stateID}
+                    value=""
+                    key="select"
                     className=" text-[10px] text-[#1D2939] bg-white"
                   >
-                    {item.stateName}
+                    Select State
                   </option>
-                ))}
-              </select>
+                  {states?.map((item: any) => (
+                    <option
+                      value={item.stateID}
+                      key={item.stateID}
+                      className=" text-[10px] text-[#1D2939] bg-white"
+                    >
+                      {item.stateName}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             <div className=" mt-[30px]">
               <label
@@ -534,27 +594,44 @@ const AddUser = ({ title, id }: any) => {
               >
                 LGA
               </label>
-
-              <select
-                name="lga"
-                value={data.lga || ""}
-                id="lga"
-                onChange={e => {
-                  handleChange(e);
-                }}
-                className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
-                placeholder="LGA"
-              >
-                {localGovernments?.map((item: any) => (
+              {load ? (
+                <div className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] text-center w-full h-full  px-2 py-3 text-grey">
+                  <ThreeDots
+                    width={20}
+                    height={20}
+                    color="#122644"
+                    wrapperStyle={{ margin: "0 auto" }}
+                  />
+                </div>
+              ) : (
+                <select
+                  name="lga"
+                  value={data.lga || ""}
+                  id="lga"
+                  onChange={e => {
+                    handleChange(e);
+                  }}
+                  className="border-[0.5px] border-lightGrey relative rounded-[10px] bg-white text-[12px] placeholder:text-[10px] placeholder:text-softGrey w-full h-full focus:outline-none focus:bg-white target:outline-none target:bg-white active:bg-white px-2 py-3 text-grey"
+                  placeholder="LGA"
+                >
                   <option
-                    value={item.lgaID}
-                    key={item.lgaID}
+                    value=""
+                    key="select"
                     className=" text-[10px] text-[#1D2939] bg-white"
                   >
-                    {item.lgaName}
+                    Select LGA
                   </option>
-                ))}
-              </select>
+                  {localGovernments?.map((item: any) => (
+                    <option
+                      value={item.lgaID}
+                      key={item.lgaID}
+                      className=" text-[10px] text-[#1D2939] bg-white"
+                    >
+                      {item.lgaName}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             <div className=" mt-[30px]">
               <label
@@ -600,7 +677,7 @@ const AddUser = ({ title, id }: any) => {
           className="text-sm text-white bg-lightPurple py-3 px-4 rounded-md flex items-center justify-center w-[200px] mx-auto mt-2"
           type="submit"
         >
-          {title}
+          {loading ? "Submitting" : title}
         </button>
       </form>
     </DrawerWrapper>

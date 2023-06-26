@@ -24,6 +24,7 @@ import DriverTrip from "src/components/tables/DriverTrip";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase";
 import Map from "src/components/Map";
+import { Avatar } from "@mui/material";
 
 const OneDriver = ({ driverId }: any) => {
   const request = useHTTPGet();
@@ -136,15 +137,8 @@ const OneDriver = ({ driverId }: any) => {
             <div className="flex justify-between">
               <div className="flex gap-[17px]">
                 <div>
-                  {driver?.image ? (
-                    <Image
-                      src={driver?.image}
-                      width={60}
-                      height={60}
-                      alt={""}
-                    />
-                  ) : (
-                    <Image src={driverPic} alt={""} />
+                  {driver?.image && (
+                    <Avatar src={driver?.image} alt={driver?.fullName} />
                   )}
                 </div>
                 <div className="flex flex-col">

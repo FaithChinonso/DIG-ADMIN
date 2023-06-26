@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { withdrawalApi } from "src/components/api";
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 
 interface withdrawalData {
   name: string;
@@ -22,7 +25,6 @@ export const createwithdrawal = createAsyncThunk(
   "withdrawal/createwithdrawal",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${withdrawalApi}/create-withdrawal`,
         data,
@@ -41,7 +43,6 @@ export const updatewithdrawal = createAsyncThunk(
   "withdrawal/updatewithdrawal",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${withdrawalApi}/update-withdrawal/${data.withdrawalID}`,
         data,
@@ -58,9 +59,8 @@ export const updatewithdrawal = createAsyncThunk(
 
 export const getMywithdrawal = createAsyncThunk(
   "withdrawal/getMywithdrawal",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(`${withdrawalApi}/all-withdrawals`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -72,9 +72,8 @@ export const getMywithdrawal = createAsyncThunk(
 );
 export const fetchMywithdrawal = createAsyncThunk(
   "withdrawal/fetchMywithdrawal",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(`${withdrawalApi}/all-withdrawals`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -89,9 +88,9 @@ export const editwithdrawal = createAsyncThunk(
   "withdrawal/editwithdrawal",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const response = await axios.get(
+      const response = await axios.post(
         `${withdrawalApi}/${data.endpoint}/${data.withdrawalID}`,
+        data.data,
 
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -108,7 +107,6 @@ export const deletewithdrawal = createAsyncThunk(
   "withdrawal/deletewithdrawal",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `${withdrawalApi}/delete-withdrawal/${id}`,
         {
@@ -167,13 +165,7 @@ const withdrawalSlice = createSlice({
       createwithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
     builder.addCase(getMywithdrawal.pending, state => {
@@ -196,13 +188,7 @@ const withdrawalSlice = createSlice({
       getMywithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
     builder.addCase(updatewithdrawal.pending, state => {
@@ -220,13 +206,13 @@ const withdrawalSlice = createSlice({
       updatewithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
+      }
+    );
+    builder.addCase(
+      deletewithdrawal.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loading = true;
       }
     );
     builder.addCase(
@@ -241,13 +227,13 @@ const withdrawalSlice = createSlice({
       deletewithdrawal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
+      }
+    );
+    builder.addCase(
+      editwithdrawal.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loading = true;
       }
     );
     builder.addCase(

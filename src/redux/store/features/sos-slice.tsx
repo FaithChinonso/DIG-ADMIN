@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseUrl } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 export const getAllSOS = createAsyncThunk(
   "sos/getAllSOS",
-  async (token: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${baseUrl}/sos/all-sos`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
     } catch (error: any) {
@@ -17,10 +19,10 @@ export const getAllSOS = createAsyncThunk(
 );
 export const getAllSOSReports = createAsyncThunk(
   "sos/getAllSOSReports",
-  async (token: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${baseUrl}/sos/all-sos-reports`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
     } catch (error: any) {
@@ -73,13 +75,8 @@ const sosSlice = createSlice({
     );
     builder.addCase(getAllSOS.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error occured please try again";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     }),
       builder.addCase(getAllSOSReports.pending, state => {
         state.loading = true;
@@ -96,13 +93,8 @@ const sosSlice = createSlice({
       getAllSOSReports.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { serviceApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface serviceData {
   name: string;
   price: string;
@@ -22,7 +24,6 @@ export const createservice = createAsyncThunk(
   "service/createservice",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceApi}/create-service/${data.id}`,
         data.payload,
@@ -41,7 +42,6 @@ export const updateservice = createAsyncThunk(
   "service/updateservice",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceApi}/update-service/${data.id}`,
         data.payload,
@@ -58,7 +58,7 @@ export const updateservice = createAsyncThunk(
 
 export const getMyservice = createAsyncThunk(
   "service/getMyservice",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${serviceApi}/all-services`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -71,7 +71,7 @@ export const getMyservice = createAsyncThunk(
 );
 export const fetchService = createAsyncThunk(
   "service/fetchService",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${serviceApi}/all-services`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -86,7 +86,6 @@ export const editservice = createAsyncThunk(
   "service/editservice",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${serviceApi}/${data.endpoint}/${data.serviceID}`,
 
@@ -105,7 +104,6 @@ export const deleteservice = createAsyncThunk(
   "service/deleteservice",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `${serviceApi}/delete-service/${id}`,
         {
@@ -164,13 +162,8 @@ const serviceSlice = createSlice({
       createservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyservice.pending, state => {
@@ -194,13 +187,8 @@ const serviceSlice = createSlice({
       getMyservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(updateservice.pending, state => {
@@ -218,13 +206,8 @@ const serviceSlice = createSlice({
       updateservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -239,13 +222,8 @@ const serviceSlice = createSlice({
       deleteservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -260,13 +238,8 @@ const serviceSlice = createSlice({
       editservice.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

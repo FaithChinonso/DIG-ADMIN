@@ -18,12 +18,22 @@ import ParentContainer from "src/components/ParentContainer";
 import useHTTPGet from "src/Hooks/use-httpget";
 import JobsDisplay from "../../../src/components/tables/JobsDisplay";
 import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { jobApi, orderApi, userApi } from "src/components/api";
+import {
+  baseUrl,
+  jobApi,
+  orderApi,
+  productApi,
+  serviceApi,
+  userApi,
+} from "src/components/api";
 import { GetStaticProps } from "next/types";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import { merchantType } from "src/@types/data";
+import { Avatar } from "@mui/material";
+import ProductTable from "src/components/tables/ProductTable";
+import ServiceTable from "src/components/tables/ServiceTable";
 
 const OneMerchant = (props: any) => {
   const request = useHTTPGet();
@@ -34,6 +44,8 @@ const OneMerchant = (props: any) => {
   const [user, setUser] = useState<merchantType>();
   const [orders, setOrders] = useState<any>([]);
   const [job, setJob] = useState<any>([]);
+  const [products, setProducts] = useState<any>([]);
+  const [services, setServices] = useState<any>([]);
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
 
@@ -54,12 +66,31 @@ const OneMerchant = (props: any) => {
       const accessToken = sessionStorage.getItem("accessToken");
       const url = `${jobApi}/jobs-by-user/${id}`;
       const dataFunction = (res: any) => {
+        console.log(res.data);
         setJob(res.data.data);
       };
       request({ url, accessToken }, dataFunction);
     },
     [request]
   );
+  const fetchProducts = useCallback(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${productApi}/products-by-merchant/${user?.profile.merchantID}`;
+    const dataFunction = (res: any) => {
+      console.log(res.data);
+      setProducts(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  }, [request]);
+  const fetchServices = useCallback(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const url = `${serviceApi}/services-by-merchant/${user?.profile.merchantID}`;
+    const dataFunction = (res: any) => {
+      console.log(res.data);
+      setServices(res.data.data);
+    };
+    request({ url, accessToken }, dataFunction);
+  }, [request]);
   const fetchOrdersByAMerchant = useCallback(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const url = `${orderApi}/orders-for-merchant/${user?.profile.merchantID}`;
@@ -75,7 +106,8 @@ const OneMerchant = (props: any) => {
   useEffect(() => {
     fetchAMerchant(props.merchantId);
     fetchAllJobs(props.merchantId);
-    // fetchOrdersByAMerchant();
+    fetchProducts();
+    fetchServices();
   }, [props.merchantId]);
 
   useEffect(() => {
@@ -126,7 +158,7 @@ const OneMerchant = (props: any) => {
           <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
-                <Image src={user?.image} alt={""} />
+                <Avatar src={user?.image} alt={user?.fullName} />
               </div>
             )}
             <div className="flex flex-col gap-[14px]">
@@ -204,7 +236,7 @@ const OneMerchant = (props: any) => {
             </div>
 
             {user?.profile?.bio ? (
-              <div className="text-white flex flex-col ">
+              <div className="text-white flex flex-col max-w-[300px] text-center">
                 <h3 className="text-[13px] mt-[28px] text-text">About</h3>
                 <p className="text-[10px]">{user?.profile?.bio}</p>
               </div>
@@ -294,11 +326,15 @@ const OneMerchant = (props: any) => {
             <TabPanel value={value} index={3}>
               <TransactionHistory id={user?.userID} />
             </TabPanel>
+
             <TabPanel value={value} index={4}>
-              <div></div>
+              <JobsDisplay jobs={job} type="profile" />
             </TabPanel>
             <TabPanel value={value} index={5}>
-              <JobsDisplay jobs={job} type="profile" />
+              <ProductTable data={products} />
+            </TabPanel>
+            <TabPanel value={value} index={6}>
+              <ServiceTable data={services} />
             </TabPanel>
           </Box>
         </div>

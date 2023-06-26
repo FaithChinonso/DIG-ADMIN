@@ -19,6 +19,7 @@ import {
   fetchServiceCategories,
   getMyserviceCategories,
 } from "src/redux/store/features/service-category-slice";
+import { getStates } from "src/redux/store/features/user-slice";
 
 const AddService = ({ id, title, merchantID }: any) => {
   const dispatch = useAppDispatch();
@@ -165,6 +166,7 @@ const AddService = ({ id, title, merchantID }: any) => {
   }, [loading, error, message, success, dispatch]);
   useEffect(() => {
     dispatch(getMyserviceCategories(accessToken));
+    dispatch(getStates({}));
   }, [dispatch, getMyserviceCategories, accessToken]);
 
   return (

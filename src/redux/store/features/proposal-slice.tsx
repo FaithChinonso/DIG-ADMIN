@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { proposalApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface proposalData {
   name: string;
   price: string;
@@ -20,7 +22,7 @@ interface proposalData {
 
 export const getMyproposal = createAsyncThunk(
   "order/getMyproposal",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${proposalApi}/all-proposals`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -77,13 +79,8 @@ const proposalSlice = createSlice({
       getMyproposal.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

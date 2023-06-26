@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 export const getAdminlogs = createAsyncThunk(
   "log/getAdminlogs",
   async ({ token }: any, thunkAPI: any) => {
@@ -21,10 +23,10 @@ export const getAdminlogs = createAsyncThunk(
 );
 export const getAllLogs = createAsyncThunk(
   "log/getAllLogs",
-  async ({ token }: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${logApi}/all-logs`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       console.log(response.data);
       return response.data;
@@ -80,13 +82,8 @@ const logSlice = createSlice({
       getAdminlogs.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getAllLogs.pending, state => {
@@ -103,13 +100,8 @@ const logSlice = createSlice({
       getAllLogs.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

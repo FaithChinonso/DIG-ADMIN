@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { orderApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface orderData {
   name: string;
   price: string;
@@ -22,7 +24,6 @@ export const createOrder = createAsyncThunk(
   "order/createorder",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(`${orderApi}/create-order`, data, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -37,7 +38,6 @@ export const editorder = createAsyncThunk(
   "order/editorder",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${orderApi}/${data.endpoint}/${data.orderID}`,
         {},
@@ -55,7 +55,7 @@ export const editorder = createAsyncThunk(
 
 export const getMyOrders = createAsyncThunk(
   "order/getMyOrders",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${orderApi}/all-orders`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -68,7 +68,7 @@ export const getMyOrders = createAsyncThunk(
 );
 export const fetchOrder = createAsyncThunk(
   "order/fetchOrder",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${orderApi}/all-orders`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -83,7 +83,6 @@ export const getMyOrdersbyMerchant = createAsyncThunk(
   "order/getMyOrdersbyMerchant",
   async (orderID: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${orderApi}/orders-for-merchant/${orderID}`,
         {
@@ -100,7 +99,6 @@ export const deleteOrder = createAsyncThunk(
   "order/deleteOrder",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(`${orderApi}/delete-order/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -158,13 +156,8 @@ const orderSlice = createSlice({
       createOrder.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyOrders.pending, state => {
@@ -177,23 +170,25 @@ const orderSlice = createSlice({
         state.orders = action.payload.data;
       }
     );
+    builder.addCase(fetchOrder.pending, state => {
+      state.loading = true;
+    });
     builder.addCase(
       fetchOrder.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.orders = action.payload.data;
+        state.loading = false;
       }
     );
+    builder.addCase(fetchOrder.rejected, state => {
+      state.loading = false;
+    });
     builder.addCase(
       getMyOrders.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyOrdersbyMerchant.pending, state => {
@@ -210,13 +205,14 @@ const orderSlice = createSlice({
       getMyOrdersbyMerchant.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
+      }
+    );
+    builder.addCase(
+      deleteOrder.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loading = true;
       }
     );
 
@@ -232,19 +228,16 @@ const orderSlice = createSlice({
       deleteOrder.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
+    builder.addCase(editorder.pending, (state, action: PayloadAction<any>) => {
+      state.loading = true;
+    });
     builder.addCase(
       editorder.fulfilled,
       (state, action: PayloadAction<any>) => {
-        const accessToken = sessionStorage.getItem("accessToken");
         state.loading = false;
         state.success = true;
         state.message = action.payload.message;
@@ -252,13 +245,8 @@ const orderSlice = createSlice({
     );
     builder.addCase(editorder.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error occured please try again";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
   },
 });

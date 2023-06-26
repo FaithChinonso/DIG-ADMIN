@@ -124,9 +124,9 @@ const GeneralInfo = ({ data }: any) => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Plate Number On Car Photo</div>
-          {data?.profile?.vehicles[0]?.plate_number_on_car_photo ? (
+          {data?.profile?.vehicles?.[0]?.plate_number_on_car_photo ? (
             <Image
-              src={data?.profile?.vehicles[0]?.plate_number_on_car_photo}
+              src={data?.profile?.vehicles?.[0]?.plate_number_on_car_photo}
               alt=""
               width={100}
               height={100}
@@ -137,9 +137,9 @@ const GeneralInfo = ({ data }: any) => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Drivers Exterior Photo</div>
-          {data?.profile?.vehicles[0].car_exterior_photo ? (
+          {data?.profile?.vehicles?.[0]?.car_exterior_photo ? (
             <Image
-              src={data?.profile?.vehicles[0].car_exterior_photo}
+              src={data?.profile?.vehicles?.[0]?.car_exterior_photo}
               alt=""
               width={100}
               height={100}
@@ -150,9 +150,9 @@ const GeneralInfo = ({ data }: any) => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Drivers Interior Photo</div>
-          {data?.profile?.vehicles[0].car_interior_photo ? (
+          {data?.profile?.vehicles?.[0]?.car_interior_photo ? (
             <Image
-              src={data?.profile?.vehicles[0].car_interior_photo}
+              src={data?.profile?.vehicles?.[0]?.car_interior_photo}
               alt=""
               width={100}
               height={100}

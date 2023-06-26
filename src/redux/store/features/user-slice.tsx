@@ -8,7 +8,9 @@ import {
   riderType,
 } from "src/@types/data";
 import { baseUrl, userApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface userData {
   name: string;
   price: string;
@@ -28,8 +30,8 @@ interface userData {
 export const createuser = createAsyncThunk(
   "user/createuser",
   async (data: any, thunkAPI: any) => {
+    const accessToken = sessionStorage.getItem("accessToken") || "";
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(`${userApi}/create-user`, data, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -42,9 +44,9 @@ export const createuser = createAsyncThunk(
 
 export const getStates = createAsyncThunk(
   "user/getStates",
-  async (thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `https://easy.unikmarketing.org/api/states/160`,
         {
@@ -60,6 +62,7 @@ export const getStates = createAsyncThunk(
 export const getMerchantCategory = createAsyncThunk(
   "user/getMerchantCategory",
   async (thunkAPI: any) => {
+    const accessToken = sessionStorage.getItem("accessToken");
     try {
       const response = await axios.get(
         `https://easy.unikmarketing.org/api/flip/merchant/merchant-categories`
@@ -75,7 +78,6 @@ export const updateuser = createAsyncThunk(
   "user/updateuser",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${userApi}/update-user/${data.id}`,
         data.payload,
@@ -92,7 +94,7 @@ export const updateuser = createAsyncThunk(
 
 export const getMyuser = createAsyncThunk(
   "user/getMyuser",
-  async (accessToken: any, thunkAPI: any) => {
+  async (adat: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/all-users`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -105,7 +107,7 @@ export const getMyuser = createAsyncThunk(
 );
 export const fetchMyuser = createAsyncThunk(
   "user/fetchMyuser",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/all-users`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -118,7 +120,7 @@ export const fetchMyuser = createAsyncThunk(
 );
 export const getMymerchant = createAsyncThunk(
   "user/getMymerchant",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/merchant`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -131,7 +133,7 @@ export const getMymerchant = createAsyncThunk(
 );
 export const fetchMymerchant = createAsyncThunk(
   "user/fetchMymerchant",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/merchant`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -144,7 +146,7 @@ export const fetchMymerchant = createAsyncThunk(
 );
 export const getMyConsumers = createAsyncThunk(
   "user/getMyConsumers",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/consumer`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -157,7 +159,7 @@ export const getMyConsumers = createAsyncThunk(
 );
 export const fetchMyConsumers = createAsyncThunk(
   "user/fetchMyConsumers",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/consumer`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -170,7 +172,7 @@ export const fetchMyConsumers = createAsyncThunk(
 );
 export const getMyRiders = createAsyncThunk(
   "user/getMyRiders",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/rider`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -183,7 +185,7 @@ export const getMyRiders = createAsyncThunk(
 );
 export const fetchMyRiders = createAsyncThunk(
   "user/fetchMyRiders",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/rider`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -196,7 +198,7 @@ export const fetchMyRiders = createAsyncThunk(
 );
 export const getMyDrivers = createAsyncThunk(
   "user/getMyDrivers",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/users-by-role/driver`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -209,9 +211,8 @@ export const getMyDrivers = createAsyncThunk(
 );
 export const fetchMyDriver = createAsyncThunk(
   "user/fetchMyDriver",
-  async (thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
-      let accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(`${userApi}/users-by-role/driver`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -225,7 +226,6 @@ export const edituser = createAsyncThunk(
   "user/edituser",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${userApi}/${data.endpoint}/${data.userID}`,
 
@@ -244,7 +244,6 @@ export const deleteuser = createAsyncThunk(
   "user/deleteuser",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(`${userApi}/delete-user/${data.id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -269,6 +268,8 @@ interface userState {
   riders: riderType[];
   success: boolean;
   loading: boolean;
+  loadingState: boolean;
+  loadingCategory: boolean;
   error: string;
   message: string;
 }
@@ -283,7 +284,9 @@ const initialState: userState = {
   riders: [],
 
   success: false,
+  loadingState: false,
   loading: false,
+  loadingCategory: false,
   error: "",
   message: "",
 };
@@ -318,13 +321,7 @@ const userSlice = createSlice({
       createuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
 
@@ -346,30 +343,44 @@ const userSlice = createSlice({
     );
     builder.addCase(getMyuser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action?.payload?.response) {
-        state.error = action?.payload?.response?.data?.message;
-      } else if (action?.payload?.request) {
-        state.error = action?.payload?.message;
-      } else {
-        state.error = "An Error occured please try again";
-      }
+      state.error = errorFunction(action.payload);
     });
 
     builder.addCase(getMymerchant.pending, state => {
       state.loading = true;
     });
+    builder.addCase(getStates.pending, (state, action: PayloadAction<any>) => {
+      state.loadingState = true;
+    });
     builder.addCase(
       getStates.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.loadingState = false;
         state.states = action.payload.data;
       }
     );
+    builder.addCase(getStates.rejected, (state, action: PayloadAction<any>) => {
+      state.loadingState = false;
+    });
+    builder.addCase(
+      getMerchantCategory.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loadingCategory = true;
+      }
+    );
+
     builder.addCase(
       getMerchantCategory.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.loadingCategory = false;
         state.merchantCategory = action.payload.data;
+      }
+    );
+    builder.addCase(
+      getMerchantCategory.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loadingCategory = false;
+        state.error = errorFunction(action.payload);
       }
     );
     builder.addCase(
@@ -389,13 +400,7 @@ const userSlice = createSlice({
       getMymerchant.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
 
@@ -419,13 +424,7 @@ const userSlice = createSlice({
       getMyDrivers.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
 
@@ -449,13 +448,7 @@ const userSlice = createSlice({
       getMyConsumers.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
 
@@ -479,13 +472,7 @@ const userSlice = createSlice({
       getMyRiders.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
 
@@ -504,13 +491,7 @@ const userSlice = createSlice({
       updateuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
     builder.addCase(
@@ -525,13 +506,7 @@ const userSlice = createSlice({
       deleteuser.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = action.payload.response.data.message;
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        state.error = errorFunction(action.payload);
       }
     );
     builder.addCase(edituser.fulfilled, (state, action: PayloadAction<any>) => {

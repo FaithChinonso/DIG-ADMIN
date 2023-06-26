@@ -9,7 +9,7 @@ import WidgetsIcon from "@mui/icons-material/Widgets";
 
 export const innerNav = [
   {
-    id: 32,
+    id: 3332,
     icon: WidgetsIcon,
     value: "dashboard",
     color: "#BBAC69",
@@ -19,45 +19,45 @@ export const innerNav = [
     route: "/dashboard",
     navItems: [
       {
-        id: 16,
+        id: 1356,
         name: "Dashboard",
         value: "dashboard",
         route: "/dashboard/overview",
       },
       {
-        id: 17,
+        id: 2417,
         name: "All Users",
         value: "dashboard",
         route: "/dashboard/users",
       },
       {
-        id: 18,
+        id: 18432,
         name: "Transactions",
         value: "dashboard",
         route: "/dashboard/transactions",
       },
       {
-        id: 19,
+        id: 133459,
         name: "Proposals",
         value: "dashboard",
         route: "/dashboard/proposals",
       },
       {
-        id: 20,
+        id: 203455,
         name: "Withdrawal",
         value: "dashboard",
         route: "/dashboard/withdrawal",
       },
 
       {
-        id: 21,
+        id: 244221,
         name: "Media",
         value: "dashboard",
         route: "/dashboard/media",
       },
 
       {
-        id: 22,
+        id: 22221,
         name: "Audit Trail",
         value: "dashboard",
         route: "/dashboard/audit",
@@ -65,7 +65,7 @@ export const innerNav = [
     ],
   },
   {
-    id: 33,
+    id: 312343,
     icon: WidgetsIcon,
     value: "flip",
     color: "#49D3BA",
@@ -75,38 +75,38 @@ export const innerNav = [
     route: "/flip",
     navItems: [
       {
-        id: 23,
+        id: 234253,
         name: "Merchants",
         value: "flip",
         route: "/flip/merchants",
       },
       {
-        id: 24,
+        id: 2245224,
         name: "Orders",
         value: "flip",
         route: "/flip/orders",
       },
       {
-        id: 25,
+        id: 34325,
         name: "Consumers",
         value: "flip",
         route: "/flip/consumers",
       },
 
       {
-        id: 26,
+        id: 234526,
         name: "Products",
         value: "flip",
         route: "/flip/products",
       },
       {
-        id: 27,
+        id: 346327,
         name: "Services",
         value: "flip",
         route: "/flip/services",
       },
       {
-        id: 28,
+        id: 345128,
         name: "Job Posting",
         value: "flip",
         route: "/flip/jobs",
@@ -114,7 +114,7 @@ export const innerNav = [
     ],
   },
   {
-    id: 34,
+    id: 299324,
     icon: WidgetsIcon,
     value: "cue",
     color: "#0195FF",
@@ -124,26 +124,26 @@ export const innerNav = [
     route: "/cue",
     navItems: [
       {
-        id: 29,
+        id: 2345529,
         name: "Trips",
         value: "cue",
         route: "/cue/trips",
       },
 
       {
-        id: 30,
+        id: 543230,
         name: "Drivers",
         value: "cue",
         route: "/cue/drivers",
       },
       {
-        id: 31,
+        id: 345654331,
         name: "Riders",
         value: "cue",
         route: "/cue/riders",
       },
       {
-        id: 31,
+        id: 345631,
         name: "SOS Alerts",
         value: "cue",
         route: "/cue/SOS",
@@ -220,7 +220,7 @@ export const outerNav = [
     route: "/flip/orders",
   },
   {
-    id: 19,
+    id: 195,
     name: "Consumers",
     value: "flip",
     route: "/flip/consumers",
@@ -432,17 +432,17 @@ export const delivery = [
   { id: 2, name: "No" },
 ];
 export const role = [
-  { id: 1, name: "" },
-  { id: 2, name: "consumer" },
-  { id: 3, name: "merchant" },
-  { id: 4, name: "rider" },
-  { id: 5, name: "driver" },
+  { id: 1, name: "Select Role", value: '' },
+  { id: 2, name: "Consumer", value: "consumer" },
+  { id: 3, name: "Merchant", value: "merchant" },
+  { id: 4, name: "Rider", value: "rider" },
+  { id: 5, name: "Driver", value: "driver" },
 ];
 export const productLevel = [
-  { id: 1, name: "" },
-  { id: 2, name: "Beginner" },
-  { id: 3, name: "Intermediate" },
-  { id: 4, name: "expert" },
+  { id: 1, name: "Select Product Level", value: '' },
+  { id: 2, name: "Beginner", value: 'Beginner' },
+  { id: 3, name: "Intermediate", value: 'Intermediate' },
+  { id: 4, name: "Expert", value: 'expert' },
 ];
 export const bool = [
   { id: 0, name: "Yes" },
@@ -453,24 +453,24 @@ export const negotiable = [
   { id: 0, name: "No" },
 ];
 export const gender = [
-  { id: 1, name: "" },
-  { id: 2, name: "Female" },
-  { id: 3, name: "Male" },
+  { id: 1, name: "Select Gender", value: '' },
+  { id: 2, name: "Female", value: "Female" },
+  { id: 3, name: "Male", value: "Male" },
 ];
 
 export const category = [
-  { id: 1, name: "" },
-  { id: 2, name: "electronics" },
-  { id: 3, name: "Car Dealership" },
-  { id: 4, name: "Beauty Products" },
+  { id: 1, name: "Select Category", value: '' },
+  { id: 2, name: "Electronics", value: 'electronics' },
+  { id: 3, name: "Car Dealership", value: "Car Dealership" },
+  { id: 4, name: "Beauty Products", value: "Beauty Products" },
 ];
 export const merchantType = [
-  { id: 1, name: "" },
-  { id: 2, name: "business" },
-  { id: 3, name: "personal" },
+  { id: 1, name: "Select Merchant Type", value: '' },
+  { id: 2, name: "Business", value: "business" },
+  { id: 3, name: "Personal", value: "personal" },
 ];
 export const applicationType = [
-  { id: 1, name: "" },
-  { id: 2, name: "flip" },
-  { id: 3, name: "cue" },
+  { id: 1, name: "Select Application Type", value: '' },
+  { id: 2, name: "Flip", value: 'flip' },
+  { id: 3, name: "Cue", vaalue: 'cue' },
 ];

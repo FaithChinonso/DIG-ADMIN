@@ -7,7 +7,9 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jobApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface jobData {
   name: string;
   price: string;
@@ -28,7 +30,7 @@ export const createjob = createAsyncThunk(
   "job/createjob",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
+      
       const response = await axios.post(
         `${jobApi}/create-job/${data.userID}`,
         data.payload,
@@ -48,7 +50,7 @@ export const updatejob = createAsyncThunk(
   "job/updatejob",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
+      
       const response = await axios.post(
         `${jobApi}/update-job/${data.id}`,
         data.payload,
@@ -66,7 +68,7 @@ export const editjob = createAsyncThunk(
   "job/editjob",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
+      
       const response = await axios.post(
         `${jobApi}/${data.endpoint}/${data.jobID}`,
         {},
@@ -87,7 +89,7 @@ export const getMyjobs = createAsyncThunk(
 
   async (accessToken: any, thunkAPI: any) => {
     try {
-      // const accessToken = sessionStorage.getItem("accessToken");
+      // 
       const response = await axios.get(`${jobApi}/all-jobs`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -127,7 +129,7 @@ export const deletejob = createAsyncThunk(
   "job/deletejob",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
+      
       const response = await axios.delete(`${jobApi}/delete-job-post/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -182,13 +184,8 @@ const jobSlice = createSlice({
     builder.addCase(createjob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
 
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
     builder.addCase(getMyjobs.pending, state => {
       state.loading = true;
@@ -199,13 +196,8 @@ const jobSlice = createSlice({
     });
     builder.addCase(getMyjobs.rejected, (state, action: AnyAction) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error occured please try again";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
     builder.addCase(fetchJob.fulfilled, (state, action: PayloadAction<any>) => {
       state.jobs = action.payload.data;
@@ -223,13 +215,8 @@ const jobSlice = createSlice({
     );
     builder.addCase(updatejob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error occured please try again";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
     builder.addCase(editjob.pending, state => {
       state.loading = true;
@@ -241,13 +228,8 @@ const jobSlice = createSlice({
     });
     builder.addCase(editjob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error";
-      }
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
     builder.addCase(
       deletejob.fulfilled,
@@ -259,13 +241,9 @@ const jobSlice = createSlice({
     );
     builder.addCase(deletejob.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
-      } else if (action.payload.request) {
-        state.error = "An Error occured on our end";
-      } else {
-        state.error = "An Error occured please try again";
-      }
+
+      const err = errorFunction(action.payload);
+      state.error = err;
     });
   },
 });

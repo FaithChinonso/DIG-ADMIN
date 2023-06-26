@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { serviceCategoryApi } from "src/components/api";
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 
 interface serviceCategoryData {
   name: string;
@@ -22,7 +25,6 @@ export const createserviceCategory = createAsyncThunk(
   "service-category/createserviceCategory",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceCategoryApi}/create-service-category`,
         data,
@@ -41,7 +43,6 @@ export const updateserviceCategory = createAsyncThunk(
   "service-category/updateserviceCategory",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceCategoryApi}/update-service-category/${data.id}`,
         data.payload,
@@ -61,7 +62,7 @@ export const updateserviceCategory = createAsyncThunk(
 
 export const getMyserviceCategories = createAsyncThunk(
   "service-category/getMyserviceCategories",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(
         `${serviceCategoryApi}/all-service-categories`,
@@ -77,7 +78,7 @@ export const getMyserviceCategories = createAsyncThunk(
 );
 export const fetchServiceCategories = createAsyncThunk(
   "service-category/fetchServiceCategories",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(
         `${serviceCategoryApi}/all-service-categories`,
@@ -95,7 +96,6 @@ export const editserviceCategory = createAsyncThunk(
   "service-category/editserviceCategory",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${serviceCategoryApi}/${data.endpoint}/${data.serviceCategoryID}`,
         {},
@@ -115,7 +115,6 @@ export const deleteserviceCategory = createAsyncThunk(
   "service-category/deleteserviceCategory",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `${serviceCategoryApi}/delete-service-category/${id}`,
         {
@@ -174,13 +173,8 @@ const serviceCategorySlice = createSlice({
       createserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyserviceCategories.pending, state => {
@@ -203,13 +197,8 @@ const serviceCategorySlice = createSlice({
       getMyserviceCategories.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(updateserviceCategory.pending, state => {
@@ -227,13 +216,8 @@ const serviceCategorySlice = createSlice({
       updateserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -248,13 +232,8 @@ const serviceCategorySlice = createSlice({
       deleteserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -269,13 +248,8 @@ const serviceCategorySlice = createSlice({
       editserviceCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

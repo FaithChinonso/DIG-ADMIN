@@ -3,6 +3,7 @@ import Image from "next/image";
 import DataTable, { createTheme } from "react-data-table-component";
 import emptyState from "../assets/image/illustrations.svg";
 import SortIcon from "@mui/icons-material/ArrowDownward";
+import EmptyTableComponent from "./EmptyTableComponent";
 
 createTheme("solarized", {
   striped: {
@@ -73,20 +74,13 @@ export const DataFilterTable = (props: any) => {
       )}
       <DataTable
         columns={props?.columns}
-        data={customFilter(props?.data, filterText) || []}
+        data={customFilter(props?.data, filterText)}
         sortIcon={<SortIcon />}
         pagination
         paginationComponentOptions={paginationComponentOptions}
         striped
         responsive
-        noDataComponent={
-          <div className="flex flex-col items-center justify-center mx-auto mt-10">
-            <Image src={emptyState} alt="" />
-            <div className="text-[#8487A3] text-xs -mt-2">
-              Nothing to show here{" "}
-            </div>
-          </div>
-        }
+        noDataComponent={<EmptyTableComponent columns={props?.columns} />}
         theme="solarized"
         customStyles={customStyles}
       />

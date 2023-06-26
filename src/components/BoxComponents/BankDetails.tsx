@@ -5,7 +5,7 @@ const BankDetails = ({ data }: any) => {
   console.log(data);
   return (
     <div className="w-full flex flex-col items-center">
-      {data.bankName ? (
+      {data?.bankName ? (
         <div className="flex flex-col items-center">
           <div className="flex justify-between w-full">
             <div className="flex flex-col gap-3">

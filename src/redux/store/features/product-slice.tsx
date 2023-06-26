@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { productApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface productData {
   name: string;
   price: string;
@@ -22,7 +24,6 @@ export const createproduct = createAsyncThunk(
   "product/createproduct",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${productApi}/create-product/${data.id}`,
         data.payload,
@@ -41,7 +42,6 @@ export const updateproduct = createAsyncThunk(
   "product/updateProduct",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${productApi}/update-product/${data.id}`,
         data.payload,
@@ -58,7 +58,7 @@ export const updateproduct = createAsyncThunk(
 
 export const getMyproduct = createAsyncThunk(
   "order/getMyproduct",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${productApi}/all-products`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -73,7 +73,6 @@ export const editproduct = createAsyncThunk(
   "product/editproduct",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${productApi}/${data.endPoint}/${data.productID}`,
 
@@ -89,7 +88,7 @@ export const editproduct = createAsyncThunk(
 );
 export const fetchProduct = createAsyncThunk(
   "order/fetchProduct",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${productApi}/all-products`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -104,7 +103,6 @@ export const deleteproduct = createAsyncThunk(
   "product/deleteproduct",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `${productApi}/delete-product/${id}`,
         {
@@ -163,13 +161,8 @@ const productSlice = createSlice({
       createproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyproduct.pending, state => {
@@ -186,19 +179,27 @@ const productSlice = createSlice({
       getMyproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
+      }
+    );
+    builder.addCase(
+      fetchProduct.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loading = true;
       }
     );
     builder.addCase(
       fetchProduct.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.products = action.payload.data;
+        state.loading = false;
+      }
+    );
+    builder.addCase(
+      fetchProduct.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
       }
     );
     builder.addCase(updateproduct.pending, state => {
@@ -216,15 +217,13 @@ const productSlice = createSlice({
       updateproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
+    builder.addCase(deleteproduct.pending, state => {
+      state.loading = true;
+    });
     builder.addCase(
       deleteproduct.fulfilled,
       (state, action: PayloadAction<any>) => {
@@ -237,15 +236,13 @@ const productSlice = createSlice({
       deleteproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
+    builder.addCase(editproduct.pending, state => {
+      state.loading = true;
+    });
     builder.addCase(
       editproduct.fulfilled,
       (state, action: PayloadAction<any>) => {
@@ -258,13 +255,8 @@ const productSlice = createSlice({
       editproduct.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

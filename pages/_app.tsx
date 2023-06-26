@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 import { GetStaticProps } from "next/types";
+import Toast from "src/components/Toast";
+import DrawerCard from "src/components/DrawerCard";
+import Modal from "src/components/Modal";
+import Loader from "src/components/Loader";
 
 function MyApp({ Component, pageProps, param }: any) {
   const router = useRouter();
@@ -26,6 +30,10 @@ function MyApp({ Component, pageProps, param }: any) {
     mounted && (
       <Provider store={store}>
         <div>
+          <Toast />
+          <DrawerCard />
+          <Modal />
+          <Loader />
           <Component {...pageProps} />
         </div>
       </Provider>

@@ -69,10 +69,10 @@ const WithdrawalTable = ({ data }: any) => {
           <ActionMenuBase
             items={
               <>
-                {prop?.status !== "Rejected" && (
+                {prop?.status !== "Rejected" ? (
                   <>
                     <ActionMenuItem
-                      name="Accept"
+                      name="Reject"
                       onClickFunction={() =>
                         dispatch(
                           uiActions.openModalAndSetContent({
@@ -82,13 +82,15 @@ const WithdrawalTable = ({ data }: any) => {
                             modalContent: (
                               <>
                                 <ModalAction
-                                  action="accept"
+                                  action="reject"
                                   item="withdrawal"
-                                  actionFunction={() =>
+                                  type="reason"
+                                  actionFunction={(text: string) =>
                                     dispatch(
                                       editwithdrawal({
-                                        endpoint: "accept-withdrawal",
+                                        endpoint: "reject-withdrawal",
                                         withdrawalID: prop?.id,
+                                        data: { rejection_reason: text },
                                       })
                                     )
                                   }
@@ -128,36 +130,37 @@ const WithdrawalTable = ({ data }: any) => {
                       }
                     />
                   </>
+                ) : (
+                  <ActionMenuItem
+                    name="Accept"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="accept"
+                                item="withdrawal"
+                                actionFunction={() =>
+                                  dispatch(
+                                    editwithdrawal({
+                                      endpoint: "accept-withdrawal",
+                                      withdrawalID: prop?.id,
+                                      data: {},
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
                 )}
-
-                <ActionMenuItem
-                  name="Reject"
-                  onClickFunction={() =>
-                    dispatch(
-                      uiActions.openModalAndSetContent({
-                        modalStyles: {
-                          padding: 0,
-                        },
-                        modalContent: (
-                          <>
-                            <ModalAction
-                              action="reject"
-                              item="withdrawal"
-                              actionFunction={() =>
-                                dispatch(
-                                  editwithdrawal({
-                                    endpoint: "reject-withdrawal",
-                                    withdrawalID: prop?.id,
-                                  })
-                                )
-                              }
-                            />
-                          </>
-                        ),
-                      })
-                    )
-                  }
-                />
 
                 <ActionMenuItem
                   name="Delete"

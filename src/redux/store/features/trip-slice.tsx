@@ -2,13 +2,15 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { tripType } from "src/@types/data";
 import { tripApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 export const getMyTrips = createAsyncThunk(
   "trip/getMyTrips",
-  async (token: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${tripApi}/all-trips`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
     } catch (error: any) {
@@ -18,10 +20,10 @@ export const getMyTrips = createAsyncThunk(
 );
 export const fetchMyTrips = createAsyncThunk(
   "trip/fetchMyTrips",
-  async (token: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${tripApi}/all-trips`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
     } catch (error: any) {
@@ -33,7 +35,6 @@ export const deleteTrip = createAsyncThunk(
   "trip/deleteTrip",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(`${tripApi}/delete-trip/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -94,13 +95,8 @@ const tripSlice = createSlice({
       getMyTrips.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -115,13 +111,8 @@ const tripSlice = createSlice({
       deleteTrip.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

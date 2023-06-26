@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { transactionApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface transactionData {
   name: string;
   price: string;
@@ -20,7 +22,7 @@ interface transactionData {
 
 export const getMyTransactions = createAsyncThunk(
   "transaction/getMyTransactions",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${transactionApi}/all-transactions`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -36,7 +38,6 @@ export const getTransactionsbyApp = createAsyncThunk(
   "transaction/getTransactionsbyApp",
   async (app: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${transactionApi}/transactions-by-application/${app}`,
         {
@@ -69,7 +70,6 @@ export const getPaystackTransactions = createAsyncThunk(
   "transaction/getPaystackTransactions",
   async (method: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${transactionApi}/transactions-by-payment-method/paystack`,
         {
@@ -84,7 +84,7 @@ export const getPaystackTransactions = createAsyncThunk(
 );
 export const fetchWalletTransactions = createAsyncThunk(
   "transaction/fetchWalletTransactions",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(
         `${transactionApi}/transactions-by-payment-method/wallet`,
@@ -102,7 +102,6 @@ export const fetchPaystackTransactions = createAsyncThunk(
   "transaction/fetchPaystackTransactions",
   async (method: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.get(
         `${transactionApi}/transactions-by-payment-method/paystack`,
         {
@@ -119,7 +118,6 @@ export const deleteTransaction = createAsyncThunk(
   "transaction/deleteTransaction",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `${transactionApi}/delete-transaction/${id}`,
         {
@@ -184,13 +182,8 @@ const transactionSlice = createSlice({
       getMyTransactions.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
 
@@ -209,13 +202,8 @@ const transactionSlice = createSlice({
       getTransactionsbyApp.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
 
@@ -239,13 +227,8 @@ const transactionSlice = createSlice({
       getWalletTransactions.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getPaystackTransactions.pending, state => {
@@ -268,13 +251,8 @@ const transactionSlice = createSlice({
       getPaystackTransactions.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -289,13 +267,8 @@ const transactionSlice = createSlice({
       deleteTransaction.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

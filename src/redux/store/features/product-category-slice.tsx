@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { productCategoryApi } from "src/components/api";
-
+import { errorFunction } from "src/utils/helperFunctions";
+const accessToken =
+  typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
 interface productCategoryData {
   name: string;
   price: string;
@@ -22,7 +24,6 @@ export const createproductCategory = createAsyncThunk(
   "product-category/createorder",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${productCategoryApi}/create-product-category`,
         data,
@@ -41,7 +42,6 @@ export const updateproductCategory = createAsyncThunk(
   "product-category/updateproductCategory",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${productCategoryApi}/update-product-category/${data.id}`,
         data.payload,
@@ -75,7 +75,7 @@ export const getMyproductCategories = createAsyncThunk(
 );
 export const fetchProductCategory = createAsyncThunk(
   "product-category/fetchProductCategory",
-  async (accessToken: any, thunkAPI: any) => {
+  async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(
         `${productCategoryApi}/all-product-categories`,
@@ -93,7 +93,6 @@ export const editproductCategory = createAsyncThunk(
   "product-category/editproductCategory",
   async (data: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${productCategoryApi}/${data.endpoint}/${data.productID}`,
         {},
@@ -112,9 +111,8 @@ export const deleteproductCategory = createAsyncThunk(
   "product-category/deleteproductCategory",
   async (id: any, thunkAPI: any) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
-        `${productCategoryApi}/delete-product-category/${id}`,
+        `${productCategoryApi}/delete-category/${id}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -171,13 +169,8 @@ const productCategorySlice = createSlice({
       createproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(getMyproductCategories.pending, state => {
@@ -202,13 +195,8 @@ const productCategorySlice = createSlice({
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         console.log(action.payload);
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(updateproductCategory.pending, state => {
@@ -226,13 +214,14 @@ const productCategorySlice = createSlice({
       updateproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
+      }
+    );
+    builder.addCase(
+      deleteproductCategory.pending,
+      (state, action: PayloadAction<any>) => {
+        state.loading = true;
       }
     );
     builder.addCase(
@@ -247,13 +236,8 @@ const productCategorySlice = createSlice({
       deleteproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
     builder.addCase(
@@ -268,13 +252,8 @@ const productCategorySlice = createSlice({
       editproductCategory.rejected,
       (state, action: PayloadAction<any>) => {
         state.loading = false;
-        if (action.payload.response) {
-          state.error = action.payload.response.data.message;
-        } else if (action.payload.request) {
-          state.error = "An Error occured on our end";
-        } else {
-          state.error = "An Error occured please try again";
-        }
+        const err = errorFunction(action.payload);
+        state.error = err;
       }
     );
   },

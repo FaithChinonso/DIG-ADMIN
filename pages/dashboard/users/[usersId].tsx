@@ -22,6 +22,7 @@ import { GetStaticProps } from "next/types";
 import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
+import { Avatar } from "@mui/material";
 
 const OneUser = (props: any) => {
   const request = useHTTPGet();
@@ -129,7 +130,10 @@ const OneUser = (props: any) => {
           <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
             <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
               {user?.image && (
-                <div>{/* <Image src={user?.image} alt={""} /> */}</div>
+                <div>
+                  {" "}
+                  <Avatar src={user?.image} alt={user?.fullName} />
+                </div>
               )}
               <div className="flex flex-col gap-[14px]">
                 <h2 className="text-[16px] text-text">
@@ -286,7 +290,7 @@ const OneUser = (props: any) => {
                   </div>
                 </div>
                 {user?.profile?.bio ? (
-                  <div className="text-white flex flex-col w-[550px] text-center">
+                  <div className="text-white flex flex-col max-w-[300px] text-center">
                     <h3 className="text-[13px] mt-[28px] text-text">About</h3>
                     <p className="text-[10px]">{user?.profile?.bio}</p>
                   </div>

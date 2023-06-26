@@ -19,7 +19,7 @@ const useHTTPDelete = () => {
       .then(res => {
         dispatch(uiActions.closeLoader());
         dataFunction(res);
-        dispatch(uiActions.closedrawer());
+
         dispatch(
           uiActions.openToastAndSetContent({
             toastContent: res.data.message,

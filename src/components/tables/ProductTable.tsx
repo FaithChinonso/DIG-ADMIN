@@ -90,24 +90,24 @@ const ProductTable = ({ data }: any) => {
   };
   const formatData = data?.slice(0).map((client: Data, index: number) => {
     return {
-      id: client.product.productID,
-      serial: client.product.serial,
-      brand: client.product.brand,
-      name: client.product.name,
-      weight: client.product.weight,
-      quantity: client.product.quantity,
-      productWarranty: client.product.productWarranty,
-      price: client.product.price,
-      categoryName: client?.category?.name,
-      productCreationDate: moment(client.productCreationDate).format("ll"),
-      isActive: client.product.isActive ? "Active" : "Inactive",
-      numberOfOrders: client.product.numberOfOrders,
-      freeDelivery: client.product.delivery.freeDelivery,
-      shippingFee: client.product.delivery.shippingFee,
-      description: client.product.description,
-      specifications: client.product.specifications,
-      features: client.product.features,
-      images: client.product.images,
+      id: client?.product?.productID,
+      serial: client?.product?.serial,
+      brand: client?.product?.brand || "--",
+      name: client?.product?.name || "--",
+      weight: client?.product?.weight || "--",
+      quantity: client?.product?.quantity || "--",
+      productWarranty: client?.product?.productWarranty || "--",
+      price: client?.product?.price || "--",
+      categoryName: client?.category?.name || "--",
+      productCreationDate: moment(client?.productCreationDate).format("ll"),
+      isActive: client?.product?.isActive ? "Active" : "Inactive",
+      numberOfOrders: client?.product?.numberOfOrders || "--",
+      freeDelivery: client?.product?.delivery?.freeDelivery || "--",
+      shippingFee: client?.product?.delivery?.shippingFee || "--",
+      description: client?.product?.description || "--",
+      specifications: client?.product?.specifications || [],
+      features: client?.product?.features || [],
+      images: client?.product?.images,
     };
   });
 
@@ -176,7 +176,7 @@ const ProductTable = ({ data }: any) => {
                         },
                         drawerContent: (
                           <>
-                            <ProductDetails data={prop} />
+                            <ProductDetails id={prop.id} />
                           </>
                         ),
                       })
@@ -204,7 +204,7 @@ const ProductTable = ({ data }: any) => {
                   }}
                 />
 
-                {prop.specifications.length > 0 ? (
+                {prop?.specifications?.length > 0 ? (
                   <ActionMenuItem
                     name="Edit Product Specification"
                     onClickFunction={() => {
@@ -249,7 +249,7 @@ const ProductTable = ({ data }: any) => {
                   />
                 )}
 
-                {prop.features.length > 0 ? (
+                {prop?.features?.length > 0 ? (
                   <ActionMenuItem
                     name="Edit Product Feature"
                     onClickFunction={() => {

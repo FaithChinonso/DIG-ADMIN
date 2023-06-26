@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import moment from "moment";
 import { TabPanelProps } from "src/@types/box";
 
 export const isNotEmpty = (value: string) => value?.trim() !== "";
@@ -75,4 +76,45 @@ export const getLatLng = async (address: any) => {
     .catch(error => console.error(error));
 
   return result;
+};
+export const errorFunction = (err: any) => {
+  let errorMessage;
+  if (err?.response?.data?.errors?.[0]?.message) {
+    errorMessage = err?.response?.data?.errors[0]?.message;
+  } else if (err?.response?.data?.errors?.[0]?.password) {
+    errorMessage = err?.response?.data?.errors[0]?.password;
+  } else if (err?.response?.data?.errors?.[0]?.email) {
+    errorMessage = err?.response?.data?.errors?.[0]?.email;
+  } else if (err?.response?.data?.error) {
+    errorMessage = err?.response?.data?.error;
+  } else if (err?.response?.data?.message) {
+    errorMessage = err?.response?.data?.message;
+  } else {
+    errorMessage = err?.message || "Something went wrong, Please try again";
+  }
+  console.log(errorMessage);
+
+  return errorMessage;
+};
+export const formatData = (client: any) => {
+  return {
+    id: client?.product?.productID,
+    serial: client?.product?.serial,
+    brand: client?.product?.brand || "--",
+    name: client?.product?.name || "--",
+    weight: client?.product?.weight || "--",
+    quantity: client?.product?.quantity || "--",
+    productWarranty: client?.product?.productWarranty || "--",
+    price: client?.product?.price || "--",
+    categoryName: client?.category?.name || "--",
+    productCreationDate: moment(client?.productCreationDate).format("ll"),
+    isActive: client?.product?.isActive ? "Active" : "Inactive",
+    numberOfOrders: client?.product?.numberOfOrders || "--",
+    freeDelivery: client?.product?.delivery?.freeDelivery || "--",
+    shippingFee: client?.product?.delivery?.shippingFee || "--",
+    description: client?.product?.description || "--",
+    specifications: client?.product?.specifications || [],
+    features: client?.product?.features || [],
+    images: client?.product?.images,
+  };
 };

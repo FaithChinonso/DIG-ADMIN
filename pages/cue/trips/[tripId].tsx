@@ -140,7 +140,7 @@ const OneTrip = ({ tripId }: any) => {
             </div>
           </div>
         </div>{" "}
-        <div className="w-full flex gap-2">
+        <div className="w-full flex gap-2 h-auto min-h-[400px]">
           <div className="w-1/2">
             <TrackRide trip={trip} refreshHandler={() => fetchATrip(tripId)} />
           </div>

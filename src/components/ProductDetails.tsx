@@ -1,43 +1,59 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import useHTTPDelete from "src/Hooks/use-httpdelete";
+import useHTTPGet from "src/Hooks/use-httpget";
 import useHTTPPost from "src/Hooks/use-httppost";
 import { useAppDispatch } from "src/Hooks/use-redux";
 import { getMyproduct } from "src/redux/store/features/product-slice";
 import { uiActions } from "src/redux/store/ui-slice";
+import { formatData } from "src/utils/helperFunctions";
 import { productApi } from "./api";
 import DrawerWrapper from "./DrawerWrapper";
 import ModalAction from "./ModalContent/ModalAction";
 
-const ProductDetails = ({ data }: any) => {
+const ProductDetails = ({ id }: any) => {
   const send = useHTTPPost();
+  const request = useHTTPGet();
   const remove = useHTTPDelete();
   const dispatch = useAppDispatch();
+  const [data, setData] = useState<any>();
   const [primary, setPrimary] = useState({} as any);
   const [secondary, setSecondary] = useState([]);
   const [showModal, setShowModal] = useState({
     show: false,
     value: "",
   });
-
+  const fetchProduct = useCallback(
+    async (id: any) => {
+      const url = `${productApi}/single-product/${id}`;
+      const accessToken = sessionStorage.getItem("accessToken");
+      const dataFunction = (res: any) => {
+        const dataa = formatData(res.data.data);
+        setData(dataa);
+      };
+      request({ url, accessToken }, dataFunction);
+    },
+    [request]
+  );
   useEffect(() => {
-    const primaryImage = data.images.filter((item: any) => {
-      return item.isPrimary === true;
-    });
-    setPrimary(primaryImage[0]);
-    const secondaryImages = data.images.filter((item: any) => {
-      return item.isPrimary === false;
-    });
-    setSecondary(secondaryImages);
-  }, [data.images]);
+    if (data) {
+      const primaryImage = data?.images.filter((item: any) => {
+        return item.isPrimary === true;
+      });
+      setPrimary(primaryImage[0]);
+      const secondaryImages = data?.images.filter((item: any) => {
+        return item.isPrimary === false;
+      });
+      setSecondary(secondaryImages);
+    }
+  }, [data?.images]);
 
   const setImageAsPrimary = (imageID: any) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    const url = `${productApi}/set-primary-image/${data.id}/${imageID}`;
+    const url = `${productApi}/set-primary-image/${id}/${imageID}`;
     const dataFunction = () => {
-      dispatch(uiActions.closedrawer());
-      dispatch(getMyproduct(accessToken));
+      fetchProduct(id);
     };
     send({ url, accessToken }, dataFunction);
   };
@@ -47,8 +63,8 @@ const ProductDetails = ({ data }: any) => {
     const url = `${productApi}/remove-product-image/${imageID}`;
 
     const dataFunction = () => {
-      dispatch(uiActions.closedrawer());
-      dispatch(getMyproduct(accessToken));
+      dispatch(uiActions.closeModal());
+      fetchProduct(id);
     };
     dispatch(
       uiActions.openModalAndSetContent({
@@ -67,6 +83,11 @@ const ProductDetails = ({ data }: any) => {
       })
     );
   };
+
+  useEffect(() => {
+    fetchProduct(id);
+  }, []);
+
   return (
     <DrawerWrapper title="Product Detail">
       <div className="flex flex-col items-center">
@@ -92,19 +113,19 @@ const ProductDetails = ({ data }: any) => {
               }
             >
               <Image
-                src={image.image}
+                src={image?.image}
                 alt=""
                 width={100}
                 height={100}
                 className="rounded-xl w-full h-full object-cover"
               />
               <span
-                className="absolute top-0 right-0 text-white bg-darkPurple font-bold"
-                onClick={() => deleteImage(image.imageID)}
+                className="absolute top-0 right-0 text-white bg-darkPurple font-bold z-100"
+                onClick={() => deleteImage(image?.imageID)}
               >
                 <RiDeleteBinLine />
               </span>
-              {showModal.value === image.imageID && (
+              {showModal.value === image?.imageID && (
                 <div className="w-full h-full bg-[rgba(0,0,0,0.4)] absolute top-0 left-0 z-10 flex items-center justify-center">
                   <button
                     className="text-[8px] text-white bg-darkPurple"
@@ -124,7 +145,7 @@ const ProductDetails = ({ data }: any) => {
               Product Name
             </div>
             <div className="text-xs text-[#090F47] text-center">
-              {data.name}
+              {data?.name}
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -132,27 +153,27 @@ const ProductDetails = ({ data }: any) => {
               Serial Number
             </div>
             <div className="text-xs text-[#090F47] text-center">
-              {data.serial}
+              {data?.serial}
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-[#8487A3] text-center">
               Product Quantity
             </div>
-            <div className="text-xs text-[#090F47] text-center">{`${data.quantity} ${data.name}`}</div>
+            <div className="text-xs text-[#090F47] text-center">{`${data?.quantity} ${data?.name}`}</div>
           </div>
         </div>
         <div className="flex justify-between mt-5 w-full gap-2">
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text text-center"> Product Weight</div>
             <div className="text-xs text-[#090F47] text-center">
-              {data.weight}kg
+              {data?.weight}kg
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text text-center">Delivery Tag</div>
             <div className="text-xs text-[#090F47] text-center">
-              {data.freeDelivery}
+              {data?.freeDelivery}
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -160,7 +181,7 @@ const ProductDetails = ({ data }: any) => {
               Price (per unit)
             </div>
             <div className="text-xs text-[#090F47] text-center">
-              ₦ {data.price}
+              ₦ {data?.price}
             </div>
           </div>
         </div>
@@ -168,14 +189,14 @@ const ProductDetails = ({ data }: any) => {
           <div className="flex flex-col gap-3">
             <div className="text-xs text-text text-center">Warranty</div>
             <div className="text-xs text-[#090F47] text-center">
-              {data.producWarranty}
+              {data?.producWarranty}
             </div>
           </div>
         </div>
         <div className="w-full flex flex-col justify-center gap-2">
           <div className="text-xs text-text">Description</div>
           <div className="text-xs text-[#090F47] text-center">
-            {data.description}
+            {data?.description}
           </div>
         </div>
         {data?.specifications?.length !== 0 ? (

@@ -21,6 +21,7 @@ import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 import Trip from "src/components/BoxComponents/Trip";
 import { tripType, riderType } from "src/@types/data";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
+import { Avatar } from "@mui/material";
 
 const OneUser = ({ riderID }: any) => {
   const request = useHTTPGet();
@@ -101,11 +102,7 @@ const OneUser = ({ riderID }: any) => {
         <ActionList user={user} />
         <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
           <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
-            {user?.image && (
-              <div>
-                <Image src={user?.image} alt={""} width={100} height={100} />
-              </div>
-            )}
+            {user?.image && <Avatar src={user?.image} alt={user?.fullName} />}
             <div className="flex flex-col gap-[14px]">
               <div className="flex gap-1">
                 <div className="text-[16px] bg-red-300">{user?.fullName}</div>

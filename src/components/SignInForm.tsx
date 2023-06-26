@@ -14,11 +14,12 @@ import store from "src/redux/store";
 import { authActions } from "src/redux/store/auth-slice";
 import { is8Chars, isNotEmpty } from "src/utils/helperFunctions";
 import { TailSpin } from "react-loader-spinner";
+import { useAppSelector, useAppDispatch } from "src/Hooks/use-redux";
 
 const SignInForm = ({ login }: any) => {
   const router = useRouter();
-  const dispatch = useDispatch();
-
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector(state => state.auth);
   const [formisValid, setFormIsValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
@@ -86,7 +87,25 @@ const SignInForm = ({ login }: any) => {
       // login(payload);
     }
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (isLoading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (isLoading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+    if (error.length > 0) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: error,
+          backgroundColor: "red",
+        })
+      );
+      setTimeout(() => {
+        dispatch(authActions.clearState());
+      }, 2000);
+    }
+  }, [dispatch, error, isLoading]);
   return (
     <Provider store={store}>
       <form onSubmit={submitFormHandler} className="w-full mt-[50px]">

@@ -23,6 +23,7 @@ import { useAppSelector } from "src/Hooks/use-redux";
 import { uiActions } from "src/redux/store/ui-slice";
 import { clearError, clearMessage } from "src/redux/store/features/user-slice";
 import { consumerType } from "src/@types/data";
+import { Avatar } from "@mui/material";
 
 const OneUser = ({ consumerID }: any) => {
   const request = useHTTPGet();
@@ -118,7 +119,7 @@ const OneUser = ({ consumerID }: any) => {
           <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && (
               <div>
-                <Image src={user?.image} alt={""} />
+                <Avatar src={user?.image} alt={user?.fullName} />
               </div>
             )}
             <div className="flex flex-col gap-[14px]">
@@ -249,18 +250,18 @@ const OneUser = ({ consumerID }: any) => {
               </Tabs>
             </Box>
 
-            <TabPanel value={value} index={1}>
+            <TabPanel value={value} index={0}>
               <BankDetails data={user?.bank} />
             </TabPanel>
-            <TabPanel value={value} index={2}>
+            <TabPanel value={value} index={1}>
               <OrderHistory data={orders} />
             </TabPanel>
 
-            <TabPanel value={value} index={3}>
+            <TabPanel value={value} index={2}>
               <TransactionHistory id={user?.userID} />
             </TabPanel>
 
-            <TabPanel value={value} index={4}>
+            <TabPanel value={value} index={3}>
               <JobsDisplay jobs={job} type="profile" />
             </TabPanel>
           </Box>

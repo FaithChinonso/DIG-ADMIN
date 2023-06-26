@@ -29,7 +29,7 @@ const Withdrawals = () => {
           backgroundColor: "red",
         })
       );
-
+      dispatch(uiActions.closeModal());
       setTimeout(() => {
         dispatch(clearError());
       }, 10000);
@@ -41,6 +41,7 @@ const Withdrawals = () => {
           backgroundColor: "#49D3BA",
         })
       );
+      dispatch(uiActions.closeModal());
       dispatch(getMywithdrawal(token));
       setTimeout(() => {
         dispatch(clearMessage());

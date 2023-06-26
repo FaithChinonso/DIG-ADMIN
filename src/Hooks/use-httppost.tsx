@@ -18,7 +18,7 @@ const useHTTPPost = () => {
       })
       .then(res => {
         dispatch(uiActions.closeLoader());
-        dispatch(uiActions.closedrawer());
+
         dataFunction(res);
         dispatch(
           uiActions.openToastAndSetContent({

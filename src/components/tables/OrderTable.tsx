@@ -13,6 +13,7 @@ import {
   clearMessage,
   deleteOrder,
   editorder,
+  fetchOrder,
 } from "src/redux/store/features/order-slice";
 import { useRouter } from "next/router";
 import { DataFilterTable } from "../DataTable";
@@ -51,7 +52,7 @@ const OrderHistory = ({ data, fetchAllOrders, type }: any) => {
           backgroundColor: "rgba(24, 160, 251, 1)",
         })
       );
-
+      dispatch(fetchOrder({}));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);

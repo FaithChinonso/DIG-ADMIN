@@ -6,7 +6,6 @@ export const MyUserValue = [
   { id: 6, label: "Job Posting" },
 ];
 export const MyConsumerValue = [
-
   { id: 1, label: "Bank Details" },
   { id: 2, label: "Order History" },
   { id: 3, label: "Transaction History" },
@@ -18,6 +17,8 @@ export const MyMerchantValue = [
   { id: 3, label: "Order History" },
   { id: 4, label: "Transaction History" },
   { id: 5, label: "Job Posting" },
+  { id: 6, label: "Products" },
+  { id: 7, label: "Services" },
 ];
 export const MySettingsValue = [
   { id: 1, label: "Personal Details" },
