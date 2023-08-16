@@ -120,9 +120,9 @@ const OneTrip = ({ tripId }: any) => {
                   <div className="text-[10px]"> {trip?.rider?.fullName}</div>
                   <div className="left-1">
                     {" "}
-                    {trip?.rider?.emailVerifiedStatus === "verified" && (
+                    {trip?.rider?.emailVerifiedStatus === "verified" ? (
                       <Image src={verify} alt={""} />
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
