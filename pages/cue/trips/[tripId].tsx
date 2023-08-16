@@ -63,12 +63,16 @@ const OneTrip = ({ tripId }: any) => {
               </div>
               <div className="w-[253px] bg-faintWhite gap-2 flex justify-between text-white p-3 rounded-md h-[53px]">
                 <div className="flex flex-col justify-between">
-                  <div className="text-[8px]">Base Price</div>
-                  <div className="text-xs font-[500]">₦ {trip?.basePrice}</div>
+                  <div className="text-[8px]">Price</div>
+                  <div className="text-xs font-[500]">
+                    ₦ {trip?.totalPrice ? trip?.totalPrice : trip?.basePrice}
+                  </div>
                 </div>
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px] ">Trip Duration</div>
-                  <div className="text-xs font-[500]">{trip?.tripDuration}</div>
+                  <div className="text-xs font-[500]">
+                    {trip?.tripDuration} mins
+                  </div>
                 </div>
               </div>
             </div>

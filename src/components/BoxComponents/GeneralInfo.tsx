@@ -90,8 +90,8 @@ const GeneralInfo = ({ data }: any) => {
           <div className="text-text text-[10px]">Car Manufacturer</div>
           <div className="text-grey text-xs">
             {" "}
-            {data?.profile?.vehicles[0]?.manufacturer
-              ? data?.profile?.vehicles[0]?.manufacturer
+            {data?.profile?.vehicle?.manufacturer
+              ? data?.profile?.vehicle?.manufacturer
               : " ---"}
           </div>
         </div>
@@ -99,8 +99,8 @@ const GeneralInfo = ({ data }: any) => {
           <div className="text-text text-[10px]">Car Model</div>
           <div className="text-grey text-xs">
             {" "}
-            {data?.profile?.vehicles[0]?.model
-              ? data?.profile?.vehicles[0]?.model
+            {data?.profile?.vehicle?.model
+              ? data?.profile?.vehicle?.model
               : " ---"}
           </div>
         </div>
@@ -108,8 +108,8 @@ const GeneralInfo = ({ data }: any) => {
           <div className="text-text text-[10px]">Car Plate Number</div>
           <div className="text-grey text-xs">
             {" "}
-            {data?.profile?.vehicles[0]?.plate_number
-              ? data?.profile?.vehicles[0]?.plate_number
+            {data?.profile?.vehicle?.plate_number
+              ? data?.profile?.vehicle?.plate_number
               : " ---"}
           </div>
         </div>
@@ -117,16 +117,16 @@ const GeneralInfo = ({ data }: any) => {
           <div className="text-text text-[10px]">Car Color</div>
           <div className="text-grey text-xs">
             {" "}
-            {data?.profile?.vehicles[0]?.color
-              ? data?.profile?.vehicles[0]?.color
+            {data?.profile?.vehicle?.color
+              ? data?.profile?.vehicle?.color
               : " ---"}
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Plate Number On Car Photo</div>
-          {data?.profile?.vehicles?.[0]?.plate_number_on_car_photo ? (
+          {data?.profile?.vehicle?.plate_number_on_car_photo ? (
             <Image
-              src={data?.profile?.vehicles?.[0]?.plate_number_on_car_photo}
+              src={data?.profile?.vehicle?.plate_number_on_car_photo}
               alt=""
               width={100}
               height={100}
@@ -137,9 +137,9 @@ const GeneralInfo = ({ data }: any) => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Drivers Exterior Photo</div>
-          {data?.profile?.vehicles?.[0]?.car_exterior_photo ? (
+          {data?.profile?.vehicle?.car_exterior_photo ? (
             <Image
-              src={data?.profile?.vehicles?.[0]?.car_exterior_photo}
+              src={data?.profile?.vehicle?.car_exterior_photo}
               alt=""
               width={100}
               height={100}
@@ -150,9 +150,9 @@ const GeneralInfo = ({ data }: any) => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-text text-[10px]">Drivers Interior Photo</div>
-          {data?.profile?.vehicles?.[0]?.car_interior_photo ? (
+          {data?.profile?.vehicle?.car_interior_photo ? (
             <Image
-              src={data?.profile?.vehicles?.[0]?.car_interior_photo}
+              src={data?.profile?.vehicle?.car_interior_photo}
               alt=""
               width={100}
               height={100}
@@ -188,7 +188,7 @@ const GeneralInfo = ({ data }: any) => {
         <div className="w-full flex justify-end gap-2 items-center">
           <div className="text-text text-xs">Average Rating</div>
           <div className="text-darkPurple">
-            {calculateAverageRating(data?.profile?.reviews).toFixed(2)}
+            {calculateAverageRating(data?.profile?.reviews).toFixed(2) || 5.0}
           </div>
         </div>
         <div className="grid mt-[17px] grid-cols-2 items-start justify-between gap-3 border-b border-gray-300 py-3 max-h-[400px] overflow-auto">

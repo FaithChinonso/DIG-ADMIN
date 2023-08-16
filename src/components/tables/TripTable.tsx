@@ -21,16 +21,16 @@ const TripTable = ({ data }: Props) => {
 
   const formatData = data?.slice(0).map((client: tripType, index: number) => {
     return {
-      id: client.tripID,
+      id: client?.tripID,
       serial: index + 1,
-      pickup: client.pickupLocation,
-      dropoff: client.dropoffLocation,
-      basePrice: client.basePrice,
-      tripDuration: `${client.tripDuration} mins`,
-      driver: client.driver.fullName,
-      rider: client.rider.fullName,
-      status: client.status,
-      tripDate: moment(client.tripDate).format("ll"),
+      pickup: client?.pickupLocation,
+      dropoff: client?.dropoffLocation,
+      basePrice: client?.totalPrice ? client?.totalPrice : client?.basePrice,
+      tripDuration: `${client?.tripDuration} mins`,
+      driver: client?.driver?.fullName,
+      rider: client?.rider?.fullName,
+      status: client?.status,
+      tripDate: moment(client?.tripDate).format("ll"),
     };
   });
   const columnTrips = [
@@ -70,7 +70,7 @@ const TripTable = ({ data }: Props) => {
       sortable: true,
     },
     {
-      name: "Base Price",
+      name: "Price",
       selector: (row: any) => `₦${row.basePrice}`,
       sortable: true,
     },
