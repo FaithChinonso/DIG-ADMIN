@@ -6,7 +6,7 @@ import tripComplete from "../../assets/image/tripComplete.svg";
 import refresh from "../../assets/image/refresh.svg";
 import Image from "next/image";
 import moment from "moment";
-import emptyState from "src/assets/image/illustrations.svg";
+import emptyState from "../../../src/assets/image/illustrations.svg";
 
 const TrackRide = ({ trip, refreshHandler }: any) => {
   console.log(trip);

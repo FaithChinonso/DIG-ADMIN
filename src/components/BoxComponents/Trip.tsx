@@ -1,5 +1,5 @@
 import Image from "next/image";
-import emptyState from "src/assets/image/illustrations.svg";
+import emptyState from "../../../src/assets/image/illustrations.svg";
 import profileDriv from "../../../src/assets/image/profileDriv.svg";
 import point from "../../../src/assets/image/points.svg";
 import finish from "../../../src/assets/image/finish.svg";
