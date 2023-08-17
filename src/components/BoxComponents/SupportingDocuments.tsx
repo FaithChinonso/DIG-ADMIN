@@ -2,7 +2,7 @@ import { supportingDocument } from "../../utils/analytics";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ActionMenuBase from "../ActionMenu/ActionMenuBase";
 import Image from "next/image";
-import emptyState from "src/assets/image/illustrations.svg";
+import emptyState from "../../../src/assets/image/illustrations.svg";
 import ActionMenuItem from "../ActionMenu/ActionMenuItem";
 import { useState } from "react";
 const SupportingDocuments = ({ data }: any) => {
