@@ -5,7 +5,6 @@ import warning from "../../assets/image/warning.svg";
 import tripComplete from "../../assets/image/tripComplete.svg";
 import refresh from "../../assets/image/refresh.svg";
 import Image from "next/image";
-import { trackRide } from "../../utils/analytics";
 import moment from "moment";
 import emptyState from "../../assets/image/illustrations.svg";
 
