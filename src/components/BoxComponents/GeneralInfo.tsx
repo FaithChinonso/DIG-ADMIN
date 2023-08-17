@@ -1,7 +1,6 @@
 import moment from "moment";
 import Image from "next/image";
 import { calculateAverageRating } from "src/utils/helperFunctions";
-import profileDriv from "../../../src/assets/image/profileDriv.svg";
 
 const GeneralInfo = ({ data }: any) => {
   console.log(data);

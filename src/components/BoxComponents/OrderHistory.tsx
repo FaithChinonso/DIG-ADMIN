@@ -7,7 +7,6 @@ import OrderTable from "../tables/OrderTable";
 const OrderHistory = ({ data, id, role }: any) => {
   const [orders, setOrders] = useState<any>([]);
   const request = useHTTPGet();
-  const dispatch = useAppDispatch();
 
   const fetchOrdersByAMerchant = useCallback(() => {
     const accessToken = sessionStorage.getItem("accessToken");
