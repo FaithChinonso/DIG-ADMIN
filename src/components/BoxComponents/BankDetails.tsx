@@ -1,5 +1,5 @@
 import Image from "next/image";
-import emptyState from "../../../src/assets/image/illustration.svg";
+import emptyState from "../../../src/assets/image/illustrations.svg";
 
 const BankDetails = ({ data }: any) => {
   console.log(data);
