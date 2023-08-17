@@ -22,6 +22,7 @@ const SignInForm = ({ login }: any) => {
   const { error } = useAppSelector(state => state.auth);
   const [formisValid, setFormIsValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [formisTouched, setFormIsTouched] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {
@@ -72,10 +73,14 @@ const SignInForm = ({ login }: any) => {
               },
             }
           );
-          setIsLoading(false);
-          window.location.href = "/dashboard/overview";
-
+          dispatch(
+            uiActions.openToastAndSetContent({
+              toastContent: error,
+              backgroundColor: "red",
+            })
+          );
           dispatch(authActions.loginHandler(res.data));
+          setSuccess(true);
         } catch (err: any) {
           setIsLoading(false);
           console.log(err);
@@ -94,6 +99,20 @@ const SignInForm = ({ login }: any) => {
     if (isLoading === false) {
       dispatch(uiActions.closeLoader());
     }
+    if (success) {
+      dispatch(
+        uiActions.openToastAndSetContent({
+          toastContent: "Login Successfully",
+          backgroundColor: "green",
+        })
+      );
+
+      window.location.href = "/dashboard/overview";
+      setIsLoading(false);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 2000);
+    }
     if (error.length > 0) {
       dispatch(
         uiActions.openToastAndSetContent({
@@ -105,7 +124,7 @@ const SignInForm = ({ login }: any) => {
         dispatch(authActions.clearState());
       }, 2000);
     }
-  }, [dispatch, error, isLoading]);
+  }, [dispatch, error, isLoading, success]);
   return (
     <Provider store={store}>
       <form onSubmit={submitFormHandler} className="w-full mt-[50px]">
