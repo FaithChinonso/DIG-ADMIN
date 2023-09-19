@@ -1,75 +1,56 @@
-import verify from "../../../src/assets/image/verify.svg";
-import gender from "../../../src/assets/image/gender.svg";
-import birth from "../../../src/assets/image/birth.svg";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import { Avatar } from "@mui/material";
 import Box from "@mui/material/Box";
-import { MyRidersValue } from "../../../src/utils/boxValues";
-import { useCallback, useEffect, useState } from "react";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Image from "next/image";
-import BankDetails from "../../../src/components/BoxComponents/BankDetails";
-import { useDispatch, useSelector } from "react-redux";
-import ActionList from "../../../src/components/ActionList";
+import { useRouter } from "next/router";
+import { GetStaticProps } from "next/types";
+import { useEffect, useState } from "react";
+import { tripType } from "src/@types/data";
+import Trip from "src/components/BoxComponents/Trip";
 import ParentContainer from "src/components/ParentContainer";
 import useHTTPGet from "src/Hooks/use-httpget";
-import { TabPanel, a11yProps } from "src/utils/helperFunctions";
-import { tripApi, userApi } from "src/components/api";
-import { GetStaticProps } from "next/types";
-import { useAppSelector } from "src/Hooks/use-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { getTripsByRider } from "src/redux/store/features/trip-slice";
+import { clearError, clearMessage, getAUser } from "src/redux/store/features/user-slice";
 import { uiActions } from "src/redux/store/ui-slice";
-import { clearError, clearMessage } from "src/redux/store/features/user-slice";
-import Trip from "src/components/BoxComponents/Trip";
-import { tripType, riderType } from "src/@types/data";
+import { a11yProps, TabPanel } from "src/utils/helperFunctions";
+import verify from "../../../src/assets/image/verify.svg";
+import BankDetails from "../../../src/components/BoxComponents/BankDetails";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
-import { Avatar } from "@mui/material";
+import { MyRidersValue } from "../../../src/utils/boxValues";
 
 const OneUser = ({ riderID }: any) => {
   const request = useHTTPGet();
-  const dispatch = useDispatch();
-  const [user, setUser] = useState<riderType>();
-  const [trips, setTrips] = useState<tripType[]>([]);
+  const dispatch = useAppDispatch();
+  const router =useRouter()
+  // const [user, setUser] = useState<riderType>();
+  // const [trips, setTrips] = useState<tripType[]>([]);
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { loading, success, message, error } = useAppSelector(
+  const { loading, success, message, error,user } = useAppSelector(
     (state: any) => state.user
+  );
+    const { loading:tripLoading, tripsByRider:trips }: {loading:boolean, tripsByRider:tripType[]} = useAppSelector(
+    (state: any) => state.trip
   );
   console.log(trips);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const fetchAUser = useCallback(
-    async (id: any) => {
-      const url = `${userApi}/single-user/${id}`;
-      const accessToken = sessionStorage.getItem("accessToken");
-      const dataFunction = (res: any) => {
-        console.log(res);
-        setUser(res.data.data);
-      };
-      request({ url, accessToken }, dataFunction);
-    },
-    [request]
-  );
-  const fetchAllTrips = useCallback(
-    (id: any) => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const url = `${tripApi}/trips-by-rider/${id}`;
-      const dataFunction = (res: any) => {
-        setTrips(res.data.data);
-      };
-      request({ url, accessToken }, dataFunction);
-    },
-    [request]
-  );
-  useEffect(() => {
-    fetchAUser(riderID);
-    fetchAllTrips(riderID);
-  }, [riderID]);
 
   useEffect(() => {
-    if (loading === true) {
+    dispatch(getAUser(riderID))
+      dispatch(getTripsByRider(riderID))
+  
+    // fetchAllTrips(riderID);
+  }, [dispatch, riderID]);
+
+  useEffect(() => {
+    if (loading === true || tripLoading === true) {
       dispatch(uiActions.openLoader());
     }
-    if (loading === false) {
+    if (loading === false && tripLoading === false ) {
       dispatch(uiActions.closeLoader());
     }
     if (error.length > 0) {
@@ -95,12 +76,22 @@ const OneUser = ({ riderID }: any) => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch]);
+  }, [loading, error, message, success, dispatch, tripLoading]);
   return (
     <ParentContainer>
+      
       <div className="">
-        <ActionList user={user} />
-        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center">
+      <div className="flex justify-end w-full mb-[80px]">
+
+
+              <button
+        className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center"
+        onClick={() => router.back()}
+      >
+        Back to List
+      </button>
+      </div>
+        <div className="bg-lightPurple flex-col rounded-[20px] px-[8px] py-[13px] md:px-[28px] flex md:flex-row justify-between relative z-1 md:items-start items-center mt-[50px]">
           <div className="flex gap-[30px] items-start text-white md:w-[300px] w-full">
             {user?.image && <Avatar src={user?.image} alt={user?.fullName} />}
             <div className="flex flex-col gap-[14px]">
@@ -112,12 +103,22 @@ const OneUser = ({ riderID }: any) => {
                   </div>
                 )}
               </div>
-              <div className="flex justify-between gap-[9px] items-center">
-                <h4 className="text-[12px]">{user?.role}</h4>
+              <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">Email</h4>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[12px]">{user?.email}</div>
               </div>
-              <div className="flex justify-between gap-[9px] items-center">
+                <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">Gender</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.gender}</div>
+              </div>
+                <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">Phone</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.phone}</div>
+              </div>
+              {/* <div className="flex  gap-[9px] items-center">
                 {user?.gender && (
                   <h4 className="text-[12px]">
                     {" "}
@@ -142,7 +143,7 @@ const OneUser = ({ riderID }: any) => {
                     {user?.phone}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <div className="md:w-[213px] w-full bg-faintWhite flex justify-between text-white p-3 rounded-md h-[53px] gap-3">
                 <div className="flex flex-col justify-between">
@@ -162,30 +163,23 @@ const OneUser = ({ riderID }: any) => {
             </div>
           </div>
 
-          <div className="flex md:flex-col  my-3 items-center justify-around text-white w-full">
-            <div className="flex flex-row gap-3 text-white">
-              <div className="text-white flex flex-col">
-                <h3 className="text-[13px] mt-[28px]"> House Address</h3>
-                <p className="text-[10px] text-center">
-                  {user?.profile?.homeLocation?.homeAddress}
-                </p>
+          <div className="flex flex-col  gap-[30px] justify-around text-white md:w-[300px] w-full h-full mt-[30px]">
+               <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">House Address</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.profile?.homeLocation?.homeAddress || 'not set'}</div>
               </div>
-              {user?.profile?.workLocation ? (
-                <div className="text-white flex flex-col">
-                  <h3 className="text-[13px] mt-[28px]">Work Location</h3>
-                  <p className="text-[10px] text-center">
-                    {user?.profile?.workLocation?.workAddress}
-                  </p>
-                </div>
-              ) : null}
-            </div>
-
-            <div className="text-white flex flex-col ">
-              <h3 className="text-[13px] mt-[28px]">Completed Rides</h3>
-              <p className="text-[10px] text-center">
-                {user?.profile?.completedRides}
-              </p>
-            </div>
+                <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">Work Location</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.profile?.workLocation?.workAddress || 'not set'}</div>
+              </div>
+                <div className="flex  gap-[9px] items-center">
+                <h4 className="text-[12px]">Completed Rides</h4>
+                <div className="bg-white w-1 h-1 rounded-[50%]"></div>
+                <div className="text-[12px]">{user?.profile?.completedRides || 'nil'}</div>
+              </div>
+         
           </div>
 
           <div className="flex flex-col justify-around text-white w-full md:w-[200px]">

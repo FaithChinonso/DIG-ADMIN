@@ -18,11 +18,63 @@ export const getMyTrips = createAsyncThunk(
     }
   }
 );
+export const getTripsByRider = createAsyncThunk(
+  "trip/getTripsByRider",
+  async (id: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${tripApi}/trips-by-rider/${id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getTripsByDriver = createAsyncThunk(
+  "trip/getTripsByDriver",
+  async (id: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${tripApi}/trips-by-driver/${id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+// export const getActiveTrips = createAsyncThunk(
+//   "trip/getActiveTrips",
+//   async (data: any, thunkAPI: any) => {
+//     try {
+//       const response = await axios.get(`${tripApi}/trips/trips-by-status/Requested|Accepted|Arrived|Ongoing`, {
+//         headers: { Authorization: `Bearer ${accessToken}` },
+//       });
+//       return response.data;
+//     } catch (error: any) {
+//       return thunkAPI.rejectWithValue(error);
+//     }
+//   }
+// );
 export const fetchMyTrips = createAsyncThunk(
   "trip/fetchMyTrips",
   async (data: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${tripApi}/all-trips`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const fetchATrip = createAsyncThunk(
+  "trip/fetchATrips",
+  async (id: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${tripApi}/single-trip/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -46,6 +98,10 @@ export const deleteTrip = createAsyncThunk(
 );
 interface tripState {
   trips: tripType[];
+  tripsByRider: tripType[];
+   tripsByDriver: tripType[];
+  trip:tripType;
+
   success: boolean;
   loading: boolean;
   error: string;
@@ -54,6 +110,10 @@ interface tripState {
 
 const initialState: tripState = {
   trips: [],
+   tripsByRider: [],
+    tripsByDriver: [],
+  trip: null,
+
   success: false,
   loading: false,
   error: "",
@@ -85,6 +145,27 @@ const tripSlice = createSlice({
         state.trips = action.payload.data;
       }
     );
+      
+    builder.addCase(getTripsByRider.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getTripsByRider.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.tripsByRider = action.payload.data;
+      }
+    );
+        builder.addCase(getTripsByDriver.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getTripsByDriver.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.tripsByDriver = action.payload.data;
+      }
+    );
     builder.addCase(
       fetchMyTrips.fulfilled,
       (state, action: PayloadAction<any>) => {
@@ -99,6 +180,19 @@ const tripSlice = createSlice({
         state.error = err;
       }
     );
+       builder.addCase(fetchATrip.pending, state => {
+      state.loading = true;
+    });
+      builder.addCase(
+      fetchATrip.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.trip = action.payload.data;
+      }
+    );
+      builder.addCase(fetchATrip.rejected, state => {
+      state.loading = false;
+    });
     builder.addCase(
       deleteTrip.fulfilled,
       (state, action: PayloadAction<any>) => {

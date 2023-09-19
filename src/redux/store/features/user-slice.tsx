@@ -5,9 +5,9 @@ import {
   consumerType,
   driverType,
   merchantType,
-  riderType,
+  riderType
 } from "src/@types/data";
-import { baseUrl, userApi } from "src/components/api";
+import { userApi } from "src/components/api";
 import { errorFunction } from "src/utils/helperFunctions";
 const accessToken =
   typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : "";
@@ -97,6 +97,19 @@ export const getMyuser = createAsyncThunk(
   async (adat: any, thunkAPI: any) => {
     try {
       const response = await axios.get(`${userApi}/all-users`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const getAUser = createAsyncThunk(
+  "user/getAUser",
+  async (id: any, thunkAPI: any) => {
+    try {
+      const response = await axios.get(`${userApi}/single-user/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response.data;
@@ -226,8 +239,9 @@ export const edituser = createAsyncThunk(
   "user/edituser",
   async (data: any, thunkAPI: any) => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${userApi}/${data.endpoint}/${data.userID}`,
+        {},
 
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -261,13 +275,21 @@ interface userState {
     | riderType[]
     | adminType[];
   merchants: merchantType[];
-  states: any[];
+  states: any;
+  user: | merchantType
+    | driverType
+    | consumerTypes
+    | riderType
+    | adminType;
   merchantCategory: any[];
   drivers: driverType[];
+  activeDrivers: any[];
   consumers: consumerType[];
   riders: riderType[];
   success: boolean;
   loading: boolean;
+  loadingDelete: boolean;
+  loadingEdit: boolean;
   loadingState: boolean;
   loadingCategory: boolean;
   error: string;
@@ -277,6 +299,8 @@ interface userState {
 const initialState: userState = {
   users: [],
   states: [],
+  activeDrivers: [],
+  user:null,
   merchantCategory: [],
   merchants: [],
   drivers: [],
@@ -285,7 +309,9 @@ const initialState: userState = {
 
   success: false,
   loadingState: false,
+  loadingDelete: false,
   loading: false,
+  loadingEdit: false,
   loadingCategory: false,
   error: "",
   message: "",
@@ -302,6 +328,9 @@ const userSlice = createSlice({
     clearError: state => {
       state.error = "";
       state.success = false;
+    },
+     setDriversLocation: (state, action) => {
+      state.activeDrivers = action.payload;
     },
   },
 
@@ -333,6 +362,16 @@ const userSlice = createSlice({
       (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.users = action.payload.data;
+      }
+    );
+        builder.addCase(getAUser.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getAUser.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload.data;
       }
     );
     builder.addCase(
@@ -490,6 +529,7 @@ const userSlice = createSlice({
     builder.addCase(
       updateuser.rejected,
       (state, action: PayloadAction<any>) => {
+        state.loadingDelete = false;
         state.loading = false;
         state.error = errorFunction(action.payload);
       }
@@ -497,6 +537,7 @@ const userSlice = createSlice({
     builder.addCase(
       deleteuser.fulfilled,
       (state, action: PayloadAction<any>) => {
+        state.loadingDelete = false;
         state.loading = false;
         state.success = true;
         state.message = action.payload.message;
@@ -505,27 +546,34 @@ const userSlice = createSlice({
     builder.addCase(
       deleteuser.rejected,
       (state, action: PayloadAction<any>) => {
+        state.loadingDelete = false;
         state.loading = false;
         state.error = errorFunction(action.payload);
       }
     );
+    builder.addCase(edituser.pending, state => {
+      state.loadingEdit = true;
+    });
     builder.addCase(edituser.fulfilled, (state, action: PayloadAction<any>) => {
       state.loading = false;
+      state.loadingEdit = false;
       state.success = true;
       state.message = action.payload.message;
     });
     builder.addCase(edituser.rejected, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      if (action.payload.response) {
-        state.error = action.payload.response.data.message;
+      state.loadingEdit = false;
+      if (action?.payload?.response) {
+        state.error = action?.payload?.response?.data?.message;
       } else if (action.payload.request) {
         state.error = action.payload.response.data.message;
       } else {
         state.error = "An Error occured please try again";
       }
     });
+ 
   },
 });
-export const { clearMessage, clearError } = userSlice.actions;
+export const { clearMessage, clearError,setDriversLocation } = userSlice.actions;
 
 export default userSlice.reducer;

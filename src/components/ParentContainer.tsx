@@ -1,18 +1,51 @@
-import type { AppProps } from "next/app";
-import { GetStaticProps } from "next/types";
-import { ReactNode, useEffect } from "react";
-import { useAppDispatch } from "src/Hooks/use-redux";
-import { getMyProfile } from "src/redux/store/auth-slice";
-import DrawerCard from "./DrawerCard";
 
-import Loader from "./Loader";
-import Modal from "./Modal";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { ReactNode, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { getMyProfile } from "src/redux/store/auth-slice";
+import { setDriversLocation } from "src/redux/store/features/user-slice";
+import { db } from "../../firebase";
+
 import SideNav from "./SideNav";
-import Toast from "./Toast";
 import TopNav from "./TopNav";
 
 const ParentContainer = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
+    const { adminDetails } = useAppSelector(state => state.auth);
+    useEffect(() => {
+    const watchDrivers = () => {
+      console.log();
+      const unsub = onSnapshot(
+        query(collection(db, "driver"), where('onTrip', '==', true)),
+        s => {
+  
+          if (s.empty) return;
+
+          let set = s.docs.map(i => {
+            const data = i.data();
+            console.log('all',  data);
+            return {
+              id: data.profile?.driverID,
+              name: data?.fullName,
+              image: data.image,
+              currentLocation: {
+                lat: data?.currentLocation?.latitude,
+                lng: data?.currentLocation?.longitude,
+              },
+            };
+          });
+
+          console.log(set);
+          dispatch(setDriversLocation(set));
+        }
+      );
+      return unsub;
+    };
+    
+      const unsub = watchDrivers();
+      return () => unsub();
+  
+  }, [ dispatch]);
   useEffect(() => {
     dispatch(getMyProfile({}));
   }, []);

@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import { SignUpType } from "../@types/form";
-import useInput from "../Hooks/use-input";
 import HidePassword from "../assets/image/hide-password.svg";
 import ShowPassword from "../assets/image/show-password.svg";
+import useInput from "../Hooks/use-input";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Provider, useDispatch } from "react-redux";
-import { uiActions } from "src/redux/store/ui-slice";
 import axios from "axios";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Provider } from "react-redux";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
 import store from "src/redux/store";
 import { authActions } from "src/redux/store/auth-slice";
+import { uiActions } from "src/redux/store/ui-slice";
 import { is8Chars, isNotEmpty } from "src/utils/helperFunctions";
-import { TailSpin } from "react-loader-spinner";
-import { useAppSelector, useAppDispatch } from "src/Hooks/use-redux";
 
 const SignInForm = ({ login }: any) => {
   const router = useRouter();
@@ -100,6 +97,10 @@ const SignInForm = ({ login }: any) => {
       dispatch(uiActions.closeLoader());
     }
     if (success) {
+      setTimeout(() => {
+        
+        window.location.href = "/dashboard/overview";
+      }, 1000);
       dispatch(
         uiActions.openToastAndSetContent({
           toastContent: "Login Successfully",
@@ -107,11 +108,10 @@ const SignInForm = ({ login }: any) => {
         })
       );
 
-      window.location.href = "/dashboard/overview";
       setIsLoading(false);
       setTimeout(() => {
         setSuccess(false);
-      }, 2000);
+      }, 5000);
     }
     if (error.length > 0) {
       dispatch(
@@ -182,24 +182,12 @@ const SignInForm = ({ login }: any) => {
         </div>
         <div className="text-red-400 text-[10px]">{passwordError}</div>
 
-        {isLoading ? (
-          <div className="bg-lightPurple h-full w-full justify-center items-center py-3 rounded-[10px] mt-[30px]">
-            <TailSpin
-              color="#fff"
-              width={16}
-              height={16}
-              radius={8}
-              wrapperStyle={{ margin: "0px auto", alignSelf: "center" }}
-            />
-          </div>
-        ) : (
-          <button
-            type="submit"
-            className="bg-lightPurple w-full text-white text-center py-3 rounded-[10px] mt-[30px]"
-          >
-            Sign In{" "}
-          </button>
-        )}
+        <button
+          type="submit"
+          className="bg-lightPurple w-full text-white text-center py-3 rounded-[10px] mt-[30px]"
+        >
+          Sign In{" "}
+        </button>
       </form>
     </Provider>
   );

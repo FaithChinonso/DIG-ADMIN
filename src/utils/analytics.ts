@@ -1,11 +1,7 @@
-import cardImage from "../assets/image/cardImage.jpg";
-import riderPic from "../assets/image/riderPic.svg";
-import documentOne from "../assets/image/documentOne.svg";
-import green from "../assets/image/green.jpeg";
-import orange from "../assets/image/orange.jpeg";
-import blue from "../assets/image/blue.jpeg";
-import documentTwo from "../assets/image/documentTwo.svg";
-import WidgetsIcon from "@mui/icons-material/Widgets";
+import WidgetsIcon from "@mui/icons-material/Widgets"
+import documentOne from "../assets/image/documentOne.svg"
+import documentTwo from "../assets/image/documentTwo.svg"
+import riderPic from "../assets/image/riderPic.svg"
 
 export const innerNav = [
   {
@@ -16,7 +12,7 @@ export const innerNav = [
     borderColor: "#BBAC69",
     initials: "GE",
     name: "General Administration",
-    route: "/dashboard",
+    route: "/dashboard/overview",
     navItems: [
       {
         id: 1356,
@@ -72,7 +68,7 @@ export const innerNav = [
     borderColor: "#49D3BA",
     initials: "FP",
     name: "Flip",
-    route: "/flip",
+    route: "/flip/merchants",
     navItems: [
       {
         id: 234253,
@@ -121,7 +117,8 @@ export const innerNav = [
     borderColor: "#0195FF",
     initials: "CU",
     name: "Cue",
-    route: "/cue",
+
+    route: "/cue/drivers",
     navItems: [
       {
         id: 2345529,
@@ -148,6 +145,12 @@ export const innerNav = [
         value: "cue",
         route: "/cue/SOS",
       },
+      {
+        id: 56360987651,
+        name: "Tracking",
+        value: "cue",
+        route: "/cue/tracking",
+      },
     ],
   },
 
@@ -161,7 +164,7 @@ export const innerNav = [
   //   name: "Payment Interface",
   //   route: "/payment",
   // },
-];
+]
 export const outerNav = [
   {
     id: 1,
@@ -269,14 +272,19 @@ export const outerNav = [
     value: "cue",
     route: "/cue/SOS",
   },
-
+  {
+    id: 17,
+    name: "Tracking",
+    value: "cue",
+    route: "/cue/tracking",
+  },
   // {
   //   id: 87,
   //   name: "Audit Trail",
   //   value: "cue",
   //   route: "/cue/audit",
   // },
-];
+]
 
 export const bottomNav = [
   {
@@ -287,7 +295,7 @@ export const bottomNav = [
     id: 2,
     name: "LOGOUT",
   },
-];
+]
 export const tableLoad = [
   { region: "Anom", amount: 19 },
   { region: "Megha", amount: 19 },
@@ -295,7 +303,7 @@ export const tableLoad = [
   { region: "Anom", amount: 19 },
   { region: "Megha", amount: 19 },
   { region: "Subham", amount: 25 },
-];
+]
 export const supportingDocument = [
   {
     id: "1",
@@ -309,7 +317,7 @@ export const supportingDocument = [
     name: "Premise License",
     uploaded: "Uploaded April 17, 2022",
   },
-];
+]
 export const ridersFeedback = [
   {
     id: "1",
@@ -323,7 +331,7 @@ export const ridersFeedback = [
     name: "Sanusi Danladi",
     email: "Sansus@gmail.com",
   },
-];
+]
 export const tripHistory = [
   {
     id: "1",
@@ -349,7 +357,7 @@ export const tripHistory = [
       profile: riderPic,
     },
   },
-];
+]
 export const trackRide = [
   {
     name: "Booking Confirmed",
@@ -376,7 +384,7 @@ export const trackRide = [
 
     time: "03:55pm",
   },
-];
+]
 export const driver = [
   {
     id: "1873663",
@@ -405,7 +413,7 @@ export const driver = [
     tripStatus: "Inactive",
     gender: "Male",
   },
-];
+]
 export const request = [
   {
     withdrawalId: "1873663",
@@ -425,52 +433,52 @@ export const request = [
     purpose: "Unverified",
     amountRequested: "4000",
   },
-];
+]
 export const delivery = [
   { id: 0, name: null },
   { id: 1, name: "Yes" },
   { id: 2, name: "No" },
-];
+]
 export const role = [
-  { id: 1, name: "Select Role", value: '' },
-  { id: 2, name: "Consumer", value: "consumer" },
-  { id: 3, name: "Merchant", value: "merchant" },
-  { id: 4, name: "Rider", value: "rider" },
-  { id: 5, name: "Driver", value: "driver" },
-];
+  { id: 1, label: "Select Role", value: "" },
+  { id: 2, label: "Consumer", value: "consumer" },
+  { id: 3, label: "Merchant", value: "merchant" },
+  { id: 4, label: "Rider", value: "rider" },
+  { id: 5, label: "Driver", value: "driver" },
+]
 export const productLevel = [
-  { id: 1, name: "Select Product Level", value: '' },
-  { id: 2, name: "Beginner", value: 'Beginner' },
-  { id: 3, name: "Intermediate", value: 'Intermediate' },
-  { id: 4, name: "Expert", value: 'expert' },
-];
+  { id: 1, name: "Select Product Level", value: "" },
+  { id: 2, name: "Beginner", value: "Beginner" },
+  { id: 3, name: "Intermediate", value: "Intermediate" },
+  { id: 4, name: "Expert", value: "expert" },
+]
 export const bool = [
   { id: 0, name: "Yes" },
   { id: 1, name: "No" },
-];
+]
 export const negotiable = [
   { id: 1, name: "Yes" },
   { id: 0, name: "No" },
-];
+]
 export const gender = [
-  { id: 1, name: "Select Gender", value: '' },
-  { id: 2, name: "Female", value: "Female" },
-  { id: 3, name: "Male", value: "Male" },
-];
+  { id: 1, label: "Select Gender", value: "" },
+  { id: 2, label: "Female", value: "Female" },
+  { id: 3, label: "Male", value: "Male" },
+]
 
 export const category = [
-  { id: 1, name: "Select Category", value: '' },
-  { id: 2, name: "Electronics", value: 'electronics' },
+  { id: 1, name: "Select Category", value: "" },
+  { id: 2, name: "Electronics", value: "electronics" },
   { id: 3, name: "Car Dealership", value: "Car Dealership" },
   { id: 4, name: "Beauty Products", value: "Beauty Products" },
-];
+]
 export const merchantType = [
-  { id: 1, name: "Select Merchant Type", value: '' },
-  { id: 2, name: "Business", value: "business" },
-  { id: 3, name: "Personal", value: "personal" },
-];
+  { id: 1, label: "Select Merchant Type", value: "" },
+  { id: 2, label: "Business", value: "business" },
+  { id: 3, label: "Personal", value: "personal" },
+]
 export const applicationType = [
-  { id: 1, name: "Select Application Type", value: '' },
-  { id: 2, name: "Flip", value: 'flip' },
-  { id: 3, name: "Cue", vaalue: 'cue' },
-];
+  { id: 1, name: "Select Application Type", value: "" },
+  { id: 2, name: "Flip", value: "flip" },
+  { id: 3, name: "Cue", vaalue: "cue" },
+]

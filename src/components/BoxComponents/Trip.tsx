@@ -1,23 +1,26 @@
-import Image from "next/image";
-import emptyState from "../../../src/assets/image/empty.png";
-import profileDriv from "../../../src/assets/image/profileDriv.svg";
-import point from "../../../src/assets/image/points.svg";
-import finish from "../../../src/assets/image/finish.svg";
-import progress from "../../../src/assets/image/progres.svg";
-import transit from "../../../src/assets/image/transit.svg";
-import line from "../../../src/assets/image/line.svg";
-import complete from "../../../src/assets/image/complete.svg";
 import moment from "moment";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { BsArrowRight } from 'react-icons/bs';
+import emptyState from "../../../src/assets/image/empty.png";
+import finish from "../../../src/assets/image/finish.svg";
+import line from "../../../src/assets/image/line.svg";
+import point from "../../../src/assets/image/points.svg";
+import profileDriv from "../../../src/assets/image/profileDriv.svg";
+import progress from "../../../src/assets/image/progres.svg";
 import StatusCell from "../StatusCell";
 
+
 const Trip = ({ data, type }: any) => {
+  const router = useRouter()
   console.log(data);
   return data.length > 0 ? (
     <div className="flex flex-col gap-4 w-full md:w-[400px] max-h-[700px] overflow-auto">
       {data?.map((item: any) => (
         <div
           className="shadow-tableShadow w-full p-[10px] md:p-[20px]"
-          key={item.id}
+          key={item?.tripID}
+      
         >
           <div className="flex justify-between items-start mb-5">
             <div className=" w-[70px]">
@@ -100,18 +103,20 @@ const Trip = ({ data, type }: any) => {
                 </div>
               </div>
             </div>
-            <div>
-              <Image
-                src={item.status === "completed" ? transit : complete}
-                alt={""}
-              />
+            <div className="flex flex-row mr-3 gap-3 items-center hover:border-b hover:border-offWhite h-[20px]"   onClick = {()=>  router.push(`/cue/trips/${item?.tripID}`)}>
+
+
+            <div className="text-[12px] text-text cursor-pointer">
+             View Trip 
+            </div>
+            <BsArrowRight color='rgba(132, 135, 163, 1)' />
             </div>
           </div>
         </div>
       ))}
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center mx-auto mt-10">
+    <div className="flex flex-col items-center justify-center mx-auto mt-10 ">
       <Image src={emptyState} alt="" />
       <div className="text-[#8487A3] text-xs -mt-2">No Trips Available</div>
     </div>

@@ -48,6 +48,7 @@ const SideNav = (props: any) => {
                 className="px-4"
                 onClick={() => {
                   setValue(item.value);
+                  router.push(item.route);
                 }}
                 style={{
                   borderLeft: includesSubstring(item.value, path)
