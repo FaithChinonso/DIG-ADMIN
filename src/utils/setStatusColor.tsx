@@ -88,6 +88,8 @@ export const StatusColor = (status: any) => {
         return "#ef9a9a";
       case "Arriving_pickup":
         return "#0B0B45";
+              case "Arrived":
+        return "#EA6307";
       case "On leave":
         return "#616161";
 

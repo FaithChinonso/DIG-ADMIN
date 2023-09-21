@@ -79,12 +79,12 @@ console.log(pickup,dropoff)
 
   return isLoaded ? (
     <>
-      <Script
+      {/* <Script
         async
         defer
         src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
         type="text/javascript"
-      ></Script>
+      ></Script> */}
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}

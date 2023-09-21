@@ -101,6 +101,7 @@ interface tripState {
   tripsByRider: tripType[];
    tripsByDriver: tripType[];
   trip:tripType;
+  activeTrips:any[];
 
   success: boolean;
   loading: boolean;
@@ -113,7 +114,7 @@ const initialState: tripState = {
    tripsByRider: [],
     tripsByDriver: [],
   trip: null,
-
+  activeTrips: [],
   success: false,
   loading: false,
   error: "",
@@ -131,6 +132,9 @@ const tripSlice = createSlice({
     clearError: state => {
       state.error = "";
       state.success = false;
+    },
+     setActiveTrips: (state, action) => {
+      state.activeTrips = action.payload;
     },
   },
 
@@ -211,6 +215,6 @@ const tripSlice = createSlice({
     );
   },
 });
-export const { clearMessage, clearError } = tripSlice.actions;
+export const { clearMessage, clearError, setActiveTrips } = tripSlice.actions;
 
 export default tripSlice.reducer;

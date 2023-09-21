@@ -101,7 +101,8 @@ console.log(driverLocation)
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
         <div className="absolute top-0 left-0 w-full h-full -z-10">
-          <Map address={driverLocation} name={driver?.fullName} />
+          <Map address={driverLocation} name={driver?.fullName}  image={driver?.image ||  ''}
+           />
         </div>
         <div className="mt-14">
           <button

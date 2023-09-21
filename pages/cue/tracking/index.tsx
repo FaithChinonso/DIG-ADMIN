@@ -11,7 +11,9 @@ const Tracking = () => {
 
   return (
     <ParentContainer>
-      <div className="">
+
+        <div  className='w-full h-full'>
+
         <Map address={address} name='Admin' type='track' />
       </div>
     </ParentContainer>
