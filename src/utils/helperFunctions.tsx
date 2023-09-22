@@ -118,3 +118,20 @@ export const formatData = (client: any) => {
     images: client?.product?.images,
   };
 };
+
+export function getMinutesDifference(dateString1:string, dateString2:string) {
+  console.log(dateString1,dateString2);
+  const date1:any = new Date(dateString1);
+  const date2:any = new Date(dateString2);
+
+  // Calculate the difference in milliseconds
+  const differenceMs = date2 - date1;
+
+  // Convert milliseconds to minutes
+  const differenceMinutes = Math.floor(differenceMs / (1000 * 60));
+
+  return dateString2 ? `${differenceMinutes} ${differenceMinutes >  0 ? 'mins':'min'}` : 'ongoing';
+}
+export function formatNumberWithCommas(number) {
+  return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}

@@ -1,30 +1,27 @@
-import driverPic from "../../../src/assets/image/driverPic.png";
-import call from "../../../src/assets/image/call.svg";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import { doc, onSnapshot } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { MyDriversValue } from "../../../src/utils/boxValues";
-import { useCallback, useEffect, useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
-import Trip from "../../../src/components/BoxComponents/Trip";
-import TrackRide from "../../../src/components/BoxComponents/TrackRide";
-import maps from "src/assets/image/maps.png";
-import ParentContainer from "src/components/ParentContainer";
-import { TabPanel, a11yProps } from "src/utils/helperFunctions";
 import { GetStaticProps } from "next/types";
-import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { tripApi, userApi } from "src/components/api";
-import useHTTPGet from "src/Hooks/use-httpget";
-import { uiActions } from "src/redux/store/ui-slice";
-import { clearError, clearMessage } from "src/redux/store/features/user-slice";
-import { driverType, tripType } from "src/@types/data";
-import DriverTrip from "src/components/tables/DriverTrip";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { useEffect, useState } from "react";
+import { tripType } from "src/@types/data";
+import ImageDialog from "src/components/ImageDialog";
 import Map from "src/components/Map";
-import { Avatar } from "@mui/material";
+import ParentContainer from "src/components/ParentContainer";
+import useHTTPGet from "src/Hooks/use-httpget";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { getTripsByDriver } from "src/redux/store/features/trip-slice";
+import { clearError, clearMessage, getAUser } from "src/redux/store/features/user-slice";
+import { uiActions } from "src/redux/store/ui-slice";
+import { a11yProps, TabPanel } from "src/utils/helperFunctions";
+import { db } from "../../../firebase";
+import verify from "../../../src/assets/image/verify.svg";
+import GeneralInfo from "../../../src/components/BoxComponents/GeneralInfo";
+import TrackRide from "../../../src/components/BoxComponents/TrackRide";
+import Trip from "../../../src/components/BoxComponents/Trip";
+import { MyDriversValue } from "../../../src/utils/boxValues";
 
 const OneDriver = ({ driverId }: any) => {
   const request = useHTTPGet();
@@ -33,33 +30,11 @@ const OneDriver = ({ driverId }: any) => {
   const [driverLocation, setDriverLocation] = useState();
   const [selected, setSelected] = useState(1);
   const [value, setValue] = useState(0);
-  const { drivers, loading, success, error, message }: any = useAppSelector(
+  const { user:driver, loading, success, error, message }: any = useAppSelector(
     state => state.user
   );
-  const [driver, setDriver] = useState<driverType>();
-  const [trips, setTrips] = useState<tripType[]>([]);
-  const fetchADriver = useCallback(
-    async (id: any) => {
-      const url = `${userApi}/single-user/${id}`;
-      const accessToken = sessionStorage.getItem("accessToken");
-      const dataFunction = (res: any) => {
-        console.log(res);
-        setDriver(res.data.data);
-      };
-      request({ url, accessToken }, dataFunction);
-    },
-    [request]
-  );
-  const fetchAllTrips = useCallback(
-    (id: any) => {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const url = `${tripApi}/trips-by-driver/${id}`;
-      const dataFunction = (res: any) => {
-        setTrips(res.data.data);
-      };
-      request({ url, accessToken }, dataFunction);
-    },
-    [request]
+      const { loading:tripLoading, tripsByDriver:trips }: {loading:boolean, tripsByDriver:tripType[]} = useAppSelector(
+    (state: any) => state.trip
   );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -67,9 +42,10 @@ const OneDriver = ({ driverId }: any) => {
   };
 
   useEffect(() => {
-    fetchADriver(driverId);
-    fetchAllTrips(driverId);
-  }, [driverId]);
+   
+     dispatch(getAUser(driverId))
+      dispatch(getTripsByDriver(driverId))
+  }, [dispatch, driverId]);
 
   useEffect(() => {
     // setLoading(true);
@@ -88,10 +64,10 @@ const OneDriver = ({ driverId }: any) => {
   }, [driver?.profile?.driverID]);
 
   useEffect(() => {
-    if (loading === true) {
+  if (loading === true || tripLoading === true) {
       dispatch(uiActions.openLoader());
     }
-    if (loading === false) {
+    if (loading === false || tripLoading === false ) {
       dispatch(uiActions.closeLoader());
     }
     if (error.length > 0) {
@@ -113,17 +89,20 @@ const OneDriver = ({ driverId }: any) => {
           backgroundColor: "#49D3BA",
         })
       );
-      fetchADriver(driverId);
+ dispatch(getAUser(driverId))
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
     }
-  }, [loading, error, message, success, dispatch, driverId, fetchADriver]);
+  }, [loading, error, message, success, dispatch, driverId, tripLoading]);
+console.log(driverLocation)
+
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px] absolute top-0 z-20 bg-white w-full h-[150vh]">
         <div className="absolute top-0 left-0 w-full h-full -z-10">
-          <Map address={driverLocation} name={driver?.fullName} />
+          <Map address={driverLocation} name={driver?.fullName}  image={driver?.image ||  ''}
+           />
         </div>
         <div className="mt-14">
           <button
@@ -138,45 +117,54 @@ const OneDriver = ({ driverId }: any) => {
               <div className="flex gap-[17px]">
                 <div>
                   {driver?.image && (
-                    <Avatar src={driver?.image} alt={driver?.fullName} />
+                    <ImageDialog  image={driver?.image} name={driver?.fullName}  style={ {objectFit: "cover", borderRadius: "50px", width:'50px', height:'50px' }} />
+            
                   )}
                 </div>
-                <div className="flex flex-col">
-                  <div className="text-lg text-white">{driver?.fullName}</div>
+               <div className="flex flex-col gap-[14px]">
+              <div className="flex gap-1">
+                <div className="text-[16px] text-white">{driver?.fullName}</div>
+                {driver?.emailVerifiedStatus === "verified" && (
+                  <div className="ml-1">
+                    <Image src={verify} alt={""} />
+                  </div>
+                )}
+              </div>
                   <div className="text-textD text-xs">
                     <span className="w-1 h-1 rounded-[50%] bg-white mr-1"></span>
                     {driver?.isActive ? "Active" : "Inactive"}
                   </div>
                 </div>
               </div>
-              <div className="flex gap-[17px]">
+               {/* {driver?.image ? <Avatar src={driver?.image} alt={driver?.fullName} /> : <Avatar />}  */}
+              {/* <div className="flex gap-[17px]">
                 <div>
                   <Image src={message} alt={""} />
                 </div>
                 <div>
                   <Image src={call} alt={""} />
                 </div>
-              </div>
+              </div> */}
             </div>
             {driver?.profile?.vehicle && (
               <div className="flex justify-between mt-[37px]">
                 <div className="flex flex-col gap-3">
                   <div className="text-textD text-[10px]">Vehicle Type</div>
-                  <div className="text-white text-xs">HatchBack</div>
+                  <div className="text-white text-xs">{driver?.profile?.vehicle?.manufacturer || 'not set'}</div>
                 </div>
                 <div className="flex flex-col gap-3">
                   <div className="text-textD text-[10px]">Vehicle (Model)</div>
-                  <div className="text-white text-xs">Honda (Accord)</div>
+                  <div className="text-white text-xs">{driver?.profile?.vehicle?.model || 'not set'}</div>
                 </div>
                 <div className="flex flex-col gap-3">
                   <div className="text-textD text-[10px]">Vehicle Color</div>
-                  <div className="text-white text-xs">Red</div>
+                  <div className="text-white text-xs">{driver?.profile?.vehicle?.color || 'not set'}</div>
                 </div>
                 <div className="flex flex-col gap-3">
                   <div className="text-textD text-[10px]">
                     Vehicle Plate Number
                   </div>
-                  <div className="text-white text-xs">FKJ-254XA</div>
+                  <div className="text-white text-xs">{driver?.profile?.vehicle?.plate_number || 'not set'}</div>
                 </div>
               </div>
             )}

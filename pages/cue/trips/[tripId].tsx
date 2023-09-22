@@ -1,32 +1,38 @@
+import moment from "moment";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { GetStaticProps } from "next/types";
+import { useEffect } from "react";
+import MapComponent from "src/components/MapComponent";
+import ParentContainer from "src/components/ParentContainer";
+import useHTTPGet from "src/Hooks/use-httpget";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { fetchATrip } from "src/redux/store/features/trip-slice";
+import { uiActions } from "src/redux/store/ui-slice";
+import { getMinutesDifference } from "src/utils/helperFunctions";
 import verify from "../../../src/assets/image/verify.svg";
 import TrackRide from "../../../src/components/BoxComponents/TrackRide";
-import ParentContainer from "src/components/ParentContainer";
-import { GetStaticProps } from "next/types";
-import { tripApi } from "src/components/api";
-import { useCallback, useEffect, useState } from "react";
-import useHTTPGet from "src/Hooks/use-httpget";
-import moment from "moment";
-import { tripType } from "src/@types/data";
-import { useRouter } from "next/router";
-import MapComponent from "src/components/MapComponent";
 
 const OneTrip = ({ tripId }: any) => {
   const request = useHTTPGet();
   const router = useRouter();
-  const [trip, setTrip] = useState<tripType>();
-  const fetchATrip = useCallback(async (id: any) => {
-    const url = `${tripApi}/single-trip/${id}`;
-    const accessToken = sessionStorage.getItem("accessToken");
-    const dataFunction = (res: any) => {
-      console.log(res);
-      setTrip(res.data.data);
-    };
-    request({ url, accessToken }, dataFunction);
-  }, []);
+  const dispatch  = useAppDispatch()
+  const {trip,loading} =useAppSelector(state => state.trip)
+  
   useEffect(() => {
-    fetchATrip(tripId);
+    dispatch(fetchATrip(tripId))
+    // fetchATrip(tripId);
   }, []);
+console.log(trip)
+useEffect(() => {
+  if (loading === true) {
+      dispatch(uiActions.openLoader());
+    }
+    if (loading === false) {
+      dispatch(uiActions.closeLoader());
+    }
+}, [dispatch, loading])
+
   return (
     <ParentContainer>
       <div className=" p-[10px] md:p-[30px]">
@@ -43,17 +49,18 @@ const OneTrip = ({ tripId }: any) => {
           <div className="text-white flex flex-col rounded-[20px] px-4 w-1/3">
             <div className="text-[13px] my-4">Trip Details</div>
             <div className="flex gap-[30px] items-start text-white flex-col">
-              <div className="flex justify-between gap-[9px] items-center">
-                <div className="text-[10px]">Pickup Address</div>
+              <div className="flex gap-[9px] items-center">
+                <div className="text-[10px] ">Pickup Address</div>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[10px]"> {trip?.pickupLocation}</div>
               </div>
-              <div className="flex justify-between gap-[9px] items-center">
-                <div className="text-[10px]">Dropoff Address</div>
+              <div className="flex gap-[9px] items-center">
+          
+                <div className="text-[10px]  ">Dropoff Address</div>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[10px]"> {trip?.dropoffLocation}</div>
               </div>
-              <div className="flex justify-between gap-[9px] items-center">
+              <div className="flex gap-[9px] justify-start items-center">
                 <div className="text-[10px]">Trip Date</div>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[10px]">
@@ -61,17 +68,17 @@ const OneTrip = ({ tripId }: any) => {
                   {moment(trip?.tripDate).format("ll")}
                 </div>
               </div>
-              <div className="w-[253px] bg-faintWhite gap-2 flex justify-between text-white p-3 rounded-md h-[53px]">
+              <div className="w-[293px] bg-faintWhite gap-2 flex justify-between text-white p-3 rounded-md h-[53px]">
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px]">Price</div>
                   <div className="text-xs font-[500]">
-                    ₦ {trip?.totalPrice ? trip?.totalPrice : trip?.basePrice}
+                    ₦ {trip?.totalPrice || trip?.basePrice || 0}
                   </div>
                 </div>
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px] ">Trip Duration</div>
                   <div className="text-xs font-[500]">
-                    {trip?.tripDuration} mins
+                    {getMinutesDifference(trip?.requestDateTime,trip?.endTime || trip?.cancelDateTime )} 
                   </div>
                 </div>
               </div>
@@ -146,9 +153,9 @@ const OneTrip = ({ tripId }: any) => {
         </div>{" "}
         <div className="w-full flex gap-2 h-auto min-h-[400px]">
           <div className="w-1/2">
-            <TrackRide trip={trip} refreshHandler={() => fetchATrip(tripId)} />
+            <TrackRide trip={trip} refreshHandler={() => dispatch(fetchATrip(tripId))} />
           </div>
-          <div className="w-1/2">
+          <div className="w-1/2 h-full">
             <MapComponent
               pickup={trip?.pickupLocation}
               dropoff={trip?.dropoffLocation}

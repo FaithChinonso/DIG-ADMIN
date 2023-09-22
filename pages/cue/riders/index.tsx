@@ -68,7 +68,7 @@ const Users = () => {
   return (
     <ParentContainer>
       <div className="">
-        <UserTable data={riders} type="" action="" />
+        <UserTable data={riders} type="" action="" userType="Rider" />
       </div>
     </ParentContainer>
   );

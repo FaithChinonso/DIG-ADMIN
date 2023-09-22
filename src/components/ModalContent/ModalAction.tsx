@@ -1,19 +1,20 @@
-import { useDispatch } from "react-redux";
-import { uiActions } from "../../redux/store/ui-slice";
-import sucessPic from "../../assets/image/sucessPic.svg";
 import Image from "next/image";
-import SuccessfulModal from "./SuccessfulModal";
 import { useState } from "react";
 import { TailSpin } from "react-loader-spinner";
+import { useDispatch } from "react-redux";
+import sucessPic from "../../assets/image/sucessPic.svg";
+import { uiActions } from "../../redux/store/ui-slice";
 
 const ModalAction = ({
   action,
   item,
   actionFunction,
   type = "normal",
+  loading,
 }: any) => {
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
+  console.log(loading);
   return (
     <div className="p-4 rounded-[52px] shadow-tableShadow items-center flex flex-col gap-4">
       <Image src={sucessPic} alt={""} width={150} />
@@ -49,7 +50,7 @@ const ModalAction = ({
             }
           }}
         >
-          Confirm
+          {loading ? <TailSpin height={20} color="#d7d7d7" /> : "Confirm"}
         </div>
       </div>
     </div>

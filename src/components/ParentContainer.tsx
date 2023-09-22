@@ -1,21 +1,103 @@
-import type { AppProps } from "next/app";
-import { GetStaticProps } from "next/types";
-import { ReactNode, useEffect } from "react";
-import { useAppDispatch } from "src/Hooks/use-redux";
-import { getMyProfile } from "src/redux/store/auth-slice";
-import DrawerCard from "./DrawerCard";
 
-import Loader from "./Loader";
-import Modal from "./Modal";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { ReactNode, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import { getMyProfile } from "src/redux/store/auth-slice";
+import { setActiveTrips } from "src/redux/store/features/trip-slice";
+import { setDriversLocation } from "src/redux/store/features/user-slice";
+import { db } from "../../firebase";
+
 import SideNav from "./SideNav";
-import Toast from "./Toast";
 import TopNav from "./TopNav";
 
 const ParentContainer = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
+    const { adminDetails } = useAppSelector(state => state.auth);
+    useEffect(() => {
+    const watchDrivers = () => {
+      console.log();
+      const unsub = onSnapshot(
+        query(collection(db, "driver")),
+        s => {
+  
+          if (s.empty) return;
+
+          let set = s.docs.map(i => {
+            const data = i.data();
+            console.log('all',  data);
+            return {
+              id: data.profile?.driverID,
+                     userID: data.profile?.userID,
+              name: data?.fullName,
+              image: data.image || 'https://easy.unikmarketing.org/storage/profile/VhGIKKDrWcjFxwKx1MyS',
+              currentLocation: {
+                lat: data?.currentLocation?.latitude,
+                lng: data?.currentLocation?.longitude,
+              },
+            };
+          });
+
+          console.log(set);
+          dispatch(setDriversLocation(set));
+        }
+      );
+      return unsub;
+    };
+      const watchTrips = () => {
+      console.log();
+      const unsub2 = onSnapshot(
+        query(collection(db, "trips")),
+        s => {
+  
+          if (s.empty) return;
+
+          let set = s.docs.map(i => {
+            const data = i.data();
+            console.log('all',  data);
+            return {
+              id: data?.tripID,
+              riderName: data?.rider?.fullName, 
+                   riderImage: data?.rider?.image || '',
+              driver: {
+                name:data?.driver?.fullName,
+                image:data?.driver?.image,
+                userID:  data?.driver?.userID,
+                  id:  data?.driver?.profile?.driverID || '99e44c74-66ad-473a-9e65-4f187947c3a1',
+              }   ,     
+              pickup: data?.pickup,
+              pickupLocation: data?.pickupLocation,
+              dropoffLocation: data?.dropoffLocation,
+              dropoff: {
+                lat: data?.dropoff?.latitude,
+                lng: data?.dropoff?.longitude,
+              },
+               currentLocation: {
+                lat: data?.currentLocation?.latitude,
+                lng: data?.currentLocation?.longitude,
+              },
+              status:  data?.status,
+              vehicleStatus:data?.driver?.profile?.vehicle?.status ||  'Economy'
+            };
+          });
+
+          console.log(set);
+          dispatch(setActiveTrips(set));
+        }
+      );
+      return unsub2;
+    };
+    
+      const unsub = watchDrivers();
+          const unsub2 = watchTrips();
+      return () => {
+        unsub();
+        unsub2();
+      };
+  
+  }, [ dispatch]);
   useEffect(() => {
     dispatch(getMyProfile({}));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex flex-row w-full max-w-screen relative h-screen overflow-x-hidden">

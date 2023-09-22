@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useMemo, useState } from "react";
 import {
-  GoogleMap,
+  DirectionsRenderer, GoogleMap,
   Marker,
-  useJsApiLoader,
-  DirectionsRenderer,
+  useJsApiLoader
 } from "@react-google-maps/api";
+import Script from 'next/script';
+import { useEffect, useMemo, useState } from "react";
 import { getLatLng } from "src/utils/helperFunctions";
-import Script from "next/script";
 
 const MapComponent = ({ pickup, dropoff }: any) => {
   const [loc, setLoc] = useState();
@@ -23,7 +22,7 @@ const MapComponent = ({ pickup, dropoff }: any) => {
     width: "100%",
     height: "100%",
   };
-
+console.log(pickup,dropoff)
   const options = {
     disableDefaultUI: true,
     zoomControl: true,
@@ -35,6 +34,7 @@ const MapComponent = ({ pickup, dropoff }: any) => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+
   });
 
   useEffect(() => {
@@ -43,6 +43,7 @@ const MapComponent = ({ pickup, dropoff }: any) => {
       const resultR = await getLatLng(dropoff);
       setLoc(result);
       setOrg(resultR);
+      console.log(result, resultR)
     };
     fetchData();
   }, [pickup, dropoff]);
@@ -78,12 +79,12 @@ const MapComponent = ({ pickup, dropoff }: any) => {
 
   return isLoaded ? (
     <>
-      <Script
+      {/* <Script
         async
         defer
         src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
         type="text/javascript"
-      ></Script>
+      ></Script> */}
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}

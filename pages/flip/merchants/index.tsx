@@ -58,7 +58,7 @@ const Merchants = () => {
   return (
     <ParentContainer>
       <div>
-        <UserTable data={merchants} type="" action="" />
+        <UserTable data={merchants} type="" action="" userType="Merchant" />
       </div>
     </ParentContainer>
   );

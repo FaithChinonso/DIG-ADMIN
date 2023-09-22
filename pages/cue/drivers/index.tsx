@@ -43,7 +43,7 @@ const Drivers = () => {
           backgroundColor: "#49D3BA",
         })
       );
-      dispatch(fetchMyDriver(token));
+      dispatch(fetchMyDriver({}));
       setTimeout(() => {
         dispatch(clearMessage());
       }, 10000);
@@ -57,7 +57,7 @@ const Drivers = () => {
   return (
     <ParentContainer>
       <div>
-        <UserTable data={drivers} type="" action="" />
+        <UserTable data={drivers} type="" action="" userType="Driver" />
       </div>
     </ParentContainer>
   );

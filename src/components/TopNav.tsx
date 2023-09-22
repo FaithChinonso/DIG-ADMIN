@@ -30,7 +30,7 @@ const TopNav = () => {
       </div>
 
       <div className="w-[155px] flex justify-around">
-        <div className="h-6 w-6">
+        {/* <div className="h-6 w-6">
           <Image src={bell} alt={""} />
         </div>
         <div className="h-6 w-6">
@@ -38,7 +38,7 @@ const TopNav = () => {
         </div>
         <div className="h-6 w-6">
           <Image src={profile} alt={""} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

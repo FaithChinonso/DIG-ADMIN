@@ -1,30 +1,28 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import {
-  deleteuser,
-  edituser,
-  getMyuser,
-} from "src/redux/store/features/user-slice";
-import { uiActions } from "src/redux/store/ui-slice";
-import ActionMenuBase from "../ActionMenu/ActionMenuBase";
-import ActionMenuItem from "../ActionMenu/ActionMenuItem";
-import AddJob from "../Forms/AddJob";
-import AddUser from "../Forms/AddUser";
-import ModalAction from "../ModalContent/ModalAction";
-import MultipleSelectTable from "../multiple-select-table";
-import FilterTable from "../filter-table";
-import DataFilterTable from "../DataTable";
-import CreateProduct from "../Forms/CreateProduct";
-import AddService from "../Forms/AddService";
+import { useEffect, useState } from "react";
 import {
   adminType,
   consumerType,
   driverType,
   merchantType,
-  riderType,
+  riderType
 } from "src/@types/data";
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
+import {
+
+  deleteuser,
+  edituser
+} from "src/redux/store/features/user-slice";
+import { uiActions } from "src/redux/store/ui-slice";
+import ActionMenuBase from "../ActionMenu/ActionMenuBase";
+import ActionMenuItem from "../ActionMenu/ActionMenuItem";
+import DataFilterTable from "../DataTable";
+import AddJob from "../Forms/AddJob";
+import AddService from "../Forms/AddService";
+import AddUser from "../Forms/AddUser";
+import CreateProduct from "../Forms/CreateProduct";
+import ModalAction from "../ModalContent/ModalAction";
 import StatusCell from "../StatusCell";
 
 type Prop = {
@@ -36,13 +34,33 @@ type Prop = {
     | adminType[];
   type: string | null;
   action: string | null;
+  userType?: string;
 };
 
-const UserTable = ({ data, type = "", action = "" }: Prop) => {
+const UserTable = ({
+  data,
+  type = "",
+  action = "",
+  userType = "all",
+}: Prop) => {
   const [userId, setUserId] = useState();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [columnArray,setColumnArray]= useState<any[]>([])
 
+  const {
+    success,
+    loading,
+    loadingCategory,
+    loadingEdit,
+    loadingDelete,
+    error,
+    message,
+    states,
+    merchantCategory,
+  } = useAppSelector((state: any) => state.user);
+
+  // console.log(loadingEdit)
   const toggleDrawer = () => {
     dispatch(
       uiActions.openDrawerAndSetContent({
@@ -51,7 +69,10 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
         },
         drawerContent: (
           <>
-            <AddUser title="Add User" />
+            <AddUser
+              title={`Add ${userType === "all" ? "User" : userType}`}
+              user={userType === "all" ? "user" : userType}
+            />
           </>
         ),
       })
@@ -76,10 +97,27 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
     dateAdded: string;
     profile: {
       merchantCategory: string;
+      isVerified?: boolean;
+      isSuspended?: boolean;
     };
     isActive: boolean;
   };
   const formatData = data?.slice(0).map((client: any, index: number) => {
+    let additionalData = {};
+
+    // if (userType === "all") {
+    //   additionalData = {
+    //     applicationName: client.applicationName,
+    //     role: client.role,
+    //   };
+    // }
+    if(client?.role?.toLowerCase() === 'driver') {
+        additionalData = {
+        isVerified: client.profile.isVerified ? 'Approved': 'Not Approved',
+         isSuspended: client.profile.isSuspended ? 'Suspended' : 'Not Suspended',
+      };
+    }
+
     return {
       id: client.userID,
       serial: index + 1,
@@ -87,12 +125,14 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       fullName: client.fullName,
       email: client.email,
       phone: client.phone,
-      applicationName: client.applicationName,
       emailVerifiedStatus: client.emailVerifiedStatus,
-      role: client.role,
       merchantID: client.role === "merchant" ? client.profile.merchantID : null,
       isActive: client.isActive ? "Active" : "Inactive",
       dateAdded: moment(client.dateAdded).format("ll"),
+       applicationName: client.applicationName,
+      role: client.role,
+      ...additionalData
+      
     };
   });
 
@@ -128,7 +168,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
       selector: (row: { applicationName: any }) => `${row.applicationName}`,
     },
     {
-      name: "Verification",
+      name: "Email Verification",
       selector: (row: { emailVerifiedStatus: any }) =>
         `${row.emailVerifiedStatus}`,
     },
@@ -138,11 +178,49 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
         return <StatusCell status={row.isActive} />;
       },
     },
+ 
+  ];
+  // const columnUser = columnUsers?.filter(item => item.name !== "Action");
+
+  const columnRole = columnUsers?.filter(
+    item => item.name !== "Role" && item.name !== "Application Name"
+  );
+
+  const columnDriver:any = [ ...columnRole, 
     {
+      name: "Approval",
+      selector: (row: { isVerified: any }) => `${row.isVerified}`,
+      sortable: true,
+    }, {
+      name: "Suspension",
+      selector: (row: { isSuspended: any }) => `${row.isSuspended}`,
+      sortable: true,
+    }]
+
+  const setColumns = (userType:string, action:string) =>  {
+   
+    if(action === 'none') {
+      return columnUsers;
+
+    } else {
+         let column = columnUsers;
+        if(userType === 'all') {
+       column = columnUsers;
+
+       } else if (userType?.toLowerCase() !== 'driver' && userType?.toLowerCase() !== 'all') {
+         column = columnRole;
+
+
+      } else {
+        column = columnDriver
+    
+       }
+       return  [...column,    {
       name: "Action",
       selector: (row: { action: any }) => `${row.action}`,
 
       cell: (prop: any) => {
+        console.log(prop)
         return (
           <ActionMenuBase
             items={
@@ -272,10 +350,133 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                               <ModalAction
                                 action="verify"
                                 item="user"
+                                
                                 actionFunction={() =>
                                   dispatch(
                                     edituser({
                                       endpoint: "verify-email",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                )}
+                    {prop?.isVerified === 'Approved' && prop?.role?.toLowerCase() === "driver" ? (
+                  <ActionMenuItem
+                    name="Withdraw Approval"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="withdraw drivers approval"
+                                item=""
+                                 loading={loadingEdit}
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "unapprove-driver",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Approve"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="approve"
+                                item="driver"
+                                loading={loadingEdit}
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "approve-driver",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                )}
+                     {prop?.isSuspended === 'Suspended' && prop?.role === "driver" ? (
+                  <ActionMenuItem
+                    name="Withdraw Suspension"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="withdraw suspension"
+                                item=""
+                                 loading={loadingEdit}
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "unsuspend-driver",
+                                      userID: prop?.id,
+                                    })
+                                  )
+                                }
+                              />
+                            </>
+                          ),
+                        })
+                      )
+                    }
+                  />
+                ) : (
+                  <ActionMenuItem
+                    name="Suspend"
+                    onClickFunction={() =>
+                      dispatch(
+                        uiActions.openModalAndSetContent({
+                          modalStyles: {
+                            padding: 0,
+                          },
+                          modalContent: (
+                            <>
+                              <ModalAction
+                                action="suspend"
+                                item="driver"
+                                 loading={loadingEdit}
+                                actionFunction={() =>
+                                  dispatch(
+                                    edituser({
+                                      endpoint: "suspend-driver",
                                       userID: prop?.id,
                                     })
                                   )
@@ -369,6 +570,7 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
                             <ModalAction
                               action="delete"
                               item="user"
+                              loading={loadingDelete}
                               actionFunction={() =>
                                 dispatch(
                                   deleteuser({
@@ -388,51 +590,20 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
           />
         );
       },
-    },
-  ];
-  const columnUser = [
-    {
-      name: "Full Name",
-      selector: (row: { fullName: any }) => `${row.fullName}`,
-      sortable: true,
-    },
-    {
-      name: "Gender",
-      selector: (row: { gender: any }) => `${row.gender}`,
-    },
-    {
-      name: "Email Address",
-      selector: (row: { email: any }) => `${row.email}`,
-    },
-    {
-      name: "Date Created",
-      selector: (row: { dateAdded: any }) => `${row.dateAdded}`,
-    },
-    {
-      name: "Role",
-      selector: (row: { role: any }) => `${row.role}`,
-    },
-    {
-      name: "Phone Number",
-      selector: (row: { phone: any }) => `${row.phone}`,
-    },
+    },]
+      }
 
-    {
-      name: "Application Name",
-      selector: (row: { applicationName: any }) => `${row.applicationName}`,
-    },
-    {
-      name: "Verification",
-      selector: (row: { emailVerifiedStatus: any }) =>
-        `${row.emailVerifiedStatus}`,
-    },
-    {
-      name: "Status",
-      selector: (row: { isActive: string }) => {
-        return <StatusCell status={row.isActive} />;
-      },
-    },
-  ];
+  }
+
+useEffect(() => {
+const result =setColumns(userType,action)
+setColumnArray(result)
+}, [userType,action])
+
+
+
+
+
   return (
     <div>
       {type !== "dashboard" && (
@@ -440,12 +611,12 @@ const UserTable = ({ data, type = "", action = "" }: Prop) => {
           onClick={toggleDrawer}
           className="text-sm text-white bg-darkPurple py-3 px-4 rounded-md flex items-center justify-center mt-6"
         >
-          Add User
+          Add {userType === "all" ? "User" : userType}
         </button>
       )}
       <div className="mt-4">
         <DataFilterTable
-          columns={action === "none" ? columnUser : columnUsers}
+          columns={columnArray}
           data={formatData}
         />
       </div>

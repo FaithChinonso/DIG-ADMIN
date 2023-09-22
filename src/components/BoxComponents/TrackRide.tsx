@@ -1,12 +1,13 @@
-import map from "../../assets/image/map.svg";
+import moment from "moment";
+import Image from "next/image";
+import { AiOutlineCar, AiOutlineReload } from "react-icons/ai";
+import { getMinutesDifference } from "src/utils/helperFunctions";
+import emptyState from "../../../src/assets/image/empty.png";
 import book from "../../assets/image/book.svg";
+import tripComplete from "../../assets/image/tripComplete.svg";
 import tripStart from "../../assets/image/tripStart.svg";
 import warning from "../../assets/image/warning.svg";
-import tripComplete from "../../assets/image/tripComplete.svg";
-import refresh from "../../assets/image/refresh.svg";
-import Image from "next/image";
-import moment from "moment";
-import emptyState from "../../../src/assets/image/empty.png";
+
 
 const TrackRide = ({ trip, refreshHandler }: any) => {
   console.log(trip);
@@ -27,7 +28,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
 
   return trip ? (
     <div className="md:max-w-[40vw]">
-      <div className="flex justify-between gap-2 ">
+      {/* <div className="flex justify-between gap-2 ">
         <div className="bg-[#BBAC69] rounded-md py-1  px-[14px] text-white w-[132px]">
           <div className="text-[12px] mb-3 font-semibold text-center">
             Distance Covered
@@ -50,16 +51,14 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           </span>
           View Route
         </div>
-      </div>
+      </div> */}
       <div className="flex justify-between items-center mt-4  ">
         <div className="flex gap-2 items-center">
           <div className="text-sm text-grey font-bold">Timeline</div>
-          <div className="text-[#49D3BA] text-[10px]">Updated 5 mins ago</div>
+          {/* <div className="text-[#49D3BA] text-[10px]">Updated 5 mins ago</div> */}
         </div>
         <div className="flex gap-1">
-          <div>
-            <Image src={refresh} alt={""} />
-          </div>
+       <AiOutlineReload color="rgb(1 149 255)"  size={12} />
           <div
             className="text-darkPurple text-[10px] cursor-pointer"
             onClick={refreshHandler}
@@ -75,11 +74,11 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           >
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Booking Confirmed")} alt={""} />
+                <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[10px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.requestDateTime).format(
-                      "MMMM Do YYYY, h:mm:ss a"
+                      "MM/DD/YYYY, h:mm:ss a"
                     )}
                   </span>
                 </div>
@@ -92,8 +91,8 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
                 {trip?.requestLocation}
               </div>
               <div className="text-[12px] text-lightPurple ">
-                {trip?.tripDuration} min
-                <span className="mr-2">{trip?.totalDistanceCovered}</span>
+                {/* {trip?.tripDuration} min */}
+                <span className="mr-2">{getMinutesDifference(trip?.requestDateTime, trip?.requestAcceptanceTime)} </span>
               </div>
             </div>
           </div>
@@ -104,7 +103,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           >
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Booking Confirmed")} alt={""} />
+                    <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[12px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.requestAcceptanceTime).format("LT")}
@@ -119,8 +118,8 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
                 {trip?.requestLocation}
               </div>
               <div className="text-[12px] text-lightPurple ">
-                {trip?.tripDuration} min
-                <span className="mr-2">{trip?.totalDistanceCovered}</span>
+                {/* {trip?.tripDuration} min */}
+                <span className="mr-2">{getMinutesDifference(trip?.requestAcceptanceTime, trip?.driverArrivalTime)} </span>
               </div>
             </div>
           </div>
@@ -131,7 +130,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           >
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Booking Confirmed")} alt={""} />
+                    <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[12px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.driverArrivalTime).format("LT")}
@@ -145,9 +144,9 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
               <div className="text-text text-[12px]">
                 {trip?.requestLocation}
               </div>
-              <div className="text-[12px] text-lightPurple ">
-                {trip?.tripDuration} min
-                <span className="mr-2">{trip?.totalDistanceCovered}</span>
+            <div className="text-[12px] text-lightPurple ">
+                {/* {trip?.tripDuration} min */}
+                <span className="mr-2">{getMinutesDifference(trip?.driverArrivalTime, trip?.startTime)} </span>
               </div>
             </div>
           </div>
@@ -158,7 +157,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           >
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Trip Started")} alt={""} />
+                    <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[12px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.startTime).format("LT")}
@@ -172,6 +171,10 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
               <div className="text-text text-[12px]">
                 {trip?.startTripLocation}
               </div>
+                 <div className="text-[12px] text-lightPurple ">
+                {/* {trip?.tripDuration} min */}
+                <span className="mr-2">{getMinutesDifference(trip?.startTime, trip?.endTime || trip?.cancelDateTime)} </span>
+              </div>
             </div>
           </div>
         )}
@@ -181,7 +184,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           >
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Trip Cancelled")} alt={""} />
+                    <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[12px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.cancelDateTime).format("LT")}
@@ -202,7 +205,7 @@ const TrackRide = ({ trip, refreshHandler }: any) => {
           <div className={`justify-start flex `}>
             <div className="flex flex-col mr-1">
               <div className="flex w-[180px] ">
-                <Image src={imageSort("Trip Completed")} alt={""} />
+                  <AiOutlineCar color="rgb(1 149 255)"  size={14} />
                 <div className="text-grey text-[12px] ">
                   <span className="text-text ml-2">
                     {moment(trip?.endTime).format("LT")}
