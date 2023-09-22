@@ -65,7 +65,9 @@ export const getMerchantCategory = createAsyncThunk(
     const accessToken = sessionStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `https://easy.unikmarketing.org/api/flip/merchant/merchant-categories`
+        `https://easy.unikmarketing.org/api/flip/merchant/merchant-categories`,{
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
       );
       return response.data;
     } catch (error: any) {

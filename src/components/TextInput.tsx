@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 interface Props {
   marginTop?: number;
@@ -9,7 +9,7 @@ interface Props {
   disabled?: boolean;
   maxLength?: number;
   placeholder?: any;
-  type?: "text" | "number" | "email" | "password";
+  type?: "text" | "number" | "email" | "password" | 'date';
   name?: string;
   label?: string;
   autoCorrect?: boolean;

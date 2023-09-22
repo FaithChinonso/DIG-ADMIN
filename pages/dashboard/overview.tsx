@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
-import useHTTPGet from "src/Hooks/use-httpget";
+import { useEffect } from "react";
 import Dashboard from "src/components/Dashboard";
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { getMyuser } from "src/redux/store/features/user-slice";
-import { getMyproduct } from "src/redux/store/features/product-slice";
-import { getMyservice } from "src/redux/store/features/service-slice";
-import { getMywithdrawal } from "src/redux/store/features/withdrawal-slice";
-import { getMyproposal } from "src/redux/store/features/proposal-slice";
 import { getMyjobs } from "src/redux/store/features/job-slice";
-import { getMyserviceCategories } from "src/redux/store/features/service-category-slice";
-import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
-import { getMyTransactions } from "src/redux/store/features/transaction-slice";
 import { getAdminlogs } from "src/redux/store/features/log-slice";
 import { getMyOrders } from "src/redux/store/features/order-slice";
+import { getMyproductCategories } from "src/redux/store/features/product-category-slice";
+import { getMyproduct } from "src/redux/store/features/product-slice";
+import { getMyproposal } from "src/redux/store/features/proposal-slice";
+import { getMyserviceCategories } from "src/redux/store/features/service-category-slice";
+import { getMyservice } from "src/redux/store/features/service-slice";
+import { getMyTransactions } from "src/redux/store/features/transaction-slice";
+import { getMyuser } from "src/redux/store/features/user-slice";
+import { getMywithdrawal } from "src/redux/store/features/withdrawal-slice";
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +19,7 @@ const Home = () => {
   const { users }:any = useAppSelector(state => state.user);
   const { transactions } = useAppSelector(state => state.transaction);
   const { orders } = useAppSelector(state => state.order);
-  const last10Users = users.slice(-10);
+  const last10Users = [...users]?.slice(0, 10);
 
   useEffect(() => {
     dispatch(getMyuser(token));
