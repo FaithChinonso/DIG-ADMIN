@@ -106,7 +106,7 @@ const UserTable = ({
     isActive: boolean
   }
 
-  const formatData = data?.slice(0).map((client: Data, index: number) => {
+  const formatData = data?.slice(0).map((client: any, index: any) => {
     let additionalData = {}
 
     // if (userType === "all") {
