@@ -1,5 +1,5 @@
 import { collection, onSnapshot, query } from "firebase/firestore"
-import { ReactNode, useEffect } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux"
 import { getMyProfile } from "src/redux/store/auth-slice"
 import { setActiveTrips } from "src/redux/store/features/trip-slice"
@@ -11,6 +11,7 @@ import TopNav from "./TopNav"
 
 const ParentContainer = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch()
+  const [showNav, setShowNav] = useState<boolean>()
   const { adminDetails } = useAppSelector((state) => state.auth)
   useEffect(() => {
     const watchDrivers = () => {
@@ -20,7 +21,7 @@ const ParentContainer = ({ children }: { children: ReactNode }) => {
 
         let set = s.docs.map((i) => {
           const data = i.data()
-          console.log("all", data)
+
           return {
             id: data.profile?.driverID,
             userID: data.profile?.userID,
@@ -96,10 +97,10 @@ const ParentContainer = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="flex flex-row w-full max-w-screen relative h-screen overflow-x-hidden">
-      <SideNav />
-      <TopNav />
+      <SideNav showNav={showNav} setShowNav={setShowNav} />
+      <TopNav showNav={showNav} setShowNav={setShowNav} />
 
-      <div className="mt-[100px] md:mt-[67px] w-[calc(100vw-60px)] md:w-[calc(100vw-265px)] bg-lightGray ml-[62px] md:ml-[265px] p-[10px] md:p-[20px] overflow-x-hidden">
+      <div className="mt-[60px] md:mt-[67px] w-[calc(100vw-0px)] md:w-[calc(100vw-265px)] bg-lightGray md:ml-[265px] p-[10px] md:p-[20px] overflow-x-hidden">
         {children}
       </div>
     </div>

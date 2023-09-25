@@ -7,7 +7,7 @@ import {
   merchantType,
   riderType,
 } from "src/@types/data"
-import { userApi } from "src/components/api"
+import { baseUrl, userApi } from "src/components/api"
 import { errorFunction } from "src/utils/helperFunctions"
 const accessToken =
   typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : ""
@@ -256,7 +256,24 @@ export const edituser = createAsyncThunk(
     }
   }
 )
+export const changeVehicleStatus = createAsyncThunk(
+  "user/changeVehicleStatus",
+  async (data: any, thunkAPI: any) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/vehicle/change-status/${data.userID}/${data.status}`,
+        {},
 
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      )
+      return response.data
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error)
+    }
+  }
+)
 export const deleteuser = createAsyncThunk(
   "user/deleteuser",
   async (data: any, thunkAPI: any) => {
@@ -530,6 +547,27 @@ const userSlice = createSlice({
         state.error = errorFunction(action.payload)
       }
     )
+    builder.addCase(changeVehicleStatus.pending, (state) => {
+      state.loadingEdit = true
+    })
+    builder.addCase(
+      changeVehicleStatus.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loadingEdit = false
+        state.success = true
+        state.message = action.payload.message
+      }
+    )
+    builder.addCase(
+      changeVehicleStatus.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.loadingEdit = false
+        state.error = errorFunction(action.payload)
+      }
+    )
+    builder.addCase(deleteuser.pending, (state) => {
+      state.loadingDelete = true
+    })
     builder.addCase(
       deleteuser.fulfilled,
       (state, action: PayloadAction<any>) => {

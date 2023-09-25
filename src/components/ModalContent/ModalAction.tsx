@@ -1,20 +1,23 @@
-import Image from "next/image";
-import { useState } from "react";
-import { TailSpin } from "react-loader-spinner";
-import { useDispatch } from "react-redux";
-import sucessPic from "../../assets/image/sucessPic.svg";
-import { uiActions } from "../../redux/store/ui-slice";
+import Image from "next/image"
+import { useState } from "react"
+import { TailSpin } from "react-loader-spinner"
+import { useDispatch } from "react-redux"
+import { useAppSelector } from "src/Hooks/use-redux"
+import sucessPic from "../../assets/image/sucessPic.svg"
+import { uiActions } from "../../redux/store/ui-slice"
 
 const ModalAction = ({
   action,
   item,
   actionFunction,
   type = "normal",
-  loading,
 }: any) => {
-  const [input, setInput] = useState("");
-  const dispatch = useDispatch();
-  console.log(loading);
+  const [input, setInput] = useState("")
+  const dispatch = useDispatch()
+  const { loadingEdit, loading, loadingDelete } = useAppSelector(
+    (state) => state.user
+  )
+  console.log(loading)
   return (
     <div className="p-4 rounded-[52px] shadow-tableShadow items-center flex flex-col gap-4">
       <Image src={sucessPic} alt={""} width={150} />
@@ -44,16 +47,20 @@ const ModalAction = ({
           className="text-xs text-white bg-lightPurple py-2 px-3 rounded-md flex items-center justify-center w-[150px] mx-auto cursor-pointer"
           onClick={() => {
             if (type === "reason") {
-              actionFunction(input);
+              actionFunction(input)
             } else {
-              actionFunction();
+              actionFunction()
             }
           }}
         >
-          {loading ? <TailSpin height={20} color="#d7d7d7" /> : "Confirm"}
+          {loading || loadingEdit || loadingDelete ? (
+            <TailSpin height={20} color="#d7d7d7" />
+          ) : (
+            "Confirm"
+          )}
         </div>
       </div>
     </div>
-  );
-};
-export default ModalAction;
+  )
+}
+export default ModalAction

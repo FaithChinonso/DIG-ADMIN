@@ -1,47 +1,58 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { Dialog } from "@mui/material"
 import {
   DirectionsRenderer,
   GoogleMap,
   InfoWindow,
   Marker,
-  useJsApiLoader
+  useJsApiLoader,
 } from "@react-google-maps/api"
+import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
+import { Bars } from "react-loader-spinner"
 import { useAppSelector } from "src/Hooks/use-redux"
 import MapDialog from "./MapDialog"
 
 const Map = ({
   address,
   name,
-  type = "all",
+  type = "",
   image = "https://easy.unikmarketing.org/storage/profile/VhGIKKDrWcjFxwKx1MyS",
 }: any) => {
   const { activeDrivers: drivers }: any = useAppSelector(
     (state: any) => state.user
   )
-  const { activeTrips }: any = useAppSelector((state: any) => state.trip)
-  const [selectedTrip, setSelectedTrip] = useState<any>(null)
+  const { activeTrips: active }: any = useAppSelector(
+    (state: any) => state.trip
+  )
+  const [selectedTrip, setSelectedTrip] = useState<any>("")
+  const [activeTrips, setActiveTrips] = useState<any[]>([])
+  const [key, setKey] = useState<number>(0)
   const [directions, setDirections] = useState<any>(null)
   const [markerPositions, setMarkerPositions] = useState<any>()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [duration, setDuration] = useState<any>(null)
   const [distance, setDistance] = useState<any>(null)
   const [img, setImg] = useState<any>({})
   const center = useMemo(() => {
     return {
-      lat: address?.latitude,
-      lng: address?.longitude,
+      lat:
+        type === "all"
+          ? address?.latitude
+          : active[0]?.currentLocation?.lat || 6.5548888,
+      lng:
+        type === "all"
+          ? address?.longitude
+          : active[0]?.currentLocation?.lng || 3.3820555,
     }
-  }, [address])
-  console.log(markerPositions)
-  const centerMarker = useMemo(() => {
-    return markerPositions
-  }, [markerPositions])
+  }, [active, address?.latitude, address?.longitude, type])
+
   const handleAvatarClick = (data) => {
     setIsModalOpen(true)
     setImg(data)
   }
-  console.log(center)
+
   const containerStyle = {
     width: "100%",
     height: "100%",
@@ -56,35 +67,12 @@ const Map = ({
         window.google?.maps.ControlPosition.RIGHT_CENTER,
     },
   }
-  const optionPolygon = {
-    fillColor: "rgba(47, 156, 233, 0.3)",
-    fillOpacity: 1,
-    strokeColor: "#092356",
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    geodesic: false,
-    zIndex: 30,
-  }
-  const onLoad = (polygon) => {
-    console.log(polygon, "polyyyy")
-  }
-  const polygonCoords = drivers
-    ?.filter((item) => item?.currentLocation?.lat)
-    ?.map((item) => {
-      return {
-        lat: item?.currentLocation?.lat,
-        lng: item?.currentLocation?.lng,
-      }
-    })
-  console.log(polygonCoords, "poly")
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   })
-  console.log(selectedTrip)
+
   useEffect(() => {
     const calculateRoute = async () => {
       const google = window.google
@@ -117,98 +105,66 @@ const Map = ({
     }
   }, [selectedTrip])
 
-  const animateMarker = (startPosition, path) => {
-    let step = 0
-    const numSteps = path.length - 1
-    const timePerStep = 1000
-
-    function moveMarker() {
-      const newPosition = path[step]
-      setMarkerPositions(newPosition)
-
-      if (step < numSteps) {
-        step++
-        setTimeout(moveMarker, timePerStep)
-      }
+  useEffect(() => {
+    if (type === "track") {
+      setTimeout(() => {
+        setActiveTrips(active)
+      }, 3000)
     }
+  }, [active, type])
 
-    moveMarker()
-  }
+  useEffect(() => {
+    setKey(1)
+  }, [])
 
   return isLoaded ? (
     <>
-      {/* <Script
-        async
-        defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
-        type="text/javascript"
-      ></Script> */}
-
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
         zoom={12}
         options={options}
+        key={key}
       >
+        {/* <Marker position={center} key="admissn" /> */}
         {selectedTrip ? (
           <>
-            {/* <Marker
-              position={centerMarker}
-              key={selectedTrip?.tripID}
-              label={selectedTrip?.driver?.name}
-              icon={{
-                url: selectedTrip?.driver?.image,
-                scaledSize: new window.google.maps.Size(20, 20), // adjust the size as needed
-              }}
-            /> */}
-            {directions ? (
-              <DirectionsRenderer directions={directions} />
-            ) : null}
+            {directions ? <DirectionsRenderer directions={directions} /> : null}
             <InfoWindow
               position={{
                 lat: selectedTrip?.currentLocation.lat,
                 lng: selectedTrip?.currentLocation.lng,
               }}
-              onCloseClick={() => {
-                setSelectedTrip(null)
-                setDirections(null)
-              }}
             >
-              <div>
-                <h3>
-                  {distance} {duration}
-                </h3>
-                {/* Add any additional information you want to display */}
-              </div>
+              <h3>
+                {distance} {duration}
+              </h3>
             </InfoWindow>
           </>
         ) : (
           <>
-            {/* {type  === 'track' &&   <Polygon
-        paths={polygonCoords}
-        options={optionPolygon}
-        onLoad={onLoad}
-        visible
-      />} */}
-
             <Marker
               position={center}
-              key={name}
+              key={name + "user"}
               label={name}
               icon={{
                 url: image,
+
                 scaledSize: new window.google.maps.Size(20, 20), // adjust the size as needed
               }}
+              clickable
+              onClick={() => setIsOpen(true)}
             />
+
             {type === "track" &&
-              activeTrips?.map((item) => (
+              activeTrips?.map((item, index) => (
                 <Marker
                   position={item?.currentLocation}
-                  key={item?.tripID}
+                  key={`${item?.id}${index}`}
                   label={item?.driver?.name}
                   icon={{
                     url: item?.driver?.image,
-                    scaledSize: new window.google.maps.Size(20, 20), // adjust the size as needed
+                    scaledSize: new window.google.maps.Size(30, 30), // adjust the size as needed
                   }}
                   clickable
                   onClick={() => {
@@ -218,19 +174,53 @@ const Map = ({
                   }}
                 />
               ))}
+            <Marker
+              position={center}
+              key={name}
+              label={name}
+              icon={{
+                url: image,
+
+                scaledSize: new window.google.maps.Size(20, 20), // adjust the size as needed
+              }}
+              clickable
+              onClick={() => setIsOpen(true)}
+            />
           </>
         )}
-
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+          <div>
+            <h3>{name}</h3>
+            <Image
+              src={image}
+              alt="Larger Avatar"
+              style={{ width: "400px", height: "400px" }}
+              width={400}
+              height={400}
+            />
+          </div>
+        </Dialog>
         <MapDialog
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           img={img}
           setSelectedTrip={setSelectedTrip}
         />
+        {selectedTrip && (
+          <button
+            onClick={() => {
+              setDirections(null)
+              setSelectedTrip(null)
+            }}
+            className="absolute top-2  right-2 bg-darkPurple rounded-md  py-2 px-4 text-white text-sm hover:bg-blue-100 hover:text-darkPurple hover:border-blue-300"
+          >
+            Go Back
+          </button>
+        )}
       </GoogleMap>
     </>
   ) : (
-    <div>Loading.....</div>
+    <Bars wrapperStyle={{ alignSelf: "center", display: "flex" }} />
   )
 }
 

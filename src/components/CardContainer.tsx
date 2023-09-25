@@ -1,30 +1,27 @@
-import React from "react";
-
-import CountUp from "react-countup";
-import Image from "next/image";
-import green from "../assets/image/green.jpeg";
-import orange from "../assets/image/orange.jpeg";
-import blue from "../assets/image/blue.jpeg";
-import Currency from "react-currency-formatter";
+import Image from "next/image"
+import Currency from "react-currency-formatter"
+import blue from "../assets/image/blue.jpeg"
+import green from "../assets/image/green.jpeg"
+import orange from "../assets/image/orange.jpeg"
 
 const CardContainer = ({ orders, transaction, users }: any) => {
   function sumofArray(sum: any, num: any) {
-    return sum + num;
+    return sum + num
   }
   const totalSales = orders
     ?.map((item: any) => {
-      return Number(item.price);
+      return Number(item.price)
     })
-    .reduce(sumofArray, 0);
+    .reduce(sumofArray, 0)
 
   const totalTransactions = transaction
     ?.map((item: any) => {
-      return Number(item.amount);
+      return Number(item.amount)
     })
-    .reduce(sumofArray, 0);
+    .reduce(sumofArray, 0)
 
-  const totalOrders = orders?.length;
-  const totalUsers = users?.length;
+  const totalOrders = orders?.length
+  const totalUsers = users?.length
 
   const cardData = [
     {
@@ -55,13 +52,13 @@ const CardContainer = ({ orders, transaction, users }: any) => {
       img: orange,
       type: "string",
     },
-  ];
+  ]
 
   return (
     <div className=" justify-center gap-2 md:justify-between grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 md:gap-6 items-center py-3">
-      {cardData.map(item => (
+      {cardData.map((item) => (
         <div
-          className="w-[140px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between bg-white text-black"
+          className="w-[140px] h-[100px] md:w-[240px] shadow-2xl, rounded-sm items-center p-2 flex justify-between text-black bg-white"
           key={item.id}
           style={{
             boxShadow: "0px 1px 2px 1px #d7d7d7",
@@ -88,7 +85,7 @@ const CardContainer = ({ orders, transaction, users }: any) => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default CardContainer;
+export default CardContainer
