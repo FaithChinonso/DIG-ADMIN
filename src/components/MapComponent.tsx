@@ -5,20 +5,20 @@ import {
   Marker,
   useJsApiLoader,
 } from "@react-google-maps/api"
+import Script from "next/script"
 import { useEffect, useMemo, useState } from "react"
 import { getLatLng } from "src/utils/helperFunctions"
 
 const MapComponent = ({ pickup, dropoff }: any) => {
-  const [loc, setLoc] = useState<any>()
+  const [loc, setLoc] = useState()
   const [org, setOrg] = useState<any>()
   const [directionResponse, setDirectionResponse] = useState(null)
   const center = useMemo(() => {
     return {
-      lat: org?.lat || 0,
-      lng: org?.lng || 0,
+      lat: org?.lat,
+      lng: org?.lat,
     }
   }, [org])
-  console.log(center)
   const containerStyle = {
     width: "100%",
     height: "100%",
@@ -79,13 +79,19 @@ const MapComponent = ({ pickup, dropoff }: any) => {
 
   return isLoaded ? (
     <>
+      {/* <Script
+        async
+        defer
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
+        type="text/javascript"
+      ></Script> */}
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
         zoom={12}
         options={options}
       >
-        <Marker position={center} key="rrs" />
+        <Marker position={center} />
 
         {directionResponse && (
           <DirectionsRenderer directions={directionResponse} />

@@ -145,7 +145,7 @@ const Map = ({
           <>
             <Marker
               position={center}
-              key={name}
+              key={name + "user"}
               label={name}
               icon={{
                 url: image,
@@ -160,7 +160,7 @@ const Map = ({
               activeTrips?.map((item, index) => (
                 <Marker
                   position={item?.currentLocation}
-                  key={`${item?.tripID}${index}`}
+                  key={`${item?.id}${index}`}
                   label={item?.driver?.name}
                   icon={{
                     url: item?.driver?.image,

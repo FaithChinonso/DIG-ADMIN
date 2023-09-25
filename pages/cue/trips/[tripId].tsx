@@ -1,37 +1,39 @@
-import moment from "moment";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { GetStaticProps } from "next/types";
-import { useEffect } from "react";
-import MapComponent from "src/components/MapComponent";
-import ParentContainer from "src/components/ParentContainer";
-import useHTTPGet from "src/Hooks/use-httpget";
-import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux";
-import { fetchATrip } from "src/redux/store/features/trip-slice";
-import { uiActions } from "src/redux/store/ui-slice";
-import { getMinutesDifference } from "src/utils/helperFunctions";
-import verify from "../../../src/assets/image/verify.svg";
-import TrackRide from "../../../src/components/BoxComponents/TrackRide";
+import moment from "moment"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import { GetStaticProps } from "next/types"
+import { useEffect } from "react"
+import MapComponent from "src/components/MapComponent"
+import ParentContainer from "src/components/ParentContainer"
+import useLocation from "src/components/useLocation"
+import useHTTPGet from "src/Hooks/use-httpget"
+import { useAppDispatch, useAppSelector } from "src/Hooks/use-redux"
+import { fetchATrip } from "src/redux/store/features/trip-slice"
+import { uiActions } from "src/redux/store/ui-slice"
+import { getMinutesDifference } from "src/utils/helperFunctions"
+import verify from "../../../src/assets/image/verify.svg"
+import TrackRide from "../../../src/components/BoxComponents/TrackRide"
 
 const OneTrip = ({ tripId }: any) => {
-  const request = useHTTPGet();
-  const router = useRouter();
-  const dispatch  = useAppDispatch()
-  const {trip,loading} =useAppSelector(state => state.trip)
-  
+  const request = useHTTPGet()
+  const router = useRouter()
+  const dispatch = useAppDispatch()
+  const { trip, loading } = useAppSelector((state) => state.trip)
+  const { location } = useLocation()
+
   useEffect(() => {
     dispatch(fetchATrip(tripId))
     // fetchATrip(tripId);
-  }, []);
-console.log(trip)
-useEffect(() => {
-  if (loading === true) {
-      dispatch(uiActions.openLoader());
+  }, [])
+  console.log(trip)
+  useEffect(() => {
+    if (loading === true) {
+      dispatch(uiActions.openLoader())
     }
     if (loading === false) {
-      dispatch(uiActions.closeLoader());
+      dispatch(uiActions.closeLoader())
     }
-}, [dispatch, loading])
+  }, [dispatch, loading])
 
   return (
     <ParentContainer>
@@ -55,7 +57,6 @@ useEffect(() => {
                 <div className="text-[10px]"> {trip?.pickupLocation}</div>
               </div>
               <div className="flex gap-[9px] items-center">
-          
                 <div className="text-[10px]  ">Dropoff Address</div>
                 <div className="bg-white w-1 h-1 rounded-[50%]"></div>
                 <div className="text-[10px]"> {trip?.dropoffLocation}</div>
@@ -78,7 +79,10 @@ useEffect(() => {
                 <div className="flex flex-col justify-between">
                   <div className="text-[8px] ">Trip Duration</div>
                   <div className="text-xs font-[500]">
-                    {getMinutesDifference(trip?.requestDateTime,trip?.endTime || trip?.cancelDateTime )} 
+                    {getMinutesDifference(
+                      trip?.requestDateTime,
+                      trip?.endTime || trip?.cancelDateTime
+                    )}
                   </div>
                 </div>
               </div>
@@ -151,11 +155,14 @@ useEffect(() => {
             </div>
           </div>
         </div>{" "}
-        <div className="w-full flex gap-2 h-auto min-h-[400px]">
+        <div className="w-full flex flex-col  md:flex-row gap-4 h-auto min-h-[400px]">
           <div className="w-1/2">
-            <TrackRide trip={trip} refreshHandler={() => dispatch(fetchATrip(tripId))} />
+            <TrackRide
+              trip={trip}
+              refreshHandler={() => dispatch(fetchATrip(tripId))}
+            />
           </div>
-          <div className="w-1/2 h-full">
+          <div className="md:w-1/2  w-full h-[500px] border border-gray-400 rounded-md p-1">
             <MapComponent
               pickup={trip?.pickupLocation}
               dropoff={trip?.dropoffLocation}
@@ -164,14 +171,14 @@ useEffect(() => {
         </div>
       </div>
     </ParentContainer>
-  );
-};
+  )
+}
 export const getServerSideProps: GetStaticProps = async (context: any) => {
-  const tripId = context.params.tripId;
+  const tripId = context.params.tripId
   return {
     props: {
       tripId,
     },
-  };
-};
-export default OneTrip;
+  }
+}
+export default OneTrip
