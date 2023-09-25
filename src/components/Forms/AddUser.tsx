@@ -38,7 +38,12 @@ const AddUser = ({ title, id, user = "user" }: any) => {
     states,
     merchantCategory,
   } = useAppSelector((state: any) => state.user)
-  const [appName, setAppName] = useState<null | string>(null)
+  const [defaultState, setDefaultState] = useState<any>({})
+  const [defaultlga, setDefaultLga] = useState<any>({})
+  const [defaultGender, setDefaultGender] = useState<any>({})
+  const [defaultRole, setDefaultRole] = useState<any>({})
+  const [defaultCategory, setDefaultCategory] = useState<any>({})
+  const [defaultType, setDefaultType] = useState<any>({})
   const [load, setLoad] = useState(false)
   const [err, setErr] = useState("")
   const [phoneNumber, setPhoneNumber] = useState(0)
@@ -57,9 +62,10 @@ const AddUser = ({ title, id, user = "user" }: any) => {
     email: "",
     password: "",
     role: "",
+    category: "",
     application_name: "",
     gender: "",
-    category: "",
+    Type: "",
     state: "",
     lga: "",
     phone: 0,
@@ -288,17 +294,13 @@ const AddUser = ({ title, id, user = "user" }: any) => {
             gender: response?.gender || "",
             password: response?.password || "",
             category: response?.category || "",
-            state: response?.state || "",
-            lga: response?.lga || "",
+            state: response?.state?.stateName || "",
+            lga: response?.lga?.lgaName || "",
             address: response.address || "",
             merchantType: response?.profile?.merchantType || "",
             dateOfBirth: response?.dateOfBirth || "",
+            phone: response?.phone || 0,
           })
-          setPhoneNumber(response?.phone)
-          setCurrentRole(response?.role)
-
-          const date = new Date(response?.dateOfBirth)
-          const isoDateString = date.toISOString()
 
           // setSelectedDate(isoDateString);
         }
@@ -386,6 +388,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                 <SelectInput
                   label="Role"
                   // value={values.role}
+                  defaultInputValue={values?.role}
                   onChange={(value) => {
                     setFieldValue("role", value.value)
                     setCurrentRole(value?.value)
@@ -436,6 +439,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                 onChange={(value) => setFieldValue("gender", value.value)}
                 error={errors.gender}
                 options={gender}
+                defaultInputValue={values?.gender}
               />
               <TextInput
                 label="Email Address"
@@ -519,6 +523,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                       label: item.categoryName,
                       value: item.categoryID,
                     }))}
+                    defaultInputValue={values?.category}
                   />
                   <SelectInput
                     label="Merchant Type"
@@ -528,6 +533,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                     }}
                     error={errors.merchantType}
                     options={merchantType}
+                    defaultInputValue={values?.merchantType}
                   />
                 </>
               ) : null}
@@ -547,6 +553,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                       label: item.stateName,
                       value: item.stateID,
                     }))}
+                    defaultInputValue={values?.state}
                   />
                   <SelectInput
                     label="LGA"
@@ -560,6 +567,7 @@ const AddUser = ({ title, id, user = "user" }: any) => {
                       label: item.lgaName,
                       value: item.lgaID,
                     }))}
+                    defaultInputValue={values?.lga}
                   />
 
                   <TextInput

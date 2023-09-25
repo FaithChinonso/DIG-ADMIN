@@ -135,3 +135,30 @@ export function getMinutesDifference(dateString1:string, dateString2:string) {
 export function formatNumberWithCommas(number) {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+export function getStatusByYear(year: number) {
+  if (year >= 2002 && year <= 2006) {
+    return { name: "economy", options: [] }
+  } else if (year >= 2007 && year <= 2011) {
+    return {
+      name: "business",
+      options: [
+        { label: "Economy", value: "economy" },
+        { label: "Business", value: "business" },
+      ],
+    }
+  } else if (year >= 2012 && year <= 2023) {
+    return {
+      name: "luxury",
+      options: [
+        { label: "Economy", value: "economy" },
+        { label: "Business", value: "business" },
+        { label: "Luxury", value: "luxury" },
+      ],
+    }
+  } else {
+    return { name: "economy", options: [] } // If the year doesn't fall into any of the specified ranges
+  }
+}
+ export function getObjectById(array, id) {
+   return array?.find((item) => item?.key === id)
+ }

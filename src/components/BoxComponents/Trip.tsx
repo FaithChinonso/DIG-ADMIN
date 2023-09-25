@@ -1,26 +1,24 @@
-import moment from "moment";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { BsArrowRight } from 'react-icons/bs';
-import emptyState from "../../../src/assets/image/empty.png";
-import finish from "../../../src/assets/image/finish.svg";
-import line from "../../../src/assets/image/line.svg";
-import point from "../../../src/assets/image/points.svg";
-import profileDriv from "../../../src/assets/image/profileDriv.svg";
-import progress from "../../../src/assets/image/progres.svg";
-import StatusCell from "../StatusCell";
-
+import moment from "moment"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import { BsArrowRight } from "react-icons/bs"
+import emptyState from "../../../src/assets/image/empty.png"
+import finish from "../../../src/assets/image/finish.svg"
+import line from "../../../src/assets/image/line.svg"
+import point from "../../../src/assets/image/points.svg"
+import profileDriv from "../../../src/assets/image/profileDriv.svg"
+import progress from "../../../src/assets/image/progres.svg"
+import StatusCell from "../StatusCell"
 
 const Trip = ({ data, type }: any) => {
   const router = useRouter()
-  console.log(data);
+  console.log(data)
   return data.length > 0 ? (
     <div className="flex flex-col gap-4 w-full md:w-[400px] max-h-[700px] overflow-auto">
       {data?.map((item: any) => (
         <div
           className="shadow-tableShadow w-full p-[10px] md:p-[20px]"
           key={item?.tripID}
-      
         >
           <div className="flex justify-between items-start mb-5">
             <div className=" w-[70px]">
@@ -92,24 +90,25 @@ const Trip = ({ data, type }: any) => {
                 <div className="text-grey text-[10px] md:text-xs ">
                   {type === "rider"
                     ? item?.driver?.fullName
-                    : item?.rider.fullName}{" "}
+                    : item?.rider?.fullName}
                 </div>
                 <div className="text-text text-[10px] ">
                   {" "}
-                  {type === "rider" ? item?.driver?.email : item.rider.email}
+                  {type === "rider" ? item?.driver?.email : item.rider?.email}
                 </div>
                 <div className={`text-[8px]`}>
                   <StatusCell status={item?.status} />
                 </div>
               </div>
             </div>
-            <div className="flex flex-row mr-3 gap-3 items-center hover:border-b hover:border-offWhite h-[20px]"   onClick = {()=>  router.push(`/cue/trips/${item?.tripID}`)}>
-
-
-            <div className="text-[12px] text-text cursor-pointer">
-             View Trip 
-            </div>
-            <BsArrowRight color='rgba(132, 135, 163, 1)' />
+            <div
+              className="flex flex-row mr-3 gap-3 items-center hover:border-b hover:border-offWhite h-[20px]"
+              onClick={() => router.push(`/cue/trips/${item?.tripID}`)}
+            >
+              <div className="text-[12px] text-text cursor-pointer">
+                View Trip
+              </div>
+              <BsArrowRight color="rgba(132, 135, 163, 1)" />
             </div>
           </div>
         </div>
@@ -120,6 +119,6 @@ const Trip = ({ data, type }: any) => {
       <Image src={emptyState} alt="" />
       <div className="text-[#8487A3] text-xs -mt-2">No Trips Available</div>
     </div>
-  );
-};
-export default Trip;
+  )
+}
+export default Trip

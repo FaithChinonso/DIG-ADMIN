@@ -1,33 +1,30 @@
-import { innerNav, outerNav, bottomNav } from "../utils/analytics";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react"
+import { innerNav, outerNav } from "../utils/analytics"
 
-import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux"
 
-import Image from "next/image";
-import profile from "../assets/image/profile.svg";
-import Link from "next/link";
+import Link from "next/link"
+import profile from "../assets/image/profile.svg"
 
-import { useRouter } from "next/router";
-import { authActions } from "src/redux/store/auth-slice";
-import { useSelector } from "react-redux";
-import { useAppSelector } from "src/Hooks/use-redux";
-import { GetStaticProps } from "next/types";
-import { getFirstWord, includesSubstring } from "src/utils/helperFunctions";
-import { Avatar } from "@mui/material";
+import { Avatar } from "@mui/material"
+import { useRouter } from "next/router"
+import { useAppSelector } from "src/Hooks/use-redux"
+import { authActions } from "src/redux/store/auth-slice"
+import { getFirstWord, includesSubstring } from "src/utils/helperFunctions"
 
-const SideNav = (props: any) => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { adminDetails } = useAppSelector(state => state.auth);
-  const [array, setArray] = useState<string[]>([]);
-  const path = location.pathname;
-  console.log(path);
-  const [value, setValue] = useState(path);
-  const [selected, setSelected] = useState(path);
+const SideNav = ({ showNav, setShowNav }: any) => {
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const { adminDetails } = useAppSelector((state) => state.auth)
+  const [array, setArray] = useState<string[]>([])
+  const path = location.pathname
+  console.log(path)
+  const [value, setValue] = useState(path)
+  const [selected, setSelected] = useState(path)
 
   useEffect(() => {
-    setValue(getFirstWord(path));
-  }, [path]);
+    setValue(getFirstWord(path))
+  }, [path])
 
   // useEffect(() => {
   //   setArray(router.pathname.split("/"));
@@ -36,7 +33,11 @@ const SideNav = (props: any) => {
   // }, []);
 
   return (
-    <div className="fixed left-0 top-0 w-[60px] md:w-[265px] h-screen min-h-screen rounded-r-3xl flex bg-[#475467] z-30">
+    <div
+      className={`fixed left-0 md:top-0  top-[60px] ${
+        showNav ? "flex" : "hidden"
+      } md:flex  w-[265px] h-[calc(100vh-60px)] min-h-[calc(100vh-60px)] md:h-screen md:min-h-screen rounded-r-3xl  bg-[#475467] z-30`}
+    >
       <div className="bg-[#1D2939]  w-[60px] rounded-r-3xl py-10 flex flex-col items-center">
         <ul className="mt-[70px] flex flex-col gap-2">
           {innerNav.map((item: any) => (
@@ -47,8 +48,8 @@ const SideNav = (props: any) => {
               <div
                 className="px-4"
                 onClick={() => {
-                  setValue(item.value);
-                  router.push(item.route);
+                  setValue(item.value)
+                  router.push(item.route)
                 }}
                 style={{
                   borderLeft: includesSubstring(item.value, path)
@@ -76,7 +77,7 @@ const SideNav = (props: any) => {
                   {item.initials}
                 </li>
               </div>
-              {item?.navItems && (
+              {/* {item?.navItems && (
                 <ul className="flex flex-col md:hidden max-h-[100px] overflow-y-auto pl-4 mt-2">
                   {item?.navItems?.map((nav: any) => (
                     <li
@@ -92,7 +93,7 @@ const SideNav = (props: any) => {
                       }}
                       key={nav.id}
                       onClick={() => {
-                        setSelected(nav.name);
+                        setSelected(nav.name)
                       }}
                     >
                       <Link href={nav.route} legacyBehavior>
@@ -101,18 +102,18 @@ const SideNav = (props: any) => {
                     </li>
                   ))}
                 </ul>
-              )}
+              )} */}
             </div>
           ))}
         </ul>
-        <button
+        {/* <button
           className="md:hidden text-xs text-center p-2 rounded-l-full rounded-[-12px] absolute bottom-6 text-white border border-faintWhite"
           onClick={() => dispatch(authActions.logoutHandler())}
         >
           Logout
-        </button>
+        </button> */}
       </div>
-      <div className="hidden md:block relative w-full px-6 mt-8">
+      <div className=" relative w-full px-6 mt-8">
         <div className="bg-faintWhite flex items-center justify-around gap-3 rounded p-3">
           <div className="w-8 h-8">
             <Avatar src={profile} alt={adminDetails?.fullName} />
@@ -145,7 +146,7 @@ const SideNav = (props: any) => {
                 }}
                 key={item.id}
                 onClick={() => {
-                  setSelected(item.name);
+                  setSelected(item.name)
                 }}
               >
                 <Link href={item.route} legacyBehavior>
@@ -156,14 +157,14 @@ const SideNav = (props: any) => {
         </ul>
 
         <button
-          className="text-xs w-full text-center p-2 rounded-l-full rounded-[-12px] absolute bottom-6 text-white border border-faintWhite"
+          className="text-xs w-full text-center p-2 rounded-l-full rounded-[-12px] absolute md:bottom-6 bottom-20 text-white border border-faintWhite"
           onClick={() => dispatch(authActions.logoutHandler())}
         >
           Logout
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default memo(SideNav);
+export default memo(SideNav)

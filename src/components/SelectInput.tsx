@@ -28,7 +28,7 @@ const SelectInput: FC<Props> = ({
   error,
 }) => {
   return (
-    <div className=" mt-[10px]">
+    <div className=" mt-[10px] w-full">
       <label className=" text-[10px] text-[#1D2939] bg-white">{label}</label>
       <Select
         options={options}
